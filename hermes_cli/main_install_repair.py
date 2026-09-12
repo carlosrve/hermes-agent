@@ -1241,5 +1241,8 @@ def _resolve_node_runtime_npm() -> str | None:
 
 
 def _resolve_update_branch(args) -> str:
-    """Normalize ``args.branch`` to a non-empty name (default ``main``; blank/whitespace = default)."""
-    return (getattr(args, "branch", None) or "main").strip() or "main"
+    """Resolve the update branch from the explicit flag, deployment env, or ``main``."""
+    explicit = (getattr(args, "branch", None) or "").strip()
+    if explicit:
+        return explicit
+    return os.environ.get("HERMES_UPDATE_BRANCH", "").strip() or "main"

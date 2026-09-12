@@ -777,6 +777,15 @@ class TestCmdUpdateProfileSkillSync:
         assert default_p.path in synced_paths
 
 
+def test_update_branch_uses_deployment_env_before_main(monkeypatch):
+    monkeypatch.setenv("HERMES_UPDATE_BRANCH", "integration/upstream-2026-09-12")
+
+    assert main_install_repair._resolve_update_branch(SimpleNamespace()) == (
+        "integration/upstream-2026-09-12"
+    )
+    assert main_install_repair._resolve_update_branch(SimpleNamespace(branch="main")) == "main"
+
+
 class TestCmdUpdateBranchFlag:
     """``hermes update --branch <name>`` targets the requested branch.
 
