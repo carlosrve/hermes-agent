@@ -361,6 +361,25 @@ def _tool_search_scoped_names(agent) -> frozenset:
     return names
 
 
+def _execution_tool_names(agent, function_name: str):
+    """Keep schema visibility separate from the native deferred execution grant.
+
+    The existing Tool Search scope resolver derives its inventory from this
+    agent's configured toolsets, with disabled sets subtracted last. Neither
+    discovery, the process-global catalog, nor arbitrary visible names are an
+    authorization fallback. Resolve at execution time, not when creating the
+    dispatch closure, so a revoked session selection cannot retain its grant.
+    Other tools retain their existing sandbox/dispatch semantics.
+    """
+    visible = agent.valid_tool_names
+    if function_name != "a2a_outbound" or "a2a_outbound" in visible:
+        return list(visible) if visible else None
+    if ("tool_call" not in visible
+            or "a2a_outbound" not in (getattr(agent, "enabled_toolsets", None) or ())):
+        return []
+    return list(_tool_search_scoped_names(agent))
+
+
 def _canonical_tool_name(function_name: str) -> str:
     """Map legacy tool-name aliases BEFORE agent-loop dispatch."""
     from model_tools import _LEGACY_TOOL_ALIASES as _lta
@@ -1541,7 +1560,7 @@ def _resolve_sequential_dispatch(agent, ref: _ToolCallRef, messages: list) -> _S
                 session_id=agent.session_id or "",
                 turn_id=getattr(agent, "_current_turn_id", "") or "",
                 api_request_id=getattr(agent, "_current_api_request_id", "") or "",
-                enabled_tools=list(agent.valid_tool_names) if agent.valid_tool_names else None,
+                enabled_tools=_execution_tool_names(agent, function_name),
                 skip_pre_tool_call_hook=True,
                 skip_tool_request_middleware=True,
                 skip_tool_execution_middleware=True,
