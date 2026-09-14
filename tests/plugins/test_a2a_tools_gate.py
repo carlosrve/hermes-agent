@@ -56,7 +56,10 @@ class TestA2AToolsGate(unittest.TestCase):
                 seen[name] = kw.get("check_fn")
 
         a2at.register_tools(Ctx())
-        self.assertEqual(len(seen), 5, sorted(seen))
+        native_gate = seen.pop('a2a_outbound')
+        self.assertIsNot(native_gate, a2at._a2a_tools_available)
+        self.assertFalse(native_gate())  # no outbound config in this legacy context
+        self.assertEqual(set(seen), set(a2at._TOOLS))
         for name, fn in seen.items():
             self.assertIs(fn, a2at._a2a_tools_available, name)
 
