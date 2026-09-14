@@ -819,6 +819,10 @@ def _execute_tool(function_name: str, function_args: Dict[str, Any], original_ar
     """Run the registry handler (through tool-execution middleware unless skipped)
     with the approval observability context bound for the duration."""
     dispatch_kwargs: Dict[str, Any] = {"task_id": ids.task_id, "session_id": ids.session_id}
+    if function_name == "a2a_outbound":
+        from hermes_constants import get_hermes_home
+        from plugins.platforms.a2a.native_tools import DispatchScope
+        dispatch_kwargs["a2a_scope"] = DispatchScope(get_hermes_home().resolve(), ids.session_id or "", frozenset(enabled_tools or ()))
     if function_name == "execute_code":
         # Prefer the caller's list so subagents can't overwrite the parent's
         # tool set via the process-global.
@@ -883,6 +887,14 @@ def handle_function_call(
     function_args = coerce_tool_args(function_name, function_args)
     if not isinstance(function_args, dict):
         function_args = {}
+    if function_name == "a2a_outbound" and (
+        not isinstance(session_id, str) or not session_id.strip() or len(session_id) > 1024
+        or enabled_tools is None or "a2a_outbound" not in enabled_tools
+        or enabled_toolsets is None or "a2a_outbound" not in enabled_toolsets
+        or "a2a_outbound" in (disabled_toolsets or [])
+        or "a2a_outbound" not in _select_tool_names(enabled_toolsets, disabled_toolsets, quiet_mode=True)
+    ):
+        return json.dumps({"status": "blocked", "reason": "trusted_grant_required"})
     trace = list(tool_request_middleware_trace or [])
     function_name = _LEGACY_TOOL_ALIASES.get(function_name, function_name)
     ids = _CallIds(task_id, session_id, tool_call_id, turn_id, api_request_id)

@@ -53,3 +53,51 @@ def test_a2a_call_schema_round_trips_through_tool_describe(monkeypatch):
         "message",
         "context_id",
     }
+
+
+def test_native_discovery_opt_in_schema_without_legacy_or_inbound(tmp_path, monkeypatch):
+    import yaml
+    from hermes_cli.plugins import discover_plugins, get_plugin_manager
+    from tools.registry import registry
+    import model_tools
+
+    monkeypatch.setenv('HERMES_HOME', str(tmp_path))
+    monkeypatch.delenv('A2A_PORT', raising=False)
+    discover_plugins(force=True)
+    manager = get_plugin_manager()
+    loaded = next(p for p in manager._plugins.values() if p.manifest.name == 'a2a-platform')
+    assert 'a2a_outbound' in loaded.manifest.provides_tools
+    assert loaded.deferred is True
+    entry = registry.get_entry('a2a_outbound')
+    assert entry is not None and entry.check_fn() is False
+    assert not registry.get_definitions({'a2a_outbound'})
+    config = {'plugins': {'entries': {loaded.manifest.key: {'settings': {'outbound': {
+        'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zurqui',
+        'url': 'https://zurqui/rpc', 'token_env': 'NATIVE_TEST_BEARER'
+    }}}}}}
+    (tmp_path / 'config.yaml').write_text(yaml.safe_dump(config))
+    discover_plugins(force=True)
+    assert registry.get_entry('a2a_outbound').check_fn() is True
+    definitions = registry.get_definitions({'a2a_outbound'})
+    assert len(definitions) == 1
+    params = definitions[0]['function']['parameters']
+    assert set(params['properties']) == {'action', 'message', 'local_id'}
+    assert params['additionalProperties'] is False
+    assert not registry.get_entry('a2a_call').check_fn()
+    assert 'a2a_outbound' not in model_tools._select_tool_names(['hermes-cli'], [], quiet_mode=True)
+    assert 'a2a_outbound' in model_tools._select_tool_names(['a2a_outbound'], [], quiet_mode=True)
+    monkeypatch.setenv('NATIVE_TEST_BEARER', 'fixture-native-credential')
+    described = json.loads(model_tools.handle_function_call('tool_describe', {'names': ['a2a_outbound']},
+                           enabled_toolsets=['a2a_outbound'], disabled_toolsets=[]))
+    assert 'a2a_outbound' in described['tools']
+    bridge_args = {'calls': [{'name': 'a2a_outbound', 'arguments': {'action': 'prepare', 'message': 'hello'}}]}
+    kwargs = dict(session_id='owner', enabled_toolsets=['a2a_outbound'], disabled_toolsets=[])
+    denied = json.loads(model_tools.handle_function_call('tool_call', bridge_args, **kwargs))
+    assert denied['status'] == 'blocked'
+    accepted = json.loads(model_tools.handle_function_call('tool_call', bridge_args,
+                           enabled_tools=['a2a_outbound'], **kwargs))
+    assert accepted['local_state'] == 'prepared'
+    denied = json.loads(model_tools.handle_function_call('tool_call', bridge_args,
+                        session_id='owner', enabled_tools=['a2a_outbound'],
+                        enabled_toolsets=['a2a_outbound'], disabled_toolsets=['a2a_outbound']))
+    assert denied.get('error') or denied.get('status') == 'blocked'
