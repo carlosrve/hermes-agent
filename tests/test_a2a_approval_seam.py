@@ -2,12 +2,19 @@ import unittest
 from unittest.mock import patch
 
 from tui_gateway.methods_prompt import build_a2a_approval_event
+from tui_gateway.transport import FanoutTransport, bind_transport, reset_transport
 
 
 class FixtureTransport:
     def __init__(self, user_id="human-1", provider="desktop"):
         self.auth_identity = {"user_id": user_id, "provider": provider}
         self.closed = False
+
+    def write(self, obj):
+        return True
+
+    def close(self):
+        self.closed = True
 
 
 class A2AApprovalSeamTests(unittest.TestCase):
@@ -62,6 +69,42 @@ class A2AApprovalSeamTests(unittest.TestCase):
         self.assertNotIn("approval_id", event)
         self.assertNotIn("choice", event)
         self.assertNotIn("decision", event)
+
+    @patch("tools.approval.list_gateway_approvals")
+    def test_current_transport_is_required_and_callback_receives_validated_event(self, approvals):
+        approvals.return_value = self.pending
+        seen = []
+        token = bind_transport(self.transport)
+        try:
+            event = build_a2a_approval_event(
+                self.session, {"a2a_event": True, "request_id": "request-owner"},
+                callback=seen.append)
+        finally:
+            reset_transport(token)
+        self.assertEqual(seen, [event])
+        self.assertIsNotNone(event)
+        self.assertEqual(event["session_id"], "session-owner")
+
+    @patch("tools.approval.list_gateway_approvals")
+    def test_fanout_detach_and_foreign_profile_fail_closed(self, approvals):
+        approvals.return_value = self.pending
+        first, second = FixtureTransport(), FixtureTransport(user_id="other")
+        fanout = FanoutTransport(first, second)
+        session = {"session_key": "session-owner", "transport": fanout,
+                   "auth_identity": first.auth_identity}
+        self.assertIsNotNone(self._event(session=session, transport=first))
+        fanout.detach(first)
+        self.assertIsNone(self._event(session=session, transport=first))
+        self.assertIsNone(self._event(session=session, transport=second))
+
+    @patch("tools.approval.list_gateway_approvals")
+    def test_callback_exception_does_not_resolve_queue(self, approvals):
+        approvals.return_value = self.pending
+        event = build_a2a_approval_event(
+            self.session, {"a2a_event": True, "request_id": "request-owner"},
+            self.transport, callback=lambda _event: (_ for _ in ()).throw(RuntimeError("fixture")))
+        self.assertIsNone(event)
+        self.assertEqual(approvals.call_count, 1)
 
 
 if __name__ == "__main__":
