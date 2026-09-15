@@ -131,6 +131,12 @@ class OperatorTests(unittest.TestCase):
         self.assertEqual(len(text), operator._MAX_RESPONSE_TEXT)
         self.assertEqual(text, "a" * operator._MAX_RESPONSE_TEXT)
 
+    def test_response_text_reads_streamed_artifact_updates(self):
+        text = operator._response_text({"events": [{"artifactUpdate": {
+            "artifact": {"parts": [{"text": "streamed result"}]}
+        }}]})
+        self.assertEqual(text, "streamed result")
+
 
 if __name__ == "__main__":
     unittest.main()

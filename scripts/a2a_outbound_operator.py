@@ -54,9 +54,16 @@ def _response_text(record: dict) -> str:
     collected = []
     for event in reversed(record.get("events", [])):
         task = event.get("task") if isinstance(event, dict) else None
+        if task is None and isinstance(event, dict):
+            update = event.get("artifactUpdate")
+            if isinstance(update, dict):
+                task = update.get("artifact")
         if not isinstance(task, dict):
             continue
-        for artifact in task.get("artifacts", []):
+        artifacts = task.get("artifacts", [])
+        if isinstance(task.get("parts"), list):
+            artifacts = [task]
+        for artifact in artifacts:
             if not isinstance(artifact, dict):
                 continue
             for part in artifact.get("parts", []):
