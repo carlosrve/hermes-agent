@@ -6,6 +6,7 @@ Stdlib only. ``extract_text`` stays tolerant of v0.3 peers."""
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 import sqlite3
 import threading
@@ -298,6 +299,11 @@ class TaskStore:
 
     def __init__(self, path: str | Path | None = None) -> None:
         self._tasks: "OrderedDict[str, dict[str, Any]]" = OrderedDict()
+        # Approval observations are deliberately separate from task replies.  They
+        # are a read-only, origin-routed hint for GetTask, never a decision or a
+        # terminal result.  The compound key makes replay idempotent and lets us
+        # reject a different observation for the same approval.
+        self._approval_observations: dict[tuple[str, str], dict[str, Any]] = {}
         self._watchers: dict[str, list[Future]] = {}
         self._lock = threading.RLock()
         self._db = None
@@ -306,10 +312,27 @@ class TaskStore:
             db_path.parent.mkdir(parents=True, exist_ok=True)
             self._db = sqlite3.connect(str(db_path), isolation_level=None, check_same_thread=False)
             self._db.execute("CREATE TABLE IF NOT EXISTS tasks (task_id TEXT PRIMARY KEY, payload TEXT NOT NULL)")
+            self._db.execute(
+                "CREATE TABLE IF NOT EXISTS approval_observations ("
+                "task_id TEXT NOT NULL, approval_id TEXT NOT NULL, "
+                "agent_slug TEXT NOT NULL, tenant TEXT NOT NULL, "
+                "payload TEXT NOT NULL, payload_digest TEXT NOT NULL, created_at REAL NOT NULL, "
+                "PRIMARY KEY(task_id, approval_id))"
+            )
             rows = self._db.execute("SELECT payload FROM tasks ORDER BY rowid").fetchall()
             for (payload,) in rows:
                 rec = json.loads(payload)
                 self._tasks[rec["task_id"]] = rec
+            for row in self._db.execute(
+                    "SELECT task_id, approval_id, agent_slug, tenant, payload, payload_digest, created_at "
+                    "FROM approval_observations ORDER BY created_at"):
+                task_id, approval_id, agent_slug, tenant, payload, digest, created_at = row
+                self._approval_observations[(task_id, approval_id)] = {
+                    "task_id": task_id, "approval_id": approval_id,
+                    "agent_slug": agent_slug, "tenant": tenant,
+                    "observation": json.loads(payload), "payload_digest": digest,
+                    "created_at": created_at,
+                }
 
     def _save_locked(self, rec: dict[str, Any]) -> None:
         if self._db is not None:
@@ -402,6 +425,60 @@ class TaskStore:
         with self._lock:
             return dict(rec) if (rec := self._scoped(task_id, agent_slug, tenant)) else None
 
+    @staticmethod
+    def _observation_digest(observation: dict[str, Any]) -> str:
+        encoded = json.dumps(observation, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)
+        return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+    def record_approval_observation(self, task_id: str, approval_id: str,
+                                    observation: dict[str, Any], agent_slug: str = "", tenant: str = "") -> Optional[dict]:
+        """Persist one scoped, non-terminal approval observation.
+
+        Replaying the exact observation is idempotent.  A different payload for
+        the same ``task_id``/``approval_id`` is a conflict, never an overwrite.
+        The caller must already have a visible task; worker-supplied scope is not
+        accepted as authority by this store.
+        """
+        if not task_id or not approval_id or not isinstance(observation, dict):
+            raise ValueError("task_id, approval_id and observation object required")
+        digest = self._observation_digest(observation)
+        key = (task_id, approval_id)
+        with self._lock:
+            if not self._scoped(task_id, agent_slug, tenant):
+                return None
+            existing = self._approval_observations.get(key)
+            if existing:
+                if existing["payload_digest"] != digest:
+                    raise ValueError("conflicting approval observation")
+                return dict(existing, duplicate=True)
+            rec = {"task_id": task_id, "approval_id": approval_id,
+                   "agent_slug": agent_slug or "", "tenant": tenant or "",
+                   "observation": json.loads(json.dumps(observation, ensure_ascii=False, allow_nan=False)),
+                   "payload_digest": digest, "created_at": time.time()}
+            self._approval_observations[key] = rec
+            if self._db is not None:
+                self._db.execute(
+                    "INSERT INTO approval_observations "
+                    "(task_id, approval_id, agent_slug, tenant, payload, payload_digest, created_at) "
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    (task_id, approval_id, rec["agent_slug"], rec["tenant"],
+                     json.dumps(rec["observation"], ensure_ascii=False, separators=(",", ":")), digest, rec["created_at"]),
+                )
+            return dict(rec, duplicate=False)
+
+    def list_approval_observations(self, task_id: str, agent_slug: str = "", tenant: str = "") -> list[dict]:
+        with self._lock:
+            if not self._scoped(task_id, agent_slug, tenant):
+                return []
+            return [dict(rec) for (tid, _), rec in self._approval_observations.items()
+                    if tid == task_id and self._in_scope(rec, agent_slug, tenant)]
+
+    def get_approval_observation(self, task_id: str, approval_id: str,
+                                 agent_slug: str = "", tenant: str = "") -> Optional[dict]:
+        with self._lock:
+            rec = self._approval_observations.get((task_id, approval_id))
+            return dict(rec) if rec and self._in_scope(rec, agent_slug, tenant) else None
+
     def complete(self, task_id: str, state: str, reply: str = "") -> Optional[dict]:
         """Transition a task to a terminal state. Idempotent."""
         with self._lock:
@@ -466,12 +543,17 @@ class TaskStore:
                 self._db.execute("DELETE FROM tasks WHERE task_id = ?", (tid,))
 
     @staticmethod
-    def to_task(rec: dict, include_artifacts: bool = True) -> dict:
+    def to_task(rec: dict, include_artifacts: bool = True, approval_observations: Optional[list[dict]] = None) -> dict:
         """Render a stored record as an A2A v1.0 Task."""
         task = build_task(rec["task_id"], rec["context_id"], rec["state"], rec.get("reply", ""),
                           created_at=rec.get("created_iso", ""))
         if not include_artifacts:
             task.pop("artifacts", None)
+        if rec.get("state") == STATE_WORKING and approval_observations:
+            # Keep the wire strictly standard: the full object remains in the
+            # authenticated control plane; GetTask exposes only an opaque hint.
+            ids = sorted(str(item["approval_id"]) for item in approval_observations)
+            task["status"]["message"] = text_message(ROLE_AGENT, "approval-observation/v1 " + ",".join(ids), rec["context_id"])
         return task
 
 
