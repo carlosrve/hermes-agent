@@ -33,7 +33,29 @@ class TaskStorePersistenceTests(unittest.TestCase):
                 self.assertEqual(config["pushNotificationConfig"]["url"],
                                  "http://127.0.0.1:9/callback")
 
-    def test_uncertain_submitted_task_remains_queryable_without_execution(self):
+    def test_restart_prunes_old_terminal_rows_from_persistent_store(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "tasks.db"
+            with protocol.TaskStore(path) as store:
+                for index in range(store._MAX_TERMINAL + 5):
+                    task_id = f"task-{index}"
+                    store.create(task_id, "ctx-1", "peer")
+                    store.complete(task_id, protocol.STATE_COMPLETED, f"reply-{index}")
+                self.assertIsNone(store.get("task-0"))
+                self.assertIsNotNone(store.get("task-504"))
+
+            with protocol.TaskStore(path) as reopened:
+                records = []
+                offset = 0
+                while True:
+                    page, offset = reopened.list(page_size=100, offset=offset)
+                    records.extend(page)
+                    if not offset:
+                        break
+                self.assertEqual(store._MAX_TERMINAL, len(records))
+                self.assertIsNone(reopened.get("task-0"))
+                self.assertIsNotNone(reopened.get("task-504"))
+
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "tasks.db"
             with protocol.TaskStore(path) as store:
