@@ -7,15 +7,45 @@ from __future__ import annotations
 
 import asyncio
 import os
+import tempfile
 import unittest
+from pathlib import Path
 from types import SimpleNamespace
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
+from gateway.config import GatewayConfig, PlatformConfig
 from gateway.run import GatewayRunner
+from hermes_cli.config import get_hermes_home
 from plugins.platforms.a2a.adapter import A2AAdapter
 
 
 class GatewayA2AWiringTests(unittest.TestCase):
+    def test_full_runner_constructs_and_wires_real_handler_in_isolated_home(self):
+        # This constructs the actual runner/session store. It opens no adapter
+        # listener and does not call a provider or model.
+        with tempfile.TemporaryDirectory(prefix="a2a-full-runner-") as directory:
+            home = Path(directory)
+            with patch.dict(os.environ, {
+                "HERMES_HOME": str(home),
+                "A2A_HOST": "127.0.0.1",
+                "A2A_BEARER_TOKEN": "fixture-runner-construction",
+            }):
+                config = GatewayConfig(platforms={}, sessions_dir=home / "sessions",
+                                       loop_watchdog=False)
+                runner = GatewayRunner(config=config)
+                adapter = A2AAdapter(PlatformConfig(enabled=True, extra={
+                    "port": 0,
+                    "task_store_path": str(home / "a2a-tasks.db"),
+                }))
+                try:
+                    runner._wire_adapter_handlers(adapter)
+                    self.assertIs(getattr(adapter._message_handler, "__self__", None), runner)
+                    self.assertEqual(get_hermes_home(), home)
+                    self.assertEqual(runner.config.sessions_dir, home / "sessions")
+                    self.assertTrue((home / "state.db").exists())
+                finally:
+                    adapter.tasks.close()
+
     def test_real_adapter_receives_runner_callbacks_and_auth_gate(self):
         old_host = os.environ.get("A2A_HOST")
         old_token = os.environ.get("A2A_BEARER_TOKEN")
