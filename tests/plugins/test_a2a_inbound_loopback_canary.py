@@ -11,6 +11,8 @@ import urllib.request
 import uuid
 import unittest
 
+from plugins.platforms.a2a import protocol
+
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 PYTHON = ROOT / ".venv" / "bin" / "python"
@@ -62,6 +64,7 @@ class TestInboundLoopbackCanary(unittest.TestCase):
                     "A2A_CANARY_PORT": str(port),
                     "A2A_HOST": "127.0.0.1",
                     "A2A_REPLY_TIMEOUT": "10",
+                    "A2A_TASK_STORE_PATH": str(pathlib.Path(home) / "a2a-tasks.db"),
                 }
             )
             base = f"http://127.0.0.1:{port}/"
@@ -75,6 +78,7 @@ class TestInboundLoopbackCanary(unittest.TestCase):
                 text=True,
             )
             try:
+                task_id = ""
                 ready = json.loads(proc.stdout.readline())
                 self.assertEqual({"ready": True, "listener": "loopback-only", "simulation": True},
                                  {k: ready[k] for k in ("ready", "listener", "simulation")})
@@ -90,6 +94,7 @@ class TestInboundLoopbackCanary(unittest.TestCase):
                 self.assertGreaterEqual(len(events), 3)
                 sent = next(e for e in events if "task" in e.get("result", {}))
                 task = sent["result"]["task"]
+                task_id = task["id"]
                 self.assertEqual("send-1", sent["id"])
                 artifact = next(e["result"]["artifactUpdate"]["artifact"] for e in events if "artifactUpdate" in e.get("result", {}))
                 self.assertIn("CALLBACK_FIXTURE_REPLY", artifact["parts"][0]["text"])
@@ -111,6 +116,12 @@ class TestInboundLoopbackCanary(unittest.TestCase):
                 stopped = [json.loads(line) for line in stdout.splitlines() if line.strip()]
                 self.assertTrue(any(item.get("stopped") and item.get("cleanup") for item in stopped))
                 self.assertFalse(token_file.stat().st_mode & 0o077)
+                with protocol.TaskStore(pathlib.Path(home) / "a2a-tasks.db") as reopened:
+                    persisted = reopened.get(task_id)
+                    self.assertIsNotNone(persisted)
+                    assert persisted is not None
+                    self.assertEqual(persisted["state"], protocol.STATE_COMPLETED)
+                    self.assertIn("CALLBACK_FIXTURE_REPLY", persisted["reply"])
                 with self.assertRaises(urllib.error.URLError):
                     urllib.request.urlopen(base, timeout=1)
 
