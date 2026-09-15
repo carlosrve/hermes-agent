@@ -738,7 +738,11 @@ class A2AAdapter(BasePlatformAdapter):
 
     def _rpc_tasks_get(self, req_id: Any, params: dict, agent: Optional[dict] = None) -> dict:
         _task_id, rec, error = self._find_task(req_id, params, agent)
-        return error or _ok(req_id, protocol.TaskStore.to_task(rec))
+        if error:
+            return error
+        scope = self._scope_for_agent(agent)
+        return _ok(req_id, protocol.TaskStore.to_task(
+            rec, approval_observations=self.tasks.list_approval_observations(_task_id, *scope)))
 
     def _rpc_tasks_list(self, req_id: Any, params: dict, agent: Optional[dict] = None) -> dict:
         offset = _to_int(params.get("pageToken") or 0, 0)
@@ -748,7 +752,10 @@ class A2AAdapter(BasePlatformAdapter):
             context_id=str(params.get("contextId") or ""), state=str(params.get("status") or params.get("state") or ""),
             page_size=page_size, offset=max(0, offset), agent_slug=agent_slug, tenant=tenant, with_total=True)
         include_artifacts = bool(params.get("includeArtifacts", False))
-        return _ok(req_id, {"tasks": [protocol.TaskStore.to_task(r, include_artifacts=include_artifacts) for r in recs],
+        return _ok(req_id, {"tasks": [protocol.TaskStore.to_task(
+                                r, include_artifacts=include_artifacts,
+                                approval_observations=self.tasks.list_approval_observations(r["task_id"], agent_slug, tenant))
+                            for r in recs],
                             "nextPageToken": str(next_offset) if next_offset else "",
                             "pageSize": max(1, min(page_size, 100)), "totalSize": total})
 
