@@ -6,7 +6,11 @@ Stdlib only. ``extract_text`` stays tolerant of v0.3 peers."""
 from __future__ import annotations
 
 import json
+import hashlib
+import copy
 import os
+import re
+import sqlite3
 import threading
 import time
 import uuid
@@ -302,10 +306,63 @@ class TaskStore:
 
     _MAX_TERMINAL = 500
 
-    def __init__(self) -> None:
+    def __init__(self, path: str | Path | None = None, *, approval_control=None) -> None:
+        # Internal host-injected control only. No RPC/message can configure this.
+        self._approval_control = approval_control
         self._tasks: "OrderedDict[str, dict[str, Any]]" = OrderedDict()
+        # Approval observations are deliberately separate from task replies.  They
+        # are a read-only, origin-routed hint for GetTask, never a decision or a
+        # terminal result.  The compound key makes replay idempotent and lets us
+        # reject a different observation for the same approval.
+        self._approval_observations: dict[tuple[str, str], dict[str, Any]] = {}
         self._watchers: dict[str, list[Future]] = {}
-        self._lock = threading.Lock()
+        self._lock = threading.RLock()
+        self._db = None
+        if path:
+            db_path = Path(path).expanduser()
+            db_path.parent.mkdir(parents=True, exist_ok=True)
+            self._db = sqlite3.connect(str(db_path), isolation_level=None, check_same_thread=False)
+            self._db.execute("CREATE TABLE IF NOT EXISTS tasks (task_id TEXT PRIMARY KEY, payload TEXT NOT NULL)")
+            self._db.execute(
+                "CREATE TABLE IF NOT EXISTS approval_observations ("
+                "task_id TEXT NOT NULL, approval_id TEXT NOT NULL, "
+                "agent_slug TEXT NOT NULL, tenant TEXT NOT NULL, "
+                "payload TEXT NOT NULL, payload_digest TEXT NOT NULL, created_at REAL NOT NULL, "
+                "PRIMARY KEY(task_id, approval_id))"
+            )
+            rows = self._db.execute("SELECT payload FROM tasks ORDER BY rowid").fetchall()
+            for (payload,) in rows:
+                rec = json.loads(payload)
+                self._tasks[rec["task_id"]] = rec
+            for row in self._db.execute(
+                    "SELECT task_id, approval_id, agent_slug, tenant, payload, payload_digest, created_at "
+                    "FROM approval_observations ORDER BY rowid"):
+                task_id, approval_id, agent_slug, tenant, payload, digest, created_at = row
+                self._approval_observations[(task_id, approval_id)] = {
+                    "task_id": task_id, "approval_id": approval_id,
+                    "agent_slug": agent_slug, "tenant": tenant,
+                    "observation": json.loads(payload), "payload_digest": digest,
+                    "created_at": created_at,
+                }
+
+    def _save_locked(self, rec: dict[str, Any]) -> None:
+        if self._db is not None:
+            self._db.execute(
+                "INSERT OR REPLACE INTO tasks(task_id, payload) VALUES (?, ?)",
+                (rec["task_id"], json.dumps(rec, ensure_ascii=False, separators=(",", ":"))),
+            )
+
+    def close(self) -> None:
+        with self._lock:
+            if self._db is not None:
+                self._db.close()
+                self._db = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, _type, _value, _traceback):
+        self.close()
 
     @staticmethod
     def _in_scope(rec: dict, agent_slug: str = "", tenant: str = "") -> bool:
@@ -333,12 +390,14 @@ class TaskStore:
                "state": STATE_SUBMITTED, "reply": "", "created_at": time.time(), "created_iso": now_iso(), "push_url": "", "push_config_id": ""}
         with self._lock:
             self._tasks[task_id] = rec
+            self._save_locked(rec)
         return dict(rec)
 
     def set_state(self, task_id: str, state: str) -> None:
         with self._lock:
             if (rec := self._tasks.get(task_id)) and rec["state"] not in TERMINAL_STATES:
                 rec["state"] = state
+                self._save_locked(rec)
 
     def set_push_config(self, task_id: str, url: str, agent_slug: str = "", tenant: str = "") -> Optional[dict]:
         """Attach a push notification config; returns the stored config or None."""
@@ -346,6 +405,7 @@ class TaskStore:
             if not (rec := self._scoped(task_id, agent_slug, tenant)):
                 return None
             rec["push_url"], rec["push_config_id"] = url, "cfg-" + uuid.uuid4().hex[:12]
+            self._save_locked(rec)
             return self._push_config_view(rec)
 
     def get_push_config(self, task_id: str, config_id: str = "", agent_slug: str = "", tenant: str = "") -> Optional[dict]:
@@ -361,6 +421,7 @@ class TaskStore:
             rec = self._push_rec(task_id, config_id, agent_slug, tenant)
             if rec:
                 rec["push_url"] = rec["push_config_id"] = ""
+                self._save_locked(rec)
             return rec is not None
 
     def pop_push_url(self, task_id: str) -> str:
@@ -368,11 +429,115 @@ class TaskStore:
             rec = self._tasks.get(task_id)
             if rec:
                 url, rec["push_url"] = rec["push_url"], ""
+                self._save_locked(rec)
             return url if rec else ""
 
     def get(self, task_id: str, agent_slug: str = "", tenant: str = "") -> Optional[dict]:
         with self._lock:
-            return dict(rec) if (rec := self._scoped(task_id, agent_slug, tenant)) else None
+            return copy.deepcopy(rec) if (rec := self._scoped(task_id, agent_slug, tenant)) else None
+
+    @staticmethod
+    def _observation_digest(observation: dict[str, Any]) -> str:
+        encoded = json.dumps(observation, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)
+        return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+    def bind_approval_context(self, task_id: str, binding: dict) -> None:
+        """Host-only immutable admission association, never read from A2A input.
+
+        This port is not a same-UID security boundary; a protected issuer must
+        supply it. No default issuer is installed by the adapter.
+        """
+        fields = {"task_id", "context_id", "peer", "agent_slug", "tenant",
+                  "origin_route_id", "objective_id", "delegation_id", "session_key", "profile_home"}
+        if set(binding) != fields or any(not isinstance(v, str) or not v or len(v) > 512 for v in binding.values()):
+            raise ValueError("invalid admission binding")
+        with self._lock:
+            rec = self._tasks.get(task_id)
+            if not rec or rec["state"] in TERMINAL_STATES:
+                raise ValueError("missing or terminal task")
+            if any(binding[k] != rec[k] for k in ("task_id", "context_id", "peer", "agent_slug", "tenant")):
+                raise ValueError("admission scope mismatch")
+            if rec.get("approval_binding") and rec["approval_binding"] != binding:
+                raise ValueError("admission binding conflict")
+            updated = dict(rec, approval_binding=dict(binding))
+            self._save_locked(updated)
+            self._tasks[task_id] = updated
+
+    def record_approval_observation(self, task_id: str, observation: dict[str, Any]) -> dict:
+        """Persist a control-verified reference; never resolve or resend a task.
+
+        The authenticated control revalidates the current binding on EVERY call,
+        including duplicate recovery. Full ApprovalNeeded remains in that control.
+        """
+        if not isinstance(observation, dict):
+            raise ValueError("observation object required")
+        observation = json.loads(json.dumps(observation, allow_nan=False))
+        approval_id = observation.get("approval_id")
+        if not isinstance(approval_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", approval_id):
+            raise ValueError("invalid opaque approval reference")
+        digest = self._observation_digest(observation)
+        key = (task_id, approval_id)
+        with self._lock:
+            task = self._tasks.get(task_id)
+            binding = task.get("approval_binding") if task else None
+            if not binding or self._approval_control is None:
+                raise ValueError("verified control and admission binding required")
+            if task["state"] != STATE_WORKING or task.get("approval_lifecycle", "pending") != "pending":
+                raise ValueError("terminal or inactive task")
+            if any(observation.get(k) != v for k, v in binding.items()):
+                raise ValueError("observation binding mismatch")
+            if self._approval_control.validate(dict(binding), observation) is not True:
+                raise ValueError("unverified observation")
+            existing = self._approval_observations.get(key)
+            if existing:
+                if existing["payload_digest"] != digest:
+                    raise ValueError("conflicting approval observation")
+                return json.loads(json.dumps(dict(existing, duplicate=True)))
+            # Only identifiers and a body digest are retained, not action details,
+            # grants, credentials or decisions from ApprovalNeeded.
+            rec = {"task_id": task_id, "approval_id": approval_id,
+                   "agent_slug": task["agent_slug"], "tenant": task["tenant"],
+                   "observation": {"approval_id": approval_id},
+                   "payload_digest": digest, "created_at": time.time()}
+            if self._db is not None:
+                self._db.execute(
+                    "INSERT INTO approval_observations "
+                    "(task_id, approval_id, agent_slug, tenant, payload, payload_digest, created_at) "
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    (task_id, approval_id, rec["agent_slug"], rec["tenant"],
+                     json.dumps(rec["observation"]), digest, rec["created_at"]),
+                )
+            # Commit before cache: a failed SQLite write must not invent success.
+            self._approval_observations[key] = rec
+            return json.loads(json.dumps(dict(rec, duplicate=False)))
+
+    def recover_approval_observations(self, task_id: str) -> list[dict]:
+        """Read authenticated origin outbox and idempotently project; no send API.
+
+        Two stores are deliberately not atomic. A crash after either commit is
+        recovered by this same read path; the binding is revalidated per row.
+        """
+        with self._lock:
+            task = self._tasks.get(task_id)
+            if not task or not task.get("approval_binding") or self._approval_control is None:
+                raise ValueError("verified control and admission binding required")
+            binding = dict(task["approval_binding"])
+            return [self.record_approval_observation(task_id, observation)
+                    for observation in self._approval_control.observations(binding)
+                    if observation.get("task_id") == task_id]
+
+    def list_approval_observations(self, task_id: str, agent_slug: str = "", tenant: str = "") -> list[dict]:
+        with self._lock:
+            if not self._scoped(task_id, agent_slug, tenant):
+                return []
+            return [copy.deepcopy(rec) for (tid, _), rec in self._approval_observations.items()
+                    if tid == task_id and self._in_scope(rec, agent_slug, tenant)]
+
+    def get_approval_observation(self, task_id: str, approval_id: str,
+                                 agent_slug: str = "", tenant: str = "") -> Optional[dict]:
+        with self._lock:
+            rec = self._approval_observations.get((task_id, approval_id))
+            return copy.deepcopy(rec) if rec and self._scoped(task_id, agent_slug, tenant) and self._in_scope(rec, agent_slug, tenant) else None
 
     def complete(self, task_id: str, state: str, reply: str = "") -> Optional[dict]:
         """Transition a task to a terminal state. Idempotent."""
@@ -381,6 +546,7 @@ class TaskStore:
             if not rec or rec["state"] in TERMINAL_STATES:
                 return None
             rec.update(state=state, reply=reply, completed_at=time.time())
+            self._save_locked(rec)
             watchers = self._watchers.pop(task_id, [])
             self._trim_locked()
             out = dict(rec)
@@ -406,7 +572,7 @@ class TaskStore:
         ``(records, next_offset, total)`` with ``with_total`` (v1.0 ListTasks totalSize)."""
         page_size = max(1, min(int(page_size or 50), 100))
         with self._lock:
-            recs = [dict(r) for r in reversed(self._tasks.values())
+            recs = [copy.deepcopy(r) for r in reversed(self._tasks.values())
                     if self._in_scope(r, agent_slug, tenant)
                     and (not context_id or r["context_id"] == context_id) and (not state or r["state"] == state)]
         total = len(recs)
@@ -414,24 +580,83 @@ class TaskStore:
         next_offset = offset + page_size if offset + page_size < total else 0
         return (page, next_offset, total) if with_total else (page, next_offset)
 
+    def refresh_approval_lifecycle(self, task_id: str) -> None:
+        """Record expiry/revocation evidence from host control, never a decision.
+
+        No guessed timeout for objectives. An unavailable control leaves the task
+        pending; an explicit expired/revoked state is durable before orphan cleanup.
+        """
+        with self._lock:
+            rec = self._tasks.get(task_id)
+            if not rec or not rec.get("approval_binding") or self._approval_control is None:
+                raise ValueError("verified control and admission binding required")
+            status = self._approval_control.lifecycle(dict(rec["approval_binding"]))
+            if (not isinstance(status, dict) or set(status) != {"state", "evidence_id"}
+                    or status["state"] not in {"pending", "expired", "revoked"}
+                    or not isinstance(status["evidence_id"], str)
+                    or not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", status["evidence_id"])):
+                raise ValueError("invalid control lifecycle evidence")
+            if rec.get("approval_lifecycle") in {"expired", "revoked"} and status["state"] != rec["approval_lifecycle"]:
+                raise ValueError("inactive binding cannot reopen")
+            updated = dict(rec, approval_lifecycle=status["state"],
+                           approval_lifecycle_evidence=status["evidence_id"])
+            self._save_locked(updated)
+            self._tasks[task_id] = updated
+
     def fail_orphans(self, timeout_seconds: int = 300) -> list[str]:
         with self._lock:
-            stale = [tid for tid, rec in self._tasks.items()
-                     if rec["state"] not in TERMINAL_STATES and time.time() - rec["created_at"] > timeout_seconds]
-        return [tid for tid in stale if self.complete(tid, STATE_FAILED, "[task orphaned — no reply produced]")]
+            stale = []
+            for tid, rec in self._tasks.items():
+                if rec["state"] in TERMINAL_STATES:
+                    continue
+                lifecycle = rec.get("approval_lifecycle", "pending")
+                # Protect the admission/recovery gap too: the control may already
+                # have committed an observation that has not reached this store.
+                if rec.get("approval_binding"):
+                    if lifecycle in {"expired", "revoked"}:
+                        stale.append((tid, "[approval objective " + lifecycle + "]"))
+                    continue
+                if any(key[0] == tid for key in self._approval_observations):
+                    continue  # legacy observation: await explicit reconciliation
+                if time.time() - rec["created_at"] > timeout_seconds:
+                    stale.append((tid, "[task orphaned — no reply produced]"))
+            return [tid for tid, reason in stale if self.complete(tid, STATE_FAILED, reason)]
 
     def _trim_locked(self) -> None:
+        """Retain only the newest terminal tasks in memory and SQLite.
+
+        A persisted store is deliberately single-owner: opening the same path
+        from multiple live adapters is not supported because each instance has
+        an independent cache and cannot observe another instance's pruning.
+        """
         terminal = [tid for tid, rec in self._tasks.items() if rec["state"] in TERMINAL_STATES]
-        for tid in terminal[:max(0, len(terminal) - self._MAX_TERMINAL)]:
+        expired = terminal[:max(0, len(terminal) - self._MAX_TERMINAL)]
+        for tid in expired:
+            if self._db is not None:
+                self._db.execute("BEGIN IMMEDIATE")
+                try:
+                    self._db.execute("DELETE FROM approval_observations WHERE task_id = ?", (tid,))
+                    self._db.execute("DELETE FROM tasks WHERE task_id = ?", (tid,))
+                    self._db.execute("COMMIT")
+                except BaseException:
+                    self._db.execute("ROLLBACK")
+                    raise
             self._tasks.pop(tid, None)
+            for key in [key for key in self._approval_observations if key[0] == tid]:
+                self._approval_observations.pop(key)
 
     @staticmethod
-    def to_task(rec: dict, include_artifacts: bool = True) -> dict:
+    def to_task(rec: dict, include_artifacts: bool = True, approval_observations: Optional[list[dict]] = None) -> dict:
         """Render a stored record as an A2A v1.0 Task."""
         task = build_task(rec["task_id"], rec["context_id"], rec["state"], rec.get("reply", ""),
                           created_at=rec.get("created_iso", ""))
         if not include_artifacts:
             task.pop("artifacts", None)
+        if rec.get("state") == STATE_WORKING and approval_observations:
+            # Keep the wire strictly standard: the full object remains in the
+            # authenticated control plane; GetTask exposes only an opaque hint.
+            latest = approval_observations[-1]["approval_id"]
+            task["status"]["message"] = text_message(ROLE_AGENT, "approval-observation/v1 " + latest, rec["context_id"])
         return task
 
 

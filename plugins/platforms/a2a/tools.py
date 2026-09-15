@@ -354,6 +354,8 @@ def _a2a_tools_available() -> bool:
 
 def register_tools(ctx) -> None:
     """Register the client tools in the ``a2a`` toolset (config-gated)."""
+    from plugins.platforms.a2a.native_tools import register_tools as register_native
+    register_native(ctx)
     for name, (handler, description, properties, required) in _TOOLS.items():
         parameters: dict[str, Any] = {"type": "object", "properties": properties}
         if required:

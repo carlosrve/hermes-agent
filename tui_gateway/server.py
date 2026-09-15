@@ -686,6 +686,10 @@ def _emit_approval_request(sid: str, data: dict | None) -> None:
     Reuse the shared gateway See #48456, #50767.
     """
     _emit("approval.request", sid, _approval_request_payload(data))
+    # Do not forward this notification as A2A ApprovalNeeded yet. A session's
+    # FanoutTransport is not an authenticated source peer, and this path has no
+    # trusted objective/coordinator binding. The isolated helper remains available
+    # for characterization; installing a raw callback must not invent authority.
 
 
 def _status_update(sid: str, kind: str, text: str | None = None):
