@@ -174,7 +174,8 @@ class ApprovalObservationTaskStoreTests(unittest.TestCase):
         from plugins.platforms.a2a.adapter import A2AAdapter
         store = self.store()
         self.control.put()
-        store.recover_approval_observations("task")
+        # Leave the control observation only in the origin store: the RPC read
+        # must recover/project it after the TaskStore is reopened.
         store.close()
         adapter = A2AAdapter(PlatformConfig(enabled=True, extra={"token": "fixture-only"}))
         adapter.tasks = self.store()
@@ -182,6 +183,14 @@ class ApprovalObservationTaskStoreTests(unittest.TestCase):
         self.assertEqual(result["id"], "rpc-id")
         self.assertEqual(result["result"]["status"]["state"], protocol.STATE_WORKING)
         self.assertEqual(protocol.extract_text(result["result"]["status"]["message"]), "approval-observation/v1 approval-1")
+        listed = adapter._rpc_tasks_list("list-id", {}, {"slug": "zuri", "tenant": "t1"})
+        self.assertEqual(protocol.extract_text(listed["result"]["tasks"][0]["status"]["message"]), "approval-observation/v1 approval-1")
+        # A control outage cannot turn a pending task into a fabricated result,
+        # nor hide a previously committed, correctly scoped observation.
+        self.control.active = False
+        degraded = adapter._rpc_tasks_get("rpc-id-2", {"taskId": "task"}, {"slug": "zuri", "tenant": "t1"})
+        self.assertEqual(protocol.extract_text(degraded["result"]["status"]["message"]), "approval-observation/v1 approval-1")
+        self.assertEqual(degraded["result"]["status"]["state"], protocol.STATE_WORKING)
         foreign = adapter._rpc_tasks_get("rpc-id", {"taskId": "task"}, {"slug": "zuri", "tenant": "foreign"})
         self.assertEqual(foreign["error"]["code"], protocol.ERR_TASK_NOT_FOUND)
 
