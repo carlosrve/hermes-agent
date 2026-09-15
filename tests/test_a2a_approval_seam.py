@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch
 
+from tools import approval  # Explicitly load the patch target and declared dependencies.
 from tui_gateway.methods_prompt import build_a2a_approval_event
 from tui_gateway.transport import FanoutTransport, bind_transport, reset_transport
 
@@ -30,7 +31,7 @@ class A2AApprovalSeamTests(unittest.TestCase):
             transport=transport or self.transport,
         )
 
-    @patch("tools.approval.list_gateway_approvals")
+    @patch.object(approval, "list_gateway_approvals")
     def test_owner_gets_callback_event_without_resolving_queue(self, approvals):
         approvals.return_value = self.pending
         event = self._event()
@@ -40,7 +41,7 @@ class A2AApprovalSeamTests(unittest.TestCase):
         self.assertFalse(event["human_decision"])
         approvals.assert_called_once_with("session-owner")
 
-    @patch("tools.approval.list_gateway_approvals")
+    @patch.object(approval, "list_gateway_approvals")
     def test_stale_session_and_request_from_other_session_are_rejected(self, approvals):
         approvals.side_effect = lambda key: (
             [{"request_id": "request-other"}] if key == "session-stale"
@@ -51,7 +52,7 @@ class A2AApprovalSeamTests(unittest.TestCase):
         # this owner's queue; the queue must match this session's exact ID.
         self.assertIsNone(self._event(params={"request_id": "request-other"}))
 
-    @patch("tools.approval.list_gateway_approvals")
+    @patch.object(approval, "list_gateway_approvals")
     def test_other_transport_profile_and_all_are_rejected(self, approvals):
         approvals.return_value = self.pending
         other = FixtureTransport(user_id="other", provider="desktop")
@@ -60,17 +61,14 @@ class A2AApprovalSeamTests(unittest.TestCase):
         self.assertIsNone(self._event(transport=FixtureTransport(user_id="", provider="desktop")))
         approvals.assert_not_called()
 
-    @patch("tools.approval.list_gateway_approvals")
+    @patch.object(approval, "list_gateway_approvals")
     def test_seam_is_opt_in_and_never_accepts_worker_approval_fields(self, approvals):
         approvals.return_value = self.pending
         self.assertIsNone(build_a2a_approval_event(
             self.session, {"request_id": "request-owner", "choice": "approve"}, self.transport))
-        event = self._event(params={"approval_id": "worker-chosen", "choice": "approve"})
-        self.assertNotIn("approval_id", event)
-        self.assertNotIn("choice", event)
-        self.assertNotIn("decision", event)
+        self.assertIsNone(self._event(params={"approval_id": "worker-chosen", "choice": "approve"}))
 
-    @patch("tools.approval.list_gateway_approvals")
+    @patch.object(approval, "list_gateway_approvals")
     def test_current_transport_is_required_and_callback_receives_validated_event(self, approvals):
         approvals.return_value = self.pending
         seen = []
@@ -85,7 +83,7 @@ class A2AApprovalSeamTests(unittest.TestCase):
         self.assertIsNotNone(event)
         self.assertEqual(event["session_id"], "session-owner")
 
-    @patch("tools.approval.list_gateway_approvals")
+    @patch.object(approval, "list_gateway_approvals")
     def test_fanout_detach_and_foreign_profile_fail_closed(self, approvals):
         approvals.return_value = self.pending
         first, second = FixtureTransport(), FixtureTransport(user_id="other")
@@ -97,7 +95,7 @@ class A2AApprovalSeamTests(unittest.TestCase):
         self.assertIsNone(self._event(session=session, transport=first))
         self.assertIsNone(self._event(session=session, transport=second))
 
-    @patch("tools.approval.list_gateway_approvals")
+    @patch.object(approval, "list_gateway_approvals")
     def test_callback_exception_does_not_resolve_queue(self, approvals):
         approvals.return_value = self.pending
         event = build_a2a_approval_event(
