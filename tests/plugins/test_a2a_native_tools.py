@@ -37,7 +37,7 @@ def test_prepare_uses_runtime_scope_and_immutable_store(tmp_path, monkeypatch):
     monkeypatch.setenv('HERMES_HOME', str(tmp_path))
     monkeypatch.setenv('NATIVE_TEST_BEARER', 'fixture-native-credential')
     config = dict(enabled=True, peer='zuri', runtime='codex', host='zurqui',
-                  url='https://zurqui/rpc', token_env='NATIVE_TEST_BEARER')
+                  url='https://zurqui.tuna-gray.ts.net/rpc', token_env='NATIVE_TEST_BEARER')
     registry = registered(config)
     monkeypatch.setattr(model_tools, 'registry', registry)
     import tools.registry as registry_module
@@ -66,7 +66,7 @@ def test_prepare_uses_runtime_scope_and_immutable_store(tmp_path, monkeypatch):
 def test_unavailable_posix_client_does_not_break_legacy_registration(monkeypatch):
     import sys
     config = dict(enabled=True, peer='zuri', runtime='codex', host='zurqui',
-                  url='https://zurqui/rpc', token_env='NATIVE_TEST_BEARER')
+                  url='https://zurqui.tuna-gray.ts.net/rpc', token_env='NATIVE_TEST_BEARER')
     monkeypatch.setitem(sys.modules, 'plugins.platforms.a2a.outbound', None)
     registry = registered(config)
     assert not registry.get_entry('a2a_outbound').check_fn()

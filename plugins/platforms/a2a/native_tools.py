@@ -23,7 +23,7 @@ class DispatchScope:
 def _client(ctx, store=None):
     from plugins.platforms.a2a.outbound import Client
     config = ctx.get_config('outbound', None)
-    if not isinstance(config, dict) or 'allow_loopback_http' in config:
+    if not isinstance(config, dict) or config.get('allow_loopback_http') is True:
         raise ValueError('Invalid native configuration')
     return Client(config, store)
 

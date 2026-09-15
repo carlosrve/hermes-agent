@@ -15,7 +15,7 @@ def native(tmp_path, monkeypatch):
     monkeypatch.setenv('HERMES_HOME', str(tmp_path))
     monkeypatch.setenv('NATIVE_TEST_BEARER', 'fixture-native-credential')
     config = dict(enabled=True, peer='zuri', runtime='codex', host='zurqui',
-                  url='https://zurqui/rpc', token_env='NATIVE_TEST_BEARER')
+                  url='https://zurqui.tuna-gray.ts.net/rpc', token_env='NATIVE_TEST_BEARER')
     registry = ToolRegistry()
     tools.register_tools(SimpleNamespace(get_config=lambda *a: config,
                                          register_tool=lambda **kw: registry.register(**kw)))
@@ -128,7 +128,7 @@ def test_profile_context_override_rejects_other_owner(native, monkeypatch, actio
 
 @pytest.mark.parametrize('change', [
     {'enabled': False}, {'enabled': 'true'}, {'url': 'http://zurqui/rpc'},
-    {'url': 'https://elsewhere/rpc'}, {'url': 'https://zurqui/rpc?secret=value'},
+    {'url': 'https://elsewhere/rpc'}, {'url': 'https://zurqui.tuna-gray.ts.net/rpc?secret=value'},
     {'allow_loopback_http': True}, {'peer': 'other'}, {'runtime': 'other'},
     {'token_env': 'not a variable'}, {'timeout': float('nan')}, {'token': 'literal'},
 ])
@@ -145,7 +145,7 @@ def test_binding_change_and_missing_credentials_are_redacted(native, monkeypatch
     draft = call({'action': 'prepare', 'message': 'hello'})
     config['url'] = 'https://zurqui/changed'
     assert call({'action': 'show', 'local_id': draft['local_id']})['status'] == 'blocked'
-    config['url'] = 'https://zurqui/rpc'
+    config['url'] = 'https://zurqui.tuna-gray.ts.net/rpc'
     monkeypatch.delenv('NATIVE_TEST_BEARER')
     assert call({'action': 'show', 'local_id': draft['local_id']}) == draft
     assert call({'action': 'prepare', 'message': 'hello'}) == {
