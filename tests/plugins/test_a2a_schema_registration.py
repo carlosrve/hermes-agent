@@ -73,7 +73,7 @@ def test_native_discovery_opt_in_schema_without_legacy_or_inbound(tmp_path, monk
     assert not registry.get_definitions({'a2a_outbound'})
     config = {'plugins': {'entries': {loaded.manifest.key: {'settings': {'outbound': {
         'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zurqui',
-        'url': 'https://zurqui/rpc', 'token_env': 'NATIVE_TEST_BEARER'
+        'url': 'https://zurqui.tuna-gray.ts.net/rpc', 'token_env': 'NATIVE_TEST_BEARER'
     }}}}}}
     (tmp_path / 'config.yaml').write_text(yaml.safe_dump(config))
     discover_plugins(force=True)
