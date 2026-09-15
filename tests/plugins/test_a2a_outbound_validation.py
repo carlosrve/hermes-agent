@@ -23,10 +23,22 @@ def setup_client(tmp_path, monkeypatch):
     m = importlib.import_module('plugins.platforms.a2a.outbound')
     monkeypatch.setenv('A2A_VALIDATION_TOKEN', 'fixture-credential')
     cfg = {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zurqui',
-           'url': 'https://zurqui/rpc', 'token_env': 'A2A_VALIDATION_TOKEN'}
+           'url': 'https://zurqui.tuna-gray.ts.net/rpc', 'token_env': 'A2A_VALIDATION_TOKEN'}
     client = m.Client(cfg, m.Store(tmp_path / 'state'))
     record = client.store.claim_send(client.prepare('hello'), client.binding)
     return m, client, record
+
+
+def test_config_accepts_only_certificate_bound_fqdn(tmp_path, monkeypatch):
+    m = importlib.import_module('plugins.platforms.a2a.outbound')
+    cfg = {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zurqui',
+           'url': 'https://zurqui.tuna-gray.ts.net:8443/rpc',
+           'token_env': 'A2A_VALIDATION_TOKEN'}
+    client = m.Client(cfg, m.Store(tmp_path / 'state'))
+    assert client.binding['url'] == cfg['url']
+    for host in ('zurqui.tuna-gray.ts.net.evil', 'sub.zurqui.tuna-gray.ts.net'):
+        with pytest.raises(ValueError):
+            m.Client({**cfg, 'url': f'https://{host}:8443/rpc'}, m.Store(tmp_path / host))
 
 
 def envelope(record, result):
