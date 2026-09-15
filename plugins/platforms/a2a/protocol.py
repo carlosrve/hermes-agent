@@ -457,9 +457,18 @@ class TaskStore:
         return [tid for tid in stale if self.complete(tid, STATE_FAILED, "[task orphaned — no reply produced]")]
 
     def _trim_locked(self) -> None:
+        """Retain only the newest terminal tasks in memory and SQLite.
+
+        A persisted store is deliberately single-owner: opening the same path
+        from multiple live adapters is not supported because each instance has
+        an independent cache and cannot observe another instance's pruning.
+        """
         terminal = [tid for tid, rec in self._tasks.items() if rec["state"] in TERMINAL_STATES]
-        for tid in terminal[:max(0, len(terminal) - self._MAX_TERMINAL)]:
+        expired = terminal[:max(0, len(terminal) - self._MAX_TERMINAL)]
+        for tid in expired:
             self._tasks.pop(tid, None)
+            if self._db is not None:
+                self._db.execute("DELETE FROM tasks WHERE task_id = ?", (tid,))
 
     @staticmethod
     def to_task(rec: dict, include_artifacts: bool = True) -> dict:
