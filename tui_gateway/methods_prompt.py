@@ -1169,6 +1169,11 @@ def _a2a_transport_owns_session(session: dict, transport) -> bool:
     """Check object identity/membership, including a shared FanoutTransport."""
     if not session or transport is None or getattr(transport, "closed", False):
         return False
+    if profile_home := session.get("profile_home"):
+        from pathlib import Path
+        from hermes_constants import get_hermes_home
+        if Path(profile_home).resolve() != get_hermes_home().resolve():
+            return False
     expected_identity = session.get("auth_identity")
     actual_identity = getattr(transport, "auth_identity", None)
     if isinstance(expected_identity, dict) and actual_identity != expected_identity:
@@ -1183,8 +1188,10 @@ def _a2a_transport_owns_session(session: dict, transport) -> bool:
 def build_a2a_approval_event(session: dict, params: dict, transport=None, callback=None):
     """Build an opt-in, non-resolving approval event for an authenticated owner.
 
-    The event is intentionally only a callback input.  It never calls the approval
-    queue, accepts ``all``, selects a session by request ID, or resolves a decision.
+    The event is intentionally only a callback input. It reads the approval queue
+    without mutation; it never accepts ``all``, selects a session by request ID, or
+    resolves a decision. It is not the contract's correlated ``ApprovalNeeded``:
+    no trusted objective/coordinator issuer is connected to this helper.
     Legacy ``approval.respond`` remains unchanged until a compatible server-side
     DecisionReceipt seam exists.
     """
@@ -1195,7 +1202,8 @@ def build_a2a_approval_event(session: dict, params: dict, transport=None, callba
         transport = current_transport()
     if not _a2a_transport_is_authenticated(transport) or not _a2a_transport_owns_session(session, transport):
         return None
-    if params.get("all") is not None:
+    if set(params) - {"a2a_event", "request_id"}:
+        # Model/client fields are not a source of identity, scope or decisions.
         return None
     request_id = params.get("request_id")
     if not isinstance(request_id, str) or not request_id:
