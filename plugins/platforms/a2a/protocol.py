@@ -317,6 +317,10 @@ class TaskStore:
             for (payload,) in rows:
                 rec = json.loads(payload)
                 self._tasks[rec["task_id"]] = rec
+            # Earlier revisions kept expired terminal rows on disk. Apply the
+            # same bound when reopening an existing database.
+            with self._lock:
+                self._trim_locked()
 
     def _save_locked(self, rec: dict[str, Any]) -> None:
         if self._db is not None:
