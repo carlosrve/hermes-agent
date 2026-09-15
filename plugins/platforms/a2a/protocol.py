@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import os
+import sqlite3
 import threading
 import time
 import uuid
@@ -302,10 +303,39 @@ class TaskStore:
 
     _MAX_TERMINAL = 500
 
-    def __init__(self) -> None:
+    def __init__(self, path: str | Path | None = None) -> None:
         self._tasks: "OrderedDict[str, dict[str, Any]]" = OrderedDict()
         self._watchers: dict[str, list[Future]] = {}
-        self._lock = threading.Lock()
+        self._lock = threading.RLock()
+        self._db = None
+        if path:
+            db_path = Path(path).expanduser()
+            db_path.parent.mkdir(parents=True, exist_ok=True)
+            self._db = sqlite3.connect(str(db_path), isolation_level=None, check_same_thread=False)
+            self._db.execute("CREATE TABLE IF NOT EXISTS tasks (task_id TEXT PRIMARY KEY, payload TEXT NOT NULL)")
+            rows = self._db.execute("SELECT payload FROM tasks ORDER BY rowid").fetchall()
+            for (payload,) in rows:
+                rec = json.loads(payload)
+                self._tasks[rec["task_id"]] = rec
+
+    def _save_locked(self, rec: dict[str, Any]) -> None:
+        if self._db is not None:
+            self._db.execute(
+                "INSERT OR REPLACE INTO tasks(task_id, payload) VALUES (?, ?)",
+                (rec["task_id"], json.dumps(rec, ensure_ascii=False, separators=(",", ":"))),
+            )
+
+    def close(self) -> None:
+        with self._lock:
+            if self._db is not None:
+                self._db.close()
+                self._db = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, _type, _value, _traceback):
+        self.close()
 
     @staticmethod
     def _in_scope(rec: dict, agent_slug: str = "", tenant: str = "") -> bool:
@@ -333,12 +363,14 @@ class TaskStore:
                "state": STATE_SUBMITTED, "reply": "", "created_at": time.time(), "created_iso": now_iso(), "push_url": "", "push_config_id": ""}
         with self._lock:
             self._tasks[task_id] = rec
+            self._save_locked(rec)
         return dict(rec)
 
     def set_state(self, task_id: str, state: str) -> None:
         with self._lock:
             if (rec := self._tasks.get(task_id)) and rec["state"] not in TERMINAL_STATES:
                 rec["state"] = state
+                self._save_locked(rec)
 
     def set_push_config(self, task_id: str, url: str, agent_slug: str = "", tenant: str = "") -> Optional[dict]:
         """Attach a push notification config; returns the stored config or None."""
@@ -346,6 +378,7 @@ class TaskStore:
             if not (rec := self._scoped(task_id, agent_slug, tenant)):
                 return None
             rec["push_url"], rec["push_config_id"] = url, "cfg-" + uuid.uuid4().hex[:12]
+            self._save_locked(rec)
             return self._push_config_view(rec)
 
     def get_push_config(self, task_id: str, config_id: str = "", agent_slug: str = "", tenant: str = "") -> Optional[dict]:
@@ -361,6 +394,7 @@ class TaskStore:
             rec = self._push_rec(task_id, config_id, agent_slug, tenant)
             if rec:
                 rec["push_url"] = rec["push_config_id"] = ""
+                self._save_locked(rec)
             return rec is not None
 
     def pop_push_url(self, task_id: str) -> str:
@@ -368,6 +402,7 @@ class TaskStore:
             rec = self._tasks.get(task_id)
             if rec:
                 url, rec["push_url"] = rec["push_url"], ""
+                self._save_locked(rec)
             return url if rec else ""
 
     def get(self, task_id: str, agent_slug: str = "", tenant: str = "") -> Optional[dict]:
@@ -381,6 +416,7 @@ class TaskStore:
             if not rec or rec["state"] in TERMINAL_STATES:
                 return None
             rec.update(state=state, reply=reply, completed_at=time.time())
+            self._save_locked(rec)
             watchers = self._watchers.pop(task_id, [])
             self._trim_locked()
             out = dict(rec)
