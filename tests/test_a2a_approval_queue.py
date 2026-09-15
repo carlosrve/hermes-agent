@@ -130,6 +130,7 @@ def legacy_fixture_server(sessions):
         _find_live_session_by_key=lambda key: next(
             ((sid, session) for sid, session in sessions.items()
              if session["session_key"] == key), None),
+        register_method=lambda name, fn: server._methods.__setitem__(name, fn),
     )
     server._sess = lambda params, rid: (
         (sessions[params["session_id"]], None) if params["session_id"] in sessions
@@ -166,8 +167,9 @@ def test_gateway_does_not_promote_uncorrelated_callback_to_approval_needed(queue
     monkeypatch.setattr(server, "_sessions", {"live-owner": session})
     monkeypatch.setattr(server, "_emit", lambda *args: legacy.append(args))
     server._emit_approval_request("live-owner", {"request_id": "one"})
-    assert len(legacy) == 1
-    assert legacy[0][0] == "approval.request"
+    # v0.21.3 routes approvals through the queue-backed server request API;
+    # the legacy event emitter must not be used by this path.
+    assert legacy == []
     # A callable plus a session ID does not establish an ObjectiveGrant or its
     # coordinator/return route. Fail closed instead of inventing that authority.
     assert seen == []
