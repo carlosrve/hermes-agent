@@ -1,7 +1,8 @@
-"""Foreground loopback HTTP canary for real GatewayRunner/A2A wiring.
+"""Foreground loopback HTTP canary through the real GatewayRunner turn path.
 
-The model boundary is explicitly simulated. Admission and authorization remain
-those installed by GatewayRunner._wire_adapter_handlers.
+The model boundary is explicitly simulated by replacing only ``_run_agent``;
+GatewayRunner._handle_message_with_agent and its admission/session/delivery
+path remain real. The listener, HOME, database and credential are temporary.
 """
 from __future__ import annotations
 
@@ -9,6 +10,7 @@ import argparse
 import asyncio
 import json
 import os
+import socket
 import tempfile
 import urllib.request
 from pathlib import Path
@@ -18,8 +20,8 @@ from gateway.config import GatewayConfig, PlatformConfig
 from gateway.run import GatewayRunner
 from plugins.platforms.a2a.adapter import A2AAdapter
 
-_TOKEN = "turn53-test-bearer"
-_REPLY = "TURN53_SIMULATED_MODEL_REPLY"
+_TOKEN = "turn55-test-bearer"
+_REPLY = "TURN55_SIMULATED_MODEL_REPLY"
 
 
 def _task_from(payload: dict) -> dict:
@@ -62,6 +64,14 @@ def _sse_task(raw: bytes) -> dict:
     return final
 
 
+def _assert_port_closed(port: int) -> None:
+    try:
+        with socket.create_connection(("127.0.0.1", port), timeout=0.5):
+            raise AssertionError(f"canary listener still accepts connections on {port}")
+    except OSError:
+        return
+
+
 def _post(port: int, payload: dict) -> bytes:
     req = urllib.request.Request(
         f"http://127.0.0.1:{port}/", data=json.dumps(payload).encode(),
@@ -82,16 +92,26 @@ async def _run() -> None:
         runner = GatewayRunner(config=config)
         task_db = home / "tasks.db"
         adapter = None
+        first_port = None
+        second_port = None
         model_calls = 0
 
-        async def simulated_model(self, event, source, _quick_key, run_generation):
+        async def simulated_run_agent(self, message, context_prompt, history, source, session_id, **turn_kwargs):
             nonlocal model_calls
-            del self, event, run_generation
+            del self, message, context_prompt, history, source, session_id, turn_kwargs
             model_calls += 1
-            await active_adapter.send(source.chat_id, _REPLY, metadata={"notify": True})
-            return _REPLY
+            return {
+                "final_response": _REPLY,
+                "messages": [{"role": "assistant", "content": _REPLY}],
+                "api_calls": 1,
+                "tools": [],
+                "history_offset": 0,
+                "session_id": "fixture-session",
+            }
 
-        runner._handle_message_with_agent = MethodType(simulated_model, runner)
+        # Keep _handle_message_with_agent, admission, session preparation,
+        # persistence and adapter delivery real; simulate only the model seam.
+        runner._run_agent = MethodType(simulated_run_agent, runner)
         try:
             active_adapter = A2AAdapter(PlatformConfig(enabled=True, extra={
                 "port": 0, "task_store_path": str(task_db), "advertised_toolsets": []}))
@@ -101,14 +121,16 @@ async def _run() -> None:
             if not await adapter.connect():
                 raise RuntimeError("adapter did not connect")
             port = adapter._httpd.server_address[1]
+            first_port = port
             send = await asyncio.to_thread(_post, port, {
-                "jsonrpc": "2.0", "id": "send-53", "method": "SendStreamingMessage",
-                "params": {"message": {"role": "user", "parts": [{"kind": "text", "text": "turn53"}]}}})
+                "jsonrpc": "2.0", "id": "send-55", "method": "SendStreamingMessage",
+                "params": {"message": {"role": "user", "parts": [{"kind": "text", "text": "turn55"}]}}})
             task = _sse_task(send)
             if task["status"]["state"] != "TASK_STATE_COMPLETED":
                 raise AssertionError(task)
             await adapter.disconnect()
             adapter.tasks.close()
+            _assert_port_closed(first_port)
             adapter = A2AAdapter(PlatformConfig(enabled=True, extra={
                 "port": 0, "task_store_path": str(task_db), "advertised_toolsets": []}))
             active_adapter = adapter
@@ -116,8 +138,9 @@ async def _run() -> None:
             runner._wire_adapter_handlers(adapter)
             if not await adapter.connect():
                 raise RuntimeError("adapter did not reconnect")
-            get = await asyncio.to_thread(_post, adapter._httpd.server_address[1], {
-                "jsonrpc": "2.0", "id": "get-53", "method": "GetTask",
+            second_port = adapter._httpd.server_address[1]
+            get = await asyncio.to_thread(_post, second_port, {
+                "jsonrpc": "2.0", "id": "get-55", "method": "GetTask",
                 "params": {"id": task["id"]}})
             got = _task_from(json.loads(get))
             restored_reply = "".join(
@@ -134,12 +157,18 @@ async def _run() -> None:
                 "get_reply": restored_reply,
                 "model_calls": model_calls,
                 "simulated": True,
+                "first_listener_closed": True,
+                "second_listener_closed": True,
             }
             if (result["get_state"] != "TASK_STATE_COMPLETED"
                     or result["reply"] != _REPLY
                     or result["get_reply"] != _REPLY
                     or model_calls != 1):
                 raise AssertionError(result)
+            await adapter.disconnect()
+            adapter.tasks.close()
+            _assert_port_closed(second_port)
+            adapter = None
             Path(args.output).write_text(json.dumps(result, sort_keys=True) + "\n")
         finally:
             if adapter is not None:
