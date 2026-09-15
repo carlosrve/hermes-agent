@@ -1185,6 +1185,10 @@ def _a2a_transport_owns_session(session: dict, transport) -> bool:
     """Check object identity/membership, including a shared FanoutTransport."""
     if not session or transport is None or getattr(transport, "closed", False):
         return False
+    expected_identity = session.get("auth_identity")
+    actual_identity = getattr(transport, "auth_identity", None)
+    if isinstance(expected_identity, dict) and actual_identity != expected_identity:
+        return False
     attached = session.get("transport")
     if attached is transport:
         return True
@@ -1192,7 +1196,7 @@ def _a2a_transport_owns_session(session: dict, transport) -> bool:
     return bool(callable(contains) and contains(transport))
 
 
-def build_a2a_approval_event(session: dict, params: dict, transport=None):
+def build_a2a_approval_event(session: dict, params: dict, transport=None, callback=None):
     """Build an opt-in, non-resolving approval event for an authenticated owner.
 
     The event is intentionally only a callback input.  It never calls the approval
@@ -1222,13 +1226,22 @@ def build_a2a_approval_event(session: dict, params: dict, transport=None):
         return None
     if not any(isinstance(item, dict) and item.get("request_id") == request_id for item in pending):
         return None
-    return {
+    event = {
         "type": "a2a.approval.requested",
         "session_id": session_key,
         "request_id": request_id,
         "callback_required": True,
         "human_decision": False,
     }
+    # The callback is an explicitly supplied, internal integration seam.  It receives
+    # only the server-validated event and cannot resolve the approval queue through
+    # this helper.  Keep callback failures local to the notification path.
+    if callable(callback):
+        try:
+            callback(event)
+        except Exception:
+            return None
+    return event
 
 
 def _approval_respond_session_fallback(params: dict):

@@ -730,6 +730,21 @@ def _emit_approval_request(sid: str, data: dict | None) -> None:
     settle = server_requests.send_async("approval", sid, payload, on_result)
     if request_id:
         _approval.register_gateway_settle(session_key, request_id, settle)
+    # Optional A2A bridge: the session owner explicitly installs this callback.
+    # It is notification-only; build_a2a_approval_event performs the identity,
+    # transport-membership and pending-request checks before invoking it.
+    session = _sessions.get(sid)
+    callback = session.get("a2a_approval_callback") if isinstance(session, dict) else None
+    if callable(callback) and isinstance(session, dict):
+        from .methods_prompt import build_a2a_approval_event
+        transport = session.get("transport")
+        request_id = data.get("request_id") if isinstance(data, dict) else None
+        build_a2a_approval_event(
+            session,
+            {"a2a_event": True, "request_id": request_id},
+            transport=transport,
+            callback=callback,
+        )
 
 
 def _status_update(sid: str, kind: str, text: str | None = None):
