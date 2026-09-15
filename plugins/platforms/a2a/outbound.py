@@ -22,6 +22,11 @@ import time
 from urllib.parse import urlsplit
 
 
+# The private canary endpoint is certificate-bound. Keep this exact allowlist;
+# do not replace it with suffix/wildcard matching or a caller-supplied host.
+REMOTE_ENDPOINT_HOST = 'zurqui.tuna-gray.ts.net'
+
+
 class ProtocolError(ValueError):
     """Untrusted, malformed or excessive peer response."""
 
@@ -251,8 +256,8 @@ class Client:
         loopback = config.get('allow_loopback_http') is True and url.hostname in {'127.0.0.1', '::1'}
         if (url.scheme != 'https' and not (loopback and url.scheme == 'http')) or not url.hostname:
             raise ValueError('HTTPS required (HTTP loopback fixture must be explicit)')
-        if url.hostname != 'zurqui' and not loopback:
-            raise ValueError('Endpoint hostname must be zurqui')
+        if url.hostname != REMOTE_ENDPOINT_HOST and not loopback:
+            raise ValueError('Endpoint hostname must be the configured certificate FQDN')
         if url.username or url.password or url.query or url.fragment or any(c.isspace() for c in config['url']):
             raise ValueError('Endpoint must not contain credentials, query, fragment or whitespace')
         if not isinstance(config.get('token_env'), str) or not config['token_env'].isidentifier():

@@ -18,19 +18,21 @@ import pytest
 @pytest.mark.parametrize('change', [
     {'enabled': False}, {'peer': 'other'}, {'runtime': 'hermes'}, {'host': 'other'},
     {'url': 'http://zurqui/rpc'}, {'url': 'https://user:secret@zurqui/rpc'},
-    {'url': 'https://zurqui/rpc?token=secret'}, {'url': 'https://zurqui/rpc#fragment'},
+    {'url': 'https://zurqui.tuna-gray.ts.net/rpc?token=secret'}, {'url': 'https://zurqui.tuna-gray.ts.net/rpc#fragment'},
     {'url': 'ftp://zurqui/rpc'}, {'url': 'https://public.example/rpc'},
+    {'url': 'https://zurqui.tuna-gray.ts.net.evil/rpc'},
+    {'url': 'https://sub.zurqui.tuna-gray.ts.net/rpc'},
     {'token': 'literal-secret'}, {'timeout': 0}, {'timeout': 301},
 ])
 def test_config_rejects_unapproved_transport(tmp_path, change):
-    cfg = {**config('https://zurqui/rpc'), **change}
+    cfg = {**config('https://zurqui.tuna-gray.ts.net/rpc'), **change}
     with pytest.raises(ValueError):
         module().Client(cfg, module().Store(tmp_path / 'requests'))
 
 
 def test_credentials_fail_closed_without_durable_secret(tmp_path, monkeypatch):
     m = module()
-    client = m.Client(config('https://zurqui/rpc'), m.Store(tmp_path / 'requests'))
+    client = m.Client(config('https://zurqui.tuna-gray.ts.net/rpc'), m.Store(tmp_path / 'requests'))
     monkeypatch.delenv('A2A_TEST_TOKEN', raising=False)
     with pytest.raises(ValueError):
         client.prepare('hello')
@@ -194,7 +196,7 @@ def test_stream_persists_identity_status_and_artifact(tmp_path, monkeypatch):
 def test_only_one_process_can_claim_a_prepared_send(tmp_path, monkeypatch):
     m = module()
     store = m.Store(tmp_path / 'requests')
-    binding = {'peer': 'zuri', 'runtime': 'codex', 'host': 'zurqui', 'url': 'https://zurqui/rpc'}
+    binding = {'peer': 'zuri', 'runtime': 'codex', 'host': 'zurqui', 'url': 'https://zurqui.tuna-gray.ts.net/rpc'}
     local_id = store.prepare(binding, 'hello')
     script = ('from plugins.platforms.a2a.outbound import Store; import sys; '
               'Store(sys.argv[1]).claim_send(sys.argv[2], ' + repr(binding) + ')')
@@ -553,7 +555,7 @@ def module():
 def test_prepare_is_durable_before_any_network(tmp_path):
     m = module()
     store = m.Store(tmp_path / 'requests')
-    binding = {'peer': 'zuri', 'runtime': 'codex', 'host': 'zurqui', 'url': 'https://zurqui/rpc'}
+    binding = {'peer': 'zuri', 'runtime': 'codex', 'host': 'zurqui', 'url': 'https://zurqui.tuna-gray.ts.net/rpc'}
     local_id = store.prepare(binding, 'hello')
     saved = m.Store(tmp_path / 'requests').load(local_id)
     assert saved['binding'] == binding
