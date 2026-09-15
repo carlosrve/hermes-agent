@@ -43,6 +43,11 @@ class FakeClient:
         return record
 
 
+class FailingClient(FakeClient):
+    def send(self, local_id):
+        raise TimeoutError("simulated uncertain transport")
+
+
 class OperatorTests(unittest.TestCase):
     def token_file(self, directory):
         path = Path(directory) / "bearer"
@@ -101,6 +106,30 @@ class OperatorTests(unittest.TestCase):
             state = Path(directory) / "state"
             state.mkdir(mode=0o755)
             with self.assertRaises(ValueError): operator._validate_state_dir(state)
+
+    def test_uncertain_send_error_exposes_prepared_local_id_only(self):
+        with tempfile.TemporaryDirectory() as directory:
+            state = Path(directory) / "state"
+            state.mkdir(mode=0o700)
+            stderr = io.StringIO()
+            with mock.patch.object(operator, "Store", FakeStore), mock.patch.object(operator, "Client", FailingClient):
+                with contextlib.redirect_stderr(stderr):
+                    self.assertEqual(operator.main([
+                        "--prompt", "inspect", "--token-file", str(self.token_file(directory)),
+                        "--state-dir", str(state),
+                    ]), 2)
+            result = json.loads(stderr.getvalue())
+            self.assertEqual(result["status"], "error")
+            self.assertEqual(result["action"], "send")
+            self.assertEqual(result["local_id"], "a" * 32)
+            self.assertNotIn("simulated uncertain transport", stderr.getvalue())
+
+    def test_response_text_is_bounded_while_accumulating_parts(self):
+        text = operator._response_text({"events": [{"task": {"artifacts": [{
+            "parts": [{"text": "a" * (operator._MAX_RESPONSE_TEXT + 100)}, {"text": "ignored"}]
+        }]}}]})
+        self.assertEqual(len(text), operator._MAX_RESPONSE_TEXT)
+        self.assertEqual(text, "a" * operator._MAX_RESPONSE_TEXT)
 
 
 if __name__ == "__main__":

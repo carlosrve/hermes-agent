@@ -50,19 +50,26 @@ def _validate_state_dir(path: Path) -> Path:
 
 
 def _response_text(record: dict) -> str:
+    remaining = _MAX_RESPONSE_TEXT
+    collected = []
     for event in reversed(record.get("events", [])):
         task = event.get("task") if isinstance(event, dict) else None
         if not isinstance(task, dict):
             continue
-        parts = []
         for artifact in task.get("artifacts", []):
             if not isinstance(artifact, dict):
                 continue
             for part in artifact.get("parts", []):
                 if isinstance(part, dict) and isinstance(part.get("text"), str):
-                    parts.append(part["text"])
-        if parts:
-            return "".join(parts)[:_MAX_RESPONSE_TEXT]
+                    if remaining:
+                        text = part["text"]
+                        chunk = text[:remaining]
+                        collected.append(chunk)
+                        remaining -= len(chunk)
+                    if not remaining:
+                        return "".join(collected)
+        if collected:
+            return "".join(collected)
     return ""
 
 
@@ -95,6 +102,8 @@ def _parser() -> argparse.ArgumentParser:
 
 def main(argv=None) -> int:
     args = _parser().parse_args(argv)
+    local_id = None
+    action = "resume" if args.local_id is not None else "send"
     try:
         token = _read_token(args.token_file)
         state_dir = _validate_state_dir(args.state_dir)
@@ -118,17 +127,18 @@ def main(argv=None) -> int:
             local_id = client.prepare(args.prompt)
             before = 0
             record = client.send(local_id)
-            action = "send"
         else:
             local_id = args.local_id
             record = store.load(local_id)
             before = len(record.get("events", []))
             record = client.resume(local_id)
-            action = "resume"
+
         print(json.dumps(_output(record, action=action, before_events=before), ensure_ascii=False, allow_nan=False))
         return 0
     except Exception:
-        print(json.dumps({"status": "error", "reason": "operator_request_failed"}), file=sys.stderr)
+        print(json.dumps({"status": "error", "reason": "operator_request_failed",
+                          "action": action, "local_id": local_id},
+                         ensure_ascii=False, allow_nan=False), file=sys.stderr)
         return 2
     finally:
         os.environ.pop(TOKEN_ENV, None)
