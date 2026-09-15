@@ -1151,6 +1151,91 @@ def _(rid, params: dict) -> dict:
         rid, "acknowledged", lambda a: a.ack_gateway_approval(session["session_key"], request_id))
 
 
+def _a2a_transport_is_authenticated(transport) -> bool:
+    """Require the server-stamped identity carried by an authenticated transport.
+
+    This is deliberately separate from ``approval.respond``: the inherited Desktop/CLI
+    handler has reconnect compatibility that predates A2A.  The opt-in A2A seam must
+    fail closed rather than treating session/request identifiers as caller authority.
+    """
+    identity = getattr(transport, "auth_identity", None)
+    if not isinstance(identity, dict):
+        return False
+    from .methods_browser_control import _is_authenticated_identity
+    return _is_authenticated_identity(identity)
+
+
+def _a2a_transport_owns_session(session: dict, transport) -> bool:
+    """Check object identity/membership, including a shared FanoutTransport."""
+    if not session or transport is None or getattr(transport, "closed", False):
+        return False
+    if profile_home := session.get("profile_home"):
+        from pathlib import Path
+        from hermes_constants import get_hermes_home
+        if Path(profile_home).resolve() != get_hermes_home().resolve():
+            return False
+    expected_identity = session.get("auth_identity")
+    actual_identity = getattr(transport, "auth_identity", None)
+    if isinstance(expected_identity, dict) and actual_identity != expected_identity:
+        return False
+    attached = session.get("transport")
+    if attached is transport:
+        return True
+    contains = getattr(attached, "contains", None)
+    return bool(callable(contains) and contains(transport))
+
+
+def build_a2a_approval_event(session: dict, params: dict, transport=None, callback=None):
+    """Build an opt-in, non-resolving approval event for an authenticated owner.
+
+    The event is intentionally only a callback input. It reads the approval queue
+    without mutation; it never accepts ``all``, selects a session by request ID, or
+    resolves a decision. It is not the contract's correlated ``ApprovalNeeded``:
+    no trusted objective/coordinator issuer is connected to this helper.
+    Legacy ``approval.respond`` remains unchanged until a compatible server-side
+    DecisionReceipt seam exists.
+    """
+    if not isinstance(params, dict) or params.get("a2a_event") is not True:
+        return None
+    if transport is None:
+        from .transport import current_transport
+        transport = current_transport()
+    if not _a2a_transport_is_authenticated(transport) or not _a2a_transport_owns_session(session, transport):
+        return None
+    if set(params) - {"a2a_event", "request_id"}:
+        # Model/client fields are not a source of identity, scope or decisions.
+        return None
+    request_id = params.get("request_id")
+    if not isinstance(request_id, str) or not request_id:
+        return None
+    session_key = str(session.get("session_key") or "")
+    if not session_key:
+        return None
+    try:
+        from tools.approval import list_gateway_approvals
+        pending = list_gateway_approvals(session_key)
+    except Exception:
+        return None
+    if not any(isinstance(item, dict) and item.get("request_id") == request_id for item in pending):
+        return None
+    event = {
+        "type": "a2a.approval.requested",
+        "session_id": session_key,
+        "request_id": request_id,
+        "callback_required": True,
+        "human_decision": False,
+    }
+    # The callback is an explicitly supplied, internal integration seam.  It receives
+    # only the server-validated event and cannot resolve the approval queue through
+    # this helper.  Keep callback failures local to the notification path.
+    if callable(callback):
+        try:
+            callback(event)
+        except Exception:
+            return None
+    return event
+
+
 def _approval_respond_session_fallback(params: dict):
     """Durable-identity fallback for a stale live sid (re-minted after a reconnect while
     the prompt stayed on screen): (1) the ``request_id`` against every live session's
