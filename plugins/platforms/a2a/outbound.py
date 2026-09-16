@@ -565,7 +565,7 @@ def main(argv=None):
     parser.add_argument('value', help='Message for prepare, local ID for other actions')
     args = parser.parse_args(argv)
     try:
-        cfg = json.loads(Path(args.config).read_text())
+        cfg = json.loads(Path(args.config).read_text(encoding="utf-8"))
         store = Store(args.store)
         client = Client(cfg, store)
         if args.action == 'prepare':

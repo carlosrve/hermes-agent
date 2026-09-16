@@ -169,7 +169,9 @@ async def _run() -> None:
             adapter.tasks.close()
             _assert_port_closed(second_port)
             adapter = None
-            Path(args.output).write_text(json.dumps(result, sort_keys=True) + "\n")
+            Path(args.output).write_text(
+                json.dumps(result, sort_keys=True) + "\n", encoding="utf-8"
+            )
         finally:
             if adapter is not None:
                 await adapter.disconnect()
