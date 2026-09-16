@@ -20,7 +20,7 @@ class WakeupProtocolError(ValueError):
     """Malformed or unauthenticated local wakeup payload."""
 
 
-_TERMINAL = {"TASK_STATE_COMPLETED", "TASK_STATE_FAILED", "TASK_STATE_CANCELED", "TASK_STATE_REJECTED"}
+_TERMINAL = {"TASK_STATE_COMPLETED", "TASK_STATE_FAILED", "TASK_STATE_CANCELED", "TASK_STATE_REJECTED", "TASK_STATE_INPUT_REQUIRED"}
 
 
 def _canonical(payload: dict) -> bytes:
@@ -85,6 +85,22 @@ class WakeupReceiver:
         result = dict(payload)
         result.update(eventId=event_id, taskId=task_id, contextId=context_id, state=state)
         return result
+
+    def publish(self, payload: dict) -> bool:
+        """Trusted local producer seam; remote/webhook callers must use receive()."""
+        payload = self._validate(payload)
+        body = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)
+        with self._condition:
+            try:
+                self._db.execute(
+                    "INSERT INTO wakeups(event_id,task_id,context_id,payload,created_at) VALUES (?,?,?,?,?)",
+                    (payload["eventId"], payload["taskId"], payload["contextId"], body, time.time()),
+                )
+            except sqlite3.IntegrityError:
+                return False
+            self._condition.notify_all()
+        self._dispatch(payload["eventId"])
+        return True
 
     def receive(self, payload: dict, *, signature: str) -> bool:
         """Persist one authenticated push and dispatch it once.

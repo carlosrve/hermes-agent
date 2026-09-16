@@ -245,7 +245,7 @@ def sse_events(read):
 
 class Client:
     """One configured logical peer, direct pinned RPC URL; no AgentCard fetching."""
-    def __init__(self, config, store):
+    def __init__(self, config, store, *, wakeup=None):
         allowed = {'enabled', 'peer', 'runtime', 'host', 'url', 'token_env', 'timeout', 'allow_loopback_http'}
         if not isinstance(config, dict) or set(config) - allowed:
             raise ValueError('Unknown outbound configuration fields')
@@ -267,6 +267,7 @@ class Client:
             raise ValueError('Timeout must be between zero and 300 seconds')
         self.config = dict(config)
         self.store = store
+        self.wakeup = wakeup
         self.binding = {k: config[k] for k in ('peer', 'runtime', 'host', 'url')}
 
     def prepare(self, text):
@@ -383,6 +384,12 @@ class Client:
         candidate['local_state'] = ('intervention_required' if state in waiting else
                                  'observed' if state in terminal or kind == 'message' else 'uncertain')
         self.store.save(candidate)
+        if self.wakeup is not None and candidate['local_state'] in {'observed', 'intervention_required'}:
+            event_id = 'a2a-' + hashlib.sha256(json.dumps(result, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:32]
+            self.wakeup.publish({
+                'eventId': event_id, 'taskId': candidate['task_id'],
+                'contextId': candidate['context_id'], 'state': candidate['remote_state'] or 'TASK_STATE_COMPLETED',
+            })
         record.clear()
         record.update(candidate)
 
