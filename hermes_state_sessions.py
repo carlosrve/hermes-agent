@@ -315,9 +315,9 @@ class SessionSessionsMixin:
                    id, source, user_id, session_key, chat_id, chat_type, thread_id,
                    model, model_config, system_prompt, system_prompt_hash,
                    parent_session_id, cwd, profile_name, git_repo_root,
-                   origin_json, display_name, started_at
+                   origin_json, display_name, hidden, started_at
                 )
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, ?)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                    ON CONFLICT(id) DO UPDATE SET
                        model = COALESCE(sessions.model, excluded.model),
                        model_config = CASE
@@ -354,7 +354,7 @@ class SessionSessionsMixin:
                     session_id, source, user_id, session_key, chat_id, chat_type, thread_id, model,
                     json.dumps(model_config) if model_config else None, system_prompt_hash,
                     parent_session_id, cwd, profile_name, git_repo_root, origin_json, display_name,
-                    time.time(),
+                    int(source == "a2a"), time.time(),
                 ),
             )
             if system_prompt_hash is not None:
