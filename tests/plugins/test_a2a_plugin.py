@@ -1355,6 +1355,12 @@ class TestMultiAgentRouting:
     def test_path_routed_agent_card_uses_prefix_and_canonical_path(self, monkeypatch):
         from plugins.platforms.a2a.adapter import A2AAdapter
         from gateway.config import PlatformConfig
+        from tools.registry import registry
+
+        # A configured capability remains advertised even when unrelated test/import
+        # order has populated only a subset of toolsets in the process registry.
+        monkeypatch.setattr(registry, "get_registered_toolset_names", lambda: ["web"])
+        monkeypatch.setattr(registry, "get_tool_names_for_toolset", lambda name: ["web_search"] if name == "web" else [])
 
         adapter = A2AAdapter(PlatformConfig(enabled=True, extra={
             "agents": {
@@ -1681,6 +1687,7 @@ _A2A_ENV_VARS = (
     "A2A_ADVERTISED_TOOLSETS",
     "A2A_AGENT_DESCRIPTION",
     "A2A_PUBLIC_URL",
+    "A2A_TASK_STORE_PATH",
 )
 
 
@@ -1714,13 +1721,16 @@ def multiplex_scope():
 
 
 @pytest.fixture
-def default_profile_env(monkeypatch):
+def default_profile_env(monkeypatch, tmp_path):
     """The default profile's YAML-to-env bridge output in os.environ."""
     monkeypatch.setenv("A2A_PORT", "9111")
     monkeypatch.setenv("A2A_AGENT_NAME", "default-profile-agent")
     monkeypatch.setenv("A2A_ADVERTISED_TOOLSETS", "default-only-toolset")
     monkeypatch.setenv("A2A_AGENT_DESCRIPTION", "Default profile's own agent.")
     monkeypatch.setenv("A2A_PUBLIC_URL", "https://default-profile.example.com/")
+    task_store_path = tmp_path / "default-profile" / "a2a-tasks.db"
+    monkeypatch.setenv("A2A_TASK_STORE_PATH", str(task_store_path))
+    return task_store_path
 
 
 class TestMultiplexConstructionScope:
@@ -1747,6 +1757,26 @@ class TestMultiplexConstructionScope:
         # scoped retrofit the sibling fields above already got.
         assert adapter._public_url != "https://default-profile.example.com/"
         assert adapter._public_url == ""
+        # A missing secondary setting is memory-only. It must not open the
+        # default profile's task database from process-global os.environ.
+        assert adapter.tasks._db is None
+        assert not default_profile_env.exists()
+
+    def test_secondary_profile_uses_only_its_scoped_task_store_env(
+        self, multiplex_scope, default_profile_env, tmp_path
+    ):
+        from plugins.platforms.a2a.adapter import A2AAdapter
+        from gateway.config import PlatformConfig
+
+        secondary_path = tmp_path / "secondary-profile" / "a2a-tasks.db"
+        multiplex_scope({"A2A_TASK_STORE_PATH": str(secondary_path)})
+        adapter = A2AAdapter(PlatformConfig(enabled=True, extra={}))
+        try:
+            assert adapter.tasks._db is not None
+            assert secondary_path.exists()
+            assert not default_profile_env.exists()
+        finally:
+            adapter.tasks.close()
 
     def test_default_profile_unscoped_keeps_env_precedence(
         self, monkeypatch, default_profile_env
@@ -1766,6 +1796,8 @@ class TestMultiplexConstructionScope:
         assert adapter.agent_name == "default-profile-agent"
         assert adapter._agents[""]["description"] == "Default profile's own agent."
         assert adapter._public_url == "https://default-profile.example.com/"
+        assert adapter.tasks._db is not None
+        adapter.tasks.close()
 
 
 def test_load_conversation_skips_non_dict_lines(monkeypatch, tmp_path):

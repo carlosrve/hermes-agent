@@ -286,7 +286,7 @@ class A2AAdapter(BasePlatformAdapter):
         self._loop: Optional[asyncio.AbstractEventLoop] = None
         self._watchdog_stop = threading.Event()
         # Per-adapter protocol state (not module-global).
-        task_store_path = str(extra.get("task_store_path") or os.getenv("A2A_TASK_STORE_PATH", "")).strip()
+        task_store_path = str(extra.get("task_store_path") or _get_scoped_secret("A2A_TASK_STORE_PATH", "")).strip()
         self.tasks, self._turns, self._rate_limiter = protocol.TaskStore(task_store_path or None), protocol.TurnTracker(), protocol.RateLimiter()
         # Forwarded profile sessions: (profile, agent_slug, context_id) -> session_id.
         self._profile_sessions: Dict[tuple[str, str, str], str] = {}
@@ -467,9 +467,10 @@ class A2AAdapter(BasePlatformAdapter):
         configured = (agent or {}).get("advertised_toolsets") if agent else self._advertised_toolsets
         try:
             from tools.registry import registry as tool_registry
-            allowed = set(configured or []) or None
-            mapping = {n: tool_registry.get_tool_names_for_toolset(n)
-                       for n in tool_registry.get_registered_toolset_names() if allowed is None or n in allowed}
+            registered = set(tool_registry.get_registered_toolset_names())
+            names = list(configured or []) if configured else sorted(registered)
+            mapping = {name: tool_registry.get_tool_names_for_toolset(name) if name in registered else []
+                       for name in names}
             if mapping:
                 return protocol.skills_from_toolsets(mapping)
         except Exception:

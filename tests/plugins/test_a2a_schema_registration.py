@@ -4,9 +4,21 @@ from __future__ import annotations
 
 import json
 
+import pytest
+
 from plugins.platforms.a2a import tools as a2a_tools
 from tools import tool_search
 from tools.registry import ToolRegistry
+
+
+@pytest.fixture(autouse=True)
+def _isolate_check_fn_cache():
+    """These tests replace live config; cached verdicts from other A2A tests are not inputs."""
+    from tools.registry import invalidate_check_fn_cache
+
+    invalidate_check_fn_cache()
+    yield
+    invalidate_check_fn_cache()
 
 
 def test_a2a_call_schema_round_trips_through_tool_describe(monkeypatch):
@@ -58,8 +70,14 @@ def test_a2a_call_schema_round_trips_through_tool_describe(monkeypatch):
 def test_native_discovery_opt_in_schema_without_legacy_or_inbound(tmp_path, monkeypatch):
     import yaml
     from hermes_cli.plugins import discover_plugins, get_plugin_manager
-    from tools.registry import registry
+    import tools.registry as registry_module
     import model_tools
+
+    # Discovery is explicitly process-global. Use a fresh registry so prior A2A
+    # dispatcher tests cannot shadow this profile's plugin generation.
+    registry = ToolRegistry()
+    monkeypatch.setattr(registry_module, "registry", registry)
+    monkeypatch.setattr(model_tools, "registry", registry)
 
     monkeypatch.setenv('HERMES_HOME', str(tmp_path))
     monkeypatch.delenv('A2A_PORT', raising=False)
@@ -76,6 +94,8 @@ def test_native_discovery_opt_in_schema_without_legacy_or_inbound(tmp_path, monk
         'url': 'https://zurqui.tuna-gray.ts.net:8443/rpc', 'token_env': 'NATIVE_TEST_BEARER'
     }}}}}}
     (tmp_path / 'config.yaml').write_text(yaml.safe_dump(config))
+    from tools.registry import invalidate_check_fn_cache
+    invalidate_check_fn_cache()
     discover_plugins(force=True)
     assert registry.get_entry('a2a_outbound').check_fn() is True
     definitions = registry.get_definitions({'a2a_outbound'})

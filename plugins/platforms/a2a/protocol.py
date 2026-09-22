@@ -11,6 +11,7 @@ import copy
 import os
 import re
 import sqlite3
+import stat
 import threading
 import time
 import uuid
@@ -293,6 +294,69 @@ class Metrics:
 metrics = Metrics()
 
 
+def _validate_private_store_node(path: Path, st: os.stat_result, *, directory: bool) -> None:
+    """Reject unsafe A2A persistence nodes; never repair ambiguous ownership or type."""
+    kind_ok = stat.S_ISDIR(st.st_mode) if directory else stat.S_ISREG(st.st_mode)
+    label = "directory" if directory else "database"
+    if stat.S_ISLNK(st.st_mode) or not kind_ok:
+        raise ValueError(f"A2A task store {label} must be a real {'directory' if directory else 'regular file'}: {path}")
+    if os.name == "posix":
+        if st.st_uid != os.geteuid():
+            raise PermissionError(f"A2A task store {label} is not owned by the current user: {path}")
+        required = 0o700 if directory else 0o600
+        if stat.S_IMODE(st.st_mode) != required:
+            raise PermissionError(f"A2A task store {label} must have mode {required:o}: {path}")
+
+
+def _connect_private_task_store(db_path: Path) -> sqlite3.Connection:
+    """Create/open one private regular DB and pin its inode across sqlite3.connect.
+
+    The containing directory is owner-only, which excludes cross-user swaps. O_NOFOLLOW plus
+    the before/after inode check closes the remaining path replacement window without teaching
+    SQLite a /proc fd alias (which would break journal sidecar placement).
+    """
+    parent = db_path.parent
+    parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    _validate_private_store_node(parent, os.lstat(parent), directory=True)
+
+    try:
+        existing = os.lstat(db_path)
+    except FileNotFoundError:
+        pass
+    else:
+        _validate_private_store_node(db_path, existing, directory=False)
+
+    base_flags = os.O_RDWR
+    for flag_name in ("O_NOFOLLOW", "O_CLOEXEC"):
+        base_flags |= getattr(os, flag_name, 0)
+    try:
+        fd = os.open(db_path, base_flags | os.O_CREAT | os.O_EXCL, 0o600)
+    except FileExistsError:
+        fd = os.open(db_path, base_flags)
+
+    connection = None
+    try:
+        opened = os.fstat(fd)
+        _validate_private_store_node(db_path, opened, directory=False)
+        current = os.lstat(db_path)
+        _validate_private_store_node(db_path, current, directory=False)
+        if not os.path.samestat(opened, current):
+            raise RuntimeError(f"A2A task store database changed while opening: {db_path}")
+
+        connection = sqlite3.connect(str(db_path), isolation_level=None, check_same_thread=False)
+        after_connect = os.lstat(db_path)
+        _validate_private_store_node(db_path, after_connect, directory=False)
+        if not os.path.samestat(opened, after_connect):
+            raise RuntimeError(f"A2A task store database changed during SQLite open: {db_path}")
+        return connection
+    except Exception:
+        if connection is not None:
+            connection.close()
+        raise
+    finally:
+        os.close(fd)
+
+
 class TaskStore:
     """In-memory A2A tasks, kept after completion for tasks/get. Records carry agent slug +
     tenant; readers pass a scope and get not-found outside it (spec authz rule)."""
@@ -313,30 +377,34 @@ class TaskStore:
         self._db = None
         if path:
             db_path = Path(path).expanduser()
-            db_path.parent.mkdir(parents=True, exist_ok=True)
-            self._db = sqlite3.connect(str(db_path), isolation_level=None, check_same_thread=False)
-            self._db.execute("CREATE TABLE IF NOT EXISTS tasks (task_id TEXT PRIMARY KEY, payload TEXT NOT NULL)")
-            self._db.execute(
-                "CREATE TABLE IF NOT EXISTS approval_observations ("
-                "task_id TEXT NOT NULL, approval_id TEXT NOT NULL, "
-                "agent_slug TEXT NOT NULL, tenant TEXT NOT NULL, "
-                "payload TEXT NOT NULL, payload_digest TEXT NOT NULL, created_at REAL NOT NULL, "
-                "PRIMARY KEY(task_id, approval_id))"
-            )
-            rows = self._db.execute("SELECT payload FROM tasks ORDER BY rowid").fetchall()
-            for (payload,) in rows:
-                rec = json.loads(payload)
-                self._tasks[rec["task_id"]] = rec
-            for row in self._db.execute(
-                    "SELECT task_id, approval_id, agent_slug, tenant, payload, payload_digest, created_at "
-                    "FROM approval_observations ORDER BY rowid"):
-                task_id, approval_id, agent_slug, tenant, payload, digest, created_at = row
-                self._approval_observations[(task_id, approval_id)] = {
-                    "task_id": task_id, "approval_id": approval_id,
-                    "agent_slug": agent_slug, "tenant": tenant,
-                    "observation": json.loads(payload), "payload_digest": digest,
-                    "created_at": created_at,
-                }
+            self._db = _connect_private_task_store(db_path)
+            try:
+                self._db.execute("CREATE TABLE IF NOT EXISTS tasks (task_id TEXT PRIMARY KEY, payload TEXT NOT NULL)")
+                self._db.execute(
+                    "CREATE TABLE IF NOT EXISTS approval_observations ("
+                    "task_id TEXT NOT NULL, approval_id TEXT NOT NULL, "
+                    "agent_slug TEXT NOT NULL, tenant TEXT NOT NULL, "
+                    "payload TEXT NOT NULL, payload_digest TEXT NOT NULL, created_at REAL NOT NULL, "
+                    "PRIMARY KEY(task_id, approval_id))"
+                )
+                rows = self._db.execute("SELECT payload FROM tasks ORDER BY rowid").fetchall()
+                for (payload,) in rows:
+                    rec = json.loads(payload)
+                    self._tasks[rec["task_id"]] = rec
+                for row in self._db.execute(
+                        "SELECT task_id, approval_id, agent_slug, tenant, payload, payload_digest, created_at "
+                        "FROM approval_observations ORDER BY rowid"):
+                    task_id, approval_id, agent_slug, tenant, payload, digest, created_at = row
+                    self._approval_observations[(task_id, approval_id)] = {
+                        "task_id": task_id, "approval_id": approval_id,
+                        "agent_slug": agent_slug, "tenant": tenant,
+                        "observation": json.loads(payload), "payload_digest": digest,
+                        "created_at": created_at,
+                    }
+            except Exception:
+                self._db.close()
+                self._db = None
+                raise
 
     def _save_locked(self, rec: dict[str, Any]) -> None:
         if self._db is not None:
