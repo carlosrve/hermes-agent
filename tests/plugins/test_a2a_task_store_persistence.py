@@ -93,6 +93,58 @@ class TaskStorePersistenceTests(unittest.TestCase):
                 with self.assertRaises(RuntimeError):
                     protocol.TaskStore(path)
 
+    @pytest.mark.skipif(not sys.platform.startswith("linux"), reason="requires Linux /proc descriptor paths")
+    def test_store_aba_swap_during_sqlite_open_cannot_select_replacement(self):
+        with tempfile.TemporaryDirectory() as directory:
+            private_dir = Path(directory) / "a2a-state"
+            private_dir.mkdir(mode=0o700)
+            path = private_dir / "tasks.db"
+            evil = private_dir / "evil.db"
+            held = private_dir / "held.db"
+
+            with protocol.TaskStore(path) as original:
+                original.create("trusted", "trusted-context", "trusted-peer")
+            with protocol.TaskStore(evil) as replacement:
+                replacement.create("injected", "evil-context", "evil-peer")
+
+            real_connect = protocol.sqlite3.connect
+            opened_names = []
+
+            def aba_swap(*args, **kwargs):
+                opened_names.append(args[0])
+                os.replace(path, held)
+                os.replace(evil, path)
+                try:
+                    return real_connect(*args, **kwargs)
+                finally:
+                    os.replace(path, evil)
+                    os.replace(held, path)
+
+            with patch.object(protocol.sqlite3, "connect", side_effect=aba_swap):
+                with protocol.TaskStore(path) as store:
+                    descriptor = store._db_fd
+                    self.assertIsNotNone(descriptor)
+                    self.assertTrue(Path(f"/proc/self/fd/{descriptor}").exists())
+                    self.assertIsNotNone(store._db)
+                    assert store._db is not None
+                    self.assertEqual(store._db.execute("PRAGMA journal_mode").fetchone()[0], "delete")
+                    self.assertIsNotNone(store.get("trusted"))
+                    self.assertIsNone(store.get("injected"))
+                    store.create("after-aba", "safe-context", "safe-peer")
+
+            self.assertEqual(len(opened_names), 1)
+            self.assertTrue(str(opened_names[0]).startswith("file:/proc/self/fd/"))
+            self.assertFalse(Path(f"/proc/self/fd/{descriptor}").exists())
+            self.assertFalse(held.exists())
+            self.assertEqual(list(private_dir.glob("*-journal")), [])
+            self.assertEqual(list(private_dir.glob("*-wal")), [])
+            self.assertEqual(list(private_dir.glob("*-shm")), [])
+
+            with protocol.TaskStore(path) as reopened:
+                self.assertIsNotNone(reopened.get("trusted"))
+                self.assertIsNotNone(reopened.get("after-aba"))
+                self.assertIsNone(reopened.get("injected"))
+
     def test_restart_preserves_task_state_reply_and_push_config(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "tasks.db"

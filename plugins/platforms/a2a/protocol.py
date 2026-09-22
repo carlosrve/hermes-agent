@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import hashlib
 import copy
+import ctypes
 import os
 import re
 import sqlite3
@@ -308,12 +309,33 @@ def _validate_private_store_node(path: Path, st: os.stat_result, *, directory: b
             raise PermissionError(f"A2A task store {label} must have mode {required:o}: {path}")
 
 
-def _connect_private_task_store(db_path: Path) -> sqlite3.Connection:
-    """Create/open one private regular DB and pin its inode across sqlite3.connect.
+def _link_open_fd(fd: int, destination: Path) -> None:
+    """Create a hard link from an open Linux descriptor without re-resolving its source path."""
+    libc = ctypes.CDLL(None, use_errno=True)
+    if libc.linkat(fd, b"", -100, os.fsencode(destination), 0x1000) != 0:  # AT_FDCWD, AT_EMPTY_PATH
+        error = ctypes.get_errno()
+        raise OSError(error, os.strerror(error), destination)
 
-    The containing directory is owner-only, which excludes cross-user swaps. O_NOFOLLOW plus
-    the before/after inode check closes the remaining path replacement window without teaching
-    SQLite a /proc fd alias (which would break journal sidecar placement).
+
+def _unlink_store_alias(alias: Path | None, opened: os.stat_result) -> None:
+    """Remove only the temporary alias if it still names the validated inode."""
+    if alias is None:
+        return
+    try:
+        current = os.lstat(alias)
+    except FileNotFoundError:
+        return
+    if os.path.samestat(opened, current):
+        alias.unlink()
+
+
+def _connect_private_task_store(db_path: Path) -> tuple[sqlite3.Connection, int, Path | None, os.stat_result]:
+    """Open a private DB through its validated descriptor, which the caller must keep alive.
+
+    Linux SQLite resolves the ``/proc/self/fd`` alias to the database's real path, so its
+    DELETE journal remains beside the database rather than under procfs.  Passing the alias,
+    rather than resolving it in Python, makes the database selected by ``sqlite3_open`` the
+    inode already checked below and closes path ABA during the call.
     """
     parent = db_path.parent
     parent.mkdir(mode=0o700, parents=True, exist_ok=True)
@@ -335,26 +357,51 @@ def _connect_private_task_store(db_path: Path) -> sqlite3.Connection:
         fd = os.open(db_path, base_flags)
 
     connection = None
+    alias = None
+    opened = os.fstat(fd)
     try:
-        opened = os.fstat(fd)
         _validate_private_store_node(db_path, opened, directory=False)
         current = os.lstat(db_path)
         _validate_private_store_node(db_path, current, directory=False)
         if not os.path.samestat(opened, current):
             raise RuntimeError(f"A2A task store database changed while opening: {db_path}")
 
-        connection = sqlite3.connect(str(db_path), isolation_level=None, check_same_thread=False)
+        descriptor_path = f"/proc/self/fd/{fd}"
+        if not os.path.exists(descriptor_path):
+            raise RuntimeError("A2A task store persistence requires Linux procfs mounted at /proc")
+        connection = sqlite3.connect(
+            f"file:{descriptor_path}?mode=rw",
+            uri=True,
+            isolation_level=None,
+            check_same_thread=False,
+        )
         after_connect = os.lstat(db_path)
         _validate_private_store_node(db_path, after_connect, directory=False)
         if not os.path.samestat(opened, after_connect):
             raise RuntimeError(f"A2A task store database changed during SQLite open: {db_path}")
-        return connection
+
+        # SQLite canonicalizes /proc/self/fd to a filesystem name for journal sidecars.  An
+        # ABA swap can make that name disappear before sqlite3.connect returns, causing later
+        # writes to become read-only. Re-link the already validated descriptor at that same
+        # name, but only inside the validated database directory, for the connection lifetime.
+        sqlite_name = Path(connection.execute("PRAGMA database_list").fetchone()[2])
+        if not os.path.samestat(os.stat(sqlite_name.parent), os.stat(parent)):
+            raise RuntimeError("A2A task store SQLite descriptor resolved outside its private directory")
+        try:
+            sqlite_node = os.lstat(sqlite_name)
+        except FileNotFoundError:
+            _link_open_fd(fd, sqlite_name)
+            alias = sqlite_name
+        else:
+            if not os.path.samestat(opened, sqlite_node):
+                raise RuntimeError("A2A task store SQLite descriptor name changed during open")
+        return connection, fd, alias, opened
     except Exception:
         if connection is not None:
             connection.close()
-        raise
-    finally:
+        _unlink_store_alias(alias, opened)
         os.close(fd)
+        raise
 
 
 class TaskStore:
@@ -375,9 +422,12 @@ class TaskStore:
         self._watchers: dict[str, list[Future]] = {}
         self._lock = threading.RLock()
         self._db = None
+        self._db_fd = None
+        self._db_alias = None
+        self._db_stat = None
         if path:
             db_path = Path(path).expanduser()
-            self._db = _connect_private_task_store(db_path)
+            self._db, self._db_fd, self._db_alias, self._db_stat = _connect_private_task_store(db_path)
             try:
                 self._db.execute("CREATE TABLE IF NOT EXISTS tasks (task_id TEXT PRIMARY KEY, payload TEXT NOT NULL)")
                 self._db.execute(
@@ -404,6 +454,11 @@ class TaskStore:
             except Exception:
                 self._db.close()
                 self._db = None
+                os.close(self._db_fd)
+                self._db_fd = None
+                _unlink_store_alias(self._db_alias, self._db_stat)
+                self._db_alias = None
+                self._db_stat = None
                 raise
 
     def _save_locked(self, rec: dict[str, Any]) -> None:
@@ -418,6 +473,13 @@ class TaskStore:
             if self._db is not None:
                 self._db.close()
                 self._db = None
+            if self._db_fd is not None:
+                os.close(self._db_fd)
+                self._db_fd = None
+            if self._db_stat is not None:
+                _unlink_store_alias(self._db_alias, self._db_stat)
+                self._db_alias = None
+                self._db_stat = None
 
     def __enter__(self):
         return self
