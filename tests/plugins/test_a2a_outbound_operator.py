@@ -55,6 +55,13 @@ class OperatorTests(unittest.TestCase):
         path.chmod(0o600)
         return path
 
+    def test_default_url_preserves_pinned_production_port(self):
+        args = operator._parser().parse_args([
+            "--prompt", "inspect", "--token-file", "/tmp/token",
+            "--state-dir", "/tmp/state",
+        ])
+        self.assertEqual(args.url, "https://zurqui.tuna-gray.ts.net:8443")
+
     def test_prompt_cli_outputs_bounded_sanitized_projection(self):
         with tempfile.TemporaryDirectory() as directory:
             state = Path(directory) / "state"
@@ -64,7 +71,7 @@ class OperatorTests(unittest.TestCase):
                 with contextlib.redirect_stdout(output):
                     self.assertEqual(operator.main([
                         "--prompt", "inspect", "--token-file", str(self.token_file(directory)),
-                        "--state-dir", str(state), "--url", "https://zurqui.tuna-gray.ts.net",
+                        "--state-dir", str(state), "--url", "https://zurqui.tuna-gray.ts.net:8443",
                     ]), 0)
                 result = json.loads(output.getvalue())
                 self.assertEqual(result["action"], "send")

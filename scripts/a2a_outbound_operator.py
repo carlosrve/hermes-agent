@@ -21,6 +21,7 @@ from plugins.platforms.a2a.outbound import Client, Store
 
 TOKEN_ENV = "A2A_OPERATOR_BEARER"
 REMOTE_ENDPOINT_HOST = "zurqui.tuna-gray.ts.net"
+REMOTE_ENDPOINT_PORT = 8443
 _MAX_RESPONSE_TEXT = 8192
 
 
@@ -102,7 +103,7 @@ def _parser() -> argparse.ArgumentParser:
     group.add_argument("--local-id", help="existing local request ID to resume")
     parser.add_argument("--token-file", required=True, type=Path)
     parser.add_argument("--state-dir", required=True, type=Path)
-    parser.add_argument("--url", default=f"https://{REMOTE_ENDPOINT_HOST}")
+    parser.add_argument("--url", default=f"https://{REMOTE_ENDPOINT_HOST}:{REMOTE_ENDPOINT_PORT}")
     parser.add_argument("--timeout", type=float, default=30)
     return parser
 
