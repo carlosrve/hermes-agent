@@ -1,0 +1,12 @@
+diff --git a/data/config.yaml b/data/config.yaml
+--- a/data/config.yaml
++++ b/data/config.yaml
+@@ -161,0 +162,8 @@
++outbound:
++  enabled: true
++  peer: zuri
++  runtime: codex
++  host: zurqui
++  url: https://zurqui.tuna-gray.ts.net:8443
++  token_env: A2A_ZURI_TOKEN
++  timeout: 30
