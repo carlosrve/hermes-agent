@@ -1,0 +1,111 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~2 tests) under ['tests/plugins/test_a2a_schema_registration.py']; running with -j 24
+[100.0% |     2/~2 | ✓1 | ✗1] ✗ tests/plugins/test_a2a_schema_registration.py (1✓ 1✗, 1.1s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_schema_registration.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║     
+  ║         monkeypatch.setenv('HERMES_HOME', str(tmp_path))
+  ║         monkeypatch.delenv('A2A_PORT', raising=False)
+  ║         discover_plugins(force=True)
+  ║         manager = get_plugin_manager()
+  ║         loaded = next(p for p in manager._plugins.values() if p.manifest.name == 'a2a-platform')
+  ║ >       assert 'a2a_outbound' in loaded.manifest.provides_tools
+  ║ E       assert 'a2a_outbound' in ['a2a_discover', 'a2a_call', 'a2a_list', 'a2a_history', 'a2a_orchestrate']
+  ║ E        +  where ['a2a_discover', 'a2a_call', 'a2a_list', 'a2a_history', 'a2a_orchestrate'] = PluginManifest(name='a2a-platform', version='1.0.0', description="A2A (Agent-to-Agent) protocol v1.0 support for Herme... requires_plugins=[], python_dependencies=[], config_schema={}, license='', homepage='', tags=[], emits=[], listens=[]).provides_tools
+  ║ E        +    where PluginManifest(name='a2a-platform', version='1.0.0', description="A2A (Agent-to-Agent) protocol v1.0 support for Herme... requires_plugins=[], python_dependencies=[], config_schema={}, license='', homepage='', tags=[], emits=[], listens=[]) = LoadedPlugin(manifest=PluginManifest(name='a2a-platform', version='1.0.0', description="A2A (Agent-to-Agent) protocol ...call'], hooks_registered=[], middleware_registered=[], commands_registered=[], enabled=True, error=None, deferred=True).manifest
+  ║ 
+  ║ tests/plugins/test_a2a_schema_registration.py:69: AssertionError
+  ║ ------------------------------ Captured log call -------------------------------
+  ║ WARNING  tools.registry:registry.py:124 Could not import tool module tools.browser_tool: No module named 'requests'
+  ║ WARNING  tools.registry:registry.py:124 Could not import tool module tools.delegate_tool: No module named 'requests'
+  ║ WARNING  tools.registry:registry.py:124 Could not import tool module tools.terminal_tool: No module named 'requests'
+  ║ WARNING  tools.registry:registry.py:124 Could not import tool module tools.x_search_tool: No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_schema_registration.py::test_native_discovery_opt_in_schema_without_legacy_or_inbound
+  ║ ========================= 1 failed, 1 passed in 0.61s ==========================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_schema_registration.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 1 tests passed, 1 failed (100% complete) in 1.1s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 1.1s  (runner wall: 1.1s, parallelism: 24x)
+  P50: 1.05s  P90: 1.05s  P95: 1.05s  P99: 1.05s  Max: 1.05s
+  <1s: 0 files (0%)  <2s: 1 files (100%)
+  Top 10 slowest:
+      1.05s  tests/plugins/test_a2a_schema_registration.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_schema_registration.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 2 items
+
+tests/plugins/test_a2a_schema_registration.py .F                         [100%]
+
+=================================== FAILURES ===================================
+________ test_native_discovery_opt_in_schema_without_legacy_or_inbound _________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-69w_8m1p/pytest-of-hermeswebui/pytest-0/test_native_discovery_opt_in_s0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f3e179ca9f0>
+
+    def test_native_discovery_opt_in_schema_without_legacy_or_inbound(tmp_path, monkeypatch):
+        import yaml
+        from hermes_cli.plugins import discover_plugins, get_plugin_manager
+        from tools.registry import registry
+        import model_tools
+    
+        monkeypatch.setenv('HERMES_HOME', str(tmp_path))
+        monkeypatch.delenv('A2A_PORT', raising=False)
+        discover_plugins(force=True)
+        manager = get_plugin_manager()
+        loaded = next(p for p in manager._plugins.values() if p.manifest.name == 'a2a-platform')
+>       assert 'a2a_outbound' in loaded.manifest.provides_tools
+E       assert 'a2a_outbound' in ['a2a_discover', 'a2a_call', 'a2a_list', 'a2a_history', 'a2a_orchestrate']
+E        +  where ['a2a_discover', 'a2a_call', 'a2a_list', 'a2a_history', 'a2a_orchestrate'] = PluginManifest(name='a2a-platform', version='1.0.0', description="A2A (Agent-to-Agent) protocol v1.0 support for Herme... requires_plugins=[], python_dependencies=[], config_schema={}, license='', homepage='', tags=[], emits=[], listens=[]).provides_tools
+E        +    where PluginManifest(name='a2a-platform', version='1.0.0', description="A2A (Agent-to-Agent) protocol v1.0 support for Herme... requires_plugins=[], python_dependencies=[], config_schema={}, license='', homepage='', tags=[], emits=[], listens=[]) = LoadedPlugin(manifest=PluginManifest(name='a2a-platform', version='1.0.0', description="A2A (Agent-to-Agent) protocol ...call'], hooks_registered=[], middleware_registered=[], commands_registered=[], enabled=True, error=None, deferred=True).manifest
+
+tests/plugins/test_a2a_schema_registration.py:69: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  tools.registry:registry.py:124 Could not import tool module tools.browser_tool: No module named 'requests'
+WARNING  tools.registry:registry.py:124 Could not import tool module tools.delegate_tool: No module named 'requests'
+WARNING  tools.registry:registry.py:124 Could not import tool module tools.terminal_tool: No module named 'requests'
+WARNING  tools.registry:registry.py:124 Could not import tool module tools.x_search_tool: No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_schema_registration.py::test_native_discovery_opt_in_schema_without_legacy_or_inbound
+========================= 1 failed, 1 passed in 0.61s ==========================
+
+=== 1 file with test failures (1 test failed) ===
+  tests/plugins/test_a2a_schema_registration.py  (1 test failed)

@@ -1,0 +1,19 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 2 test files (~5 tests) under ['tests/plugins/test_a2a_native_tools.py', 'tests/plugins/test_a2a_native_dispatch.py']; running with -j 24
+[ 40.0% |     2/~5 | ✓2 | ✗0] ✓ tests/plugins/test_a2a_native_tools.py (2✓, 1.1s)
+[100.0% |     5/~5 | ✓21 | ✗ 0] ✓ tests/plugins/test_a2a_native_dispatch.py (19✓, 1.7s)
+
+=== Summary: 2 files, 21 tests passed, 0 failed (100% complete) in 1.7s (24 workers) ===
+  Durations cached to test_durations.json (2 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   2
+  Total subprocess CPU-wall: 2.7s  (runner wall: 1.7s, parallelism: 24x)
+  P50: 1.66s  P90: 1.66s  P95: 1.66s  P99: 1.66s  Max: 1.66s
+  <1s: 0 files (0%)  <2s: 2 files (100%)
+  Top 10 slowest:
+      1.66s  tests/plugins/test_a2a_native_dispatch.py
+      1.06s  tests/plugins/test_a2a_native_tools.py

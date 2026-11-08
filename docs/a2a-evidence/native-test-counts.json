@@ -1,0 +1,23 @@
+{
+  "files": {
+    "tests/plugins/test_a2a_tools_gate.py": 6,
+    "tests/tools/test_approval_config_readonly.py": 3,
+    "tests/plugins/test_a2a_phase23.py": 45,
+    "tests/tools/test_a2a_reason_roundtrip.py": 5,
+    "tests/gateway/test_approvals_command.py": 1,
+    "tests/plugins/test_a2a_schema_registration.py": 2,
+    "tests/plugins/test_a2a_native_tools.py": 3,
+    "tests/tools/test_approval_interrupt.py": 2,
+    "tests/plugins/test_a2a_outbound_validation.py": 219,
+    "tests/test_model_tools.py": 28,
+    "tests/plugins/test_a2a_plugin.py": 105,
+    "tests/plugins/test_a2a_native_dispatch.py": 38,
+    "tests/test_model_tools_async_bridge.py": 12,
+    "tests/tools/test_approval.py": 134,
+    "tests/plugins/test_a2a_outbound_recovery.py": 58
+  },
+  "total": 661,
+  "previous_focused": 579,
+  "new_or_expanded": 42,
+  "extra_model_tools": 40
+}

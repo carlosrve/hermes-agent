@@ -1,0 +1,448 @@
+FFFFFFFFFFFFFFFFFFFF                                                     [100%]
+=================================== FAILURES ===================================
+___ test_server_message_role_rejected_without_mutation[False-None-ROLE_USER] ___
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_server_message_role_rejec0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e9dc6810>
+role = 'ROLE_USER', context = None, ack = False
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    @pytest.mark.parametrize('context', [None, 'c'])
+    @pytest.mark.parametrize('ack', [False, True])
+    def test_server_message_role_rejected_without_mutation(tmp_path, monkeypatch, role, context, ack):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        if ack:
+            client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        message = {**MESSAGE, 'role': role, 'contextId': context}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:45: Failed
+_ test_server_message_role_rejected_without_mutation[False-None-ROLE_UNSPECIFIED] _
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_server_message_role_rejec1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e97d8650>
+role = 'ROLE_UNSPECIFIED', context = None, ack = False
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    @pytest.mark.parametrize('context', [None, 'c'])
+    @pytest.mark.parametrize('ack', [False, True])
+    def test_server_message_role_rejected_without_mutation(tmp_path, monkeypatch, role, context, ack):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        if ack:
+            client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        message = {**MESSAGE, 'role': role, 'contextId': context}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:45: Failed
+_______ test_server_message_role_rejected_without_mutation[False-None-0] _______
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_server_message_role_rejec2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e9dd4050>
+role = 0, context = None, ack = False
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    @pytest.mark.parametrize('context', [None, 'c'])
+    @pytest.mark.parametrize('ack', [False, True])
+    def test_server_message_role_rejected_without_mutation(tmp_path, monkeypatch, role, context, ack):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        if ack:
+            client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        message = {**MESSAGE, 'role': role, 'contextId': context}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:45: Failed
+_______ test_server_message_role_rejected_without_mutation[False-None-1] _______
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_server_message_role_rejec3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e982e960>
+role = 1, context = None, ack = False
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    @pytest.mark.parametrize('context', [None, 'c'])
+    @pytest.mark.parametrize('ack', [False, True])
+    def test_server_message_role_rejected_without_mutation(tmp_path, monkeypatch, role, context, ack):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        if ack:
+            client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        message = {**MESSAGE, 'role': role, 'contextId': context}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:45: Failed
+____ test_server_message_role_rejected_without_mutation[False-c-ROLE_USER] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_server_message_role_rejec4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e92b3710>
+role = 'ROLE_USER', context = 'c', ack = False
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    @pytest.mark.parametrize('context', [None, 'c'])
+    @pytest.mark.parametrize('ack', [False, True])
+    def test_server_message_role_rejected_without_mutation(tmp_path, monkeypatch, role, context, ack):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        if ack:
+            client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        message = {**MESSAGE, 'role': role, 'contextId': context}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:45: Failed
+_ test_server_message_role_rejected_without_mutation[False-c-ROLE_UNSPECIFIED] _
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_server_message_role_rejec5')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e92b1f40>
+role = 'ROLE_UNSPECIFIED', context = 'c', ack = False
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    @pytest.mark.parametrize('context', [None, 'c'])
+    @pytest.mark.parametrize('ack', [False, True])
+    def test_server_message_role_rejected_without_mutation(tmp_path, monkeypatch, role, context, ack):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        if ack:
+            client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        message = {**MESSAGE, 'role': role, 'contextId': context}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:45: Failed
+________ test_server_message_role_rejected_without_mutation[False-c-0] _________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_server_message_role_rejec6')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e92b1c70>
+role = 0, context = 'c', ack = False
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    @pytest.mark.parametrize('context', [None, 'c'])
+    @pytest.mark.parametrize('ack', [False, True])
+    def test_server_message_role_rejected_without_mutation(tmp_path, monkeypatch, role, context, ack):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        if ack:
+            client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        message = {**MESSAGE, 'role': role, 'contextId': context}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:45: Failed
+________ test_server_message_role_rejected_without_mutation[False-c-1] _________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_server_message_role_rejec7')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e9173920>
+role = 1, context = 'c', ack = False
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    @pytest.mark.parametrize('context', [None, 'c'])
+    @pytest.mark.parametrize('ack', [False, True])
+    def test_server_message_role_rejected_without_mutation(tmp_path, monkeypatch, role, context, ack):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        if ack:
+            client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        message = {**MESSAGE, 'role': role, 'contextId': context}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:45: Failed
+___ test_server_message_role_rejected_without_mutation[True-None-ROLE_USER] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_server_message_role_rejec8')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e9173cb0>
+role = 'ROLE_USER', context = None, ack = True
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    @pytest.mark.parametrize('context', [None, 'c'])
+    @pytest.mark.parametrize('ack', [False, True])
+    def test_server_message_role_rejected_without_mutation(tmp_path, monkeypatch, role, context, ack):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        if ack:
+            client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        message = {**MESSAGE, 'role': role, 'contextId': context}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:45: Failed
+_ test_server_message_role_rejected_without_mutation[True-None-ROLE_UNSPECIFIED] _
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_server_message_role_rejec9')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e9173bc0>
+role = 'ROLE_UNSPECIFIED', context = None, ack = True
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    @pytest.mark.parametrize('context', [None, 'c'])
+    @pytest.mark.parametrize('ack', [False, True])
+    def test_server_message_role_rejected_without_mutation(tmp_path, monkeypatch, role, context, ack):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        if ack:
+            client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        message = {**MESSAGE, 'role': role, 'contextId': context}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:45: Failed
+_______ test_server_message_role_rejected_without_mutation[True-None-0] ________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_server_message_role_rejec10')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e9172870>
+role = 0, context = None, ack = True
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    @pytest.mark.parametrize('context', [None, 'c'])
+    @pytest.mark.parametrize('ack', [False, True])
+    def test_server_message_role_rejected_without_mutation(tmp_path, monkeypatch, role, context, ack):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        if ack:
+            client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        message = {**MESSAGE, 'role': role, 'contextId': context}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:45: Failed
+_______ test_server_message_role_rejected_without_mutation[True-None-1] ________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_server_message_role_rejec11')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e9171010>
+role = 1, context = None, ack = True
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    @pytest.mark.parametrize('context', [None, 'c'])
+    @pytest.mark.parametrize('ack', [False, True])
+    def test_server_message_role_rejected_without_mutation(tmp_path, monkeypatch, role, context, ack):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        if ack:
+            client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        message = {**MESSAGE, 'role': role, 'contextId': context}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:45: Failed
+_____ test_server_message_role_rejected_without_mutation[True-c-ROLE_USER] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_server_message_role_rejec12')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e91723c0>
+role = 'ROLE_USER', context = 'c', ack = True
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    @pytest.mark.parametrize('context', [None, 'c'])
+    @pytest.mark.parametrize('ack', [False, True])
+    def test_server_message_role_rejected_without_mutation(tmp_path, monkeypatch, role, context, ack):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        if ack:
+            client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        message = {**MESSAGE, 'role': role, 'contextId': context}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:45: Failed
+_ test_server_message_role_rejected_without_mutation[True-c-ROLE_UNSPECIFIED] __
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_server_message_role_rejec13')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e91719a0>
+role = 'ROLE_UNSPECIFIED', context = 'c', ack = True
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    @pytest.mark.parametrize('context', [None, 'c'])
+    @pytest.mark.parametrize('ack', [False, True])
+    def test_server_message_role_rejected_without_mutation(tmp_path, monkeypatch, role, context, ack):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        if ack:
+            client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        message = {**MESSAGE, 'role': role, 'contextId': context}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:45: Failed
+_________ test_server_message_role_rejected_without_mutation[True-c-0] _________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_server_message_role_rejec14')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e9172270>
+role = 0, context = 'c', ack = True
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    @pytest.mark.parametrize('context', [None, 'c'])
+    @pytest.mark.parametrize('ack', [False, True])
+    def test_server_message_role_rejected_without_mutation(tmp_path, monkeypatch, role, context, ack):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        if ack:
+            client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        message = {**MESSAGE, 'role': role, 'contextId': context}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:45: Failed
+_________ test_server_message_role_rejected_without_mutation[True-c-1] _________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_server_message_role_rejec15')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e91730e0>
+role = 1, context = 'c', ack = True
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    @pytest.mark.parametrize('context', [None, 'c'])
+    @pytest.mark.parametrize('ack', [False, True])
+    def test_server_message_role_rejected_without_mutation(tmp_path, monkeypatch, role, context, ack):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        if ack:
+            client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        message = {**MESSAGE, 'role': role, 'contextId': context}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:45: Failed
+________ test_user_message_followed_by_task_is_not_certified[ROLE_USER] ________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_user_message_followed_by_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e92b0c20>
+role = 'ROLE_USER'
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    def test_user_message_followed_by_task_is_not_certified(tmp_path, monkeypatch, role):
+        m, client, _ = setup_client(tmp_path, monkeypatch)
+        local_id = client.prepare('stream')
+        calls = []
+    
+        @contextmanager
+        def response(body, stream):
+            calls.append(body['method'])
+            results = [{'message': {'messageId': 'm', 'role': role, 'parts': []}}, {'task': TASK}]
+            wire = ''.join('data: ' + json.dumps({'jsonrpc': '2.0', 'id': body['id'], 'result': r})
+                           + '\n\n' for r in results)
+            yield io.BytesIO(wire.encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:66: Failed
+____ test_user_message_followed_by_task_is_not_certified[ROLE_UNSPECIFIED] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_user_message_followed_by_1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e91e0230>
+role = 'ROLE_UNSPECIFIED'
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    def test_user_message_followed_by_task_is_not_certified(tmp_path, monkeypatch, role):
+        m, client, _ = setup_client(tmp_path, monkeypatch)
+        local_id = client.prepare('stream')
+        calls = []
+    
+        @contextmanager
+        def response(body, stream):
+            calls.append(body['method'])
+            results = [{'message': {'messageId': 'm', 'role': role, 'parts': []}}, {'task': TASK}]
+            wire = ''.join('data: ' + json.dumps({'jsonrpc': '2.0', 'id': body['id'], 'result': r})
+                           + '\n\n' for r in results)
+            yield io.BytesIO(wire.encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:66: Failed
+____________ test_user_message_followed_by_task_is_not_certified[0] ____________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_user_message_followed_by_2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e91e0380>
+role = 0
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    def test_user_message_followed_by_task_is_not_certified(tmp_path, monkeypatch, role):
+        m, client, _ = setup_client(tmp_path, monkeypatch)
+        local_id = client.prepare('stream')
+        calls = []
+    
+        @contextmanager
+        def response(body, stream):
+            calls.append(body['method'])
+            results = [{'message': {'messageId': 'm', 'role': role, 'parts': []}}, {'task': TASK}]
+            wire = ''.join('data: ' + json.dumps({'jsonrpc': '2.0', 'id': body['id'], 'result': r})
+                           + '\n\n' for r in results)
+            yield io.BytesIO(wire.encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:66: Failed
+____________ test_user_message_followed_by_task_is_not_certified[1] ____________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-27/test_user_message_followed_by_3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd9e91e0710>
+role = 1
+
+    @pytest.mark.parametrize('role', ['ROLE_USER', 'ROLE_UNSPECIFIED', 0, 1])
+    def test_user_message_followed_by_task_is_not_certified(tmp_path, monkeypatch, role):
+        m, client, _ = setup_client(tmp_path, monkeypatch)
+        local_id = client.prepare('stream')
+        calls = []
+    
+        @contextmanager
+        def response(body, stream):
+            calls.append(body['method'])
+            results = [{'message': {'messageId': 'm', 'role': role, 'parts': []}}, {'task': TASK}]
+            wire = ''.join('data: ' + json.dumps({'jsonrpc': '2.0', 'id': body['id'], 'result': r})
+                           + '\n\n' for r in results)
+            yield io.BytesIO(wire.encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:66: Failed
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_server_message_role_rejected_without_mutation[False-None-ROLE_USER]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_server_message_role_rejected_without_mutation[False-None-ROLE_UNSPECIFIED]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_server_message_role_rejected_without_mutation[False-None-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_server_message_role_rejected_without_mutation[False-None-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_server_message_role_rejected_without_mutation[False-c-ROLE_USER]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_server_message_role_rejected_without_mutation[False-c-ROLE_UNSPECIFIED]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_server_message_role_rejected_without_mutation[False-c-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_server_message_role_rejected_without_mutation[False-c-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_server_message_role_rejected_without_mutation[True-None-ROLE_USER]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_server_message_role_rejected_without_mutation[True-None-ROLE_UNSPECIFIED]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_server_message_role_rejected_without_mutation[True-None-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_server_message_role_rejected_without_mutation[True-None-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_server_message_role_rejected_without_mutation[True-c-ROLE_USER]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_server_message_role_rejected_without_mutation[True-c-ROLE_UNSPECIFIED]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_server_message_role_rejected_without_mutation[True-c-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_server_message_role_rejected_without_mutation[True-c-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_user_message_followed_by_task_is_not_certified[ROLE_USER]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_user_message_followed_by_task_is_not_certified[ROLE_UNSPECIFIED]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_user_message_followed_by_task_is_not_certified[0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_user_message_followed_by_task_is_not_certified[1]
+20 failed, 118 deselected in 0.35s

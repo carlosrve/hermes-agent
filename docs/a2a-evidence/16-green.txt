@@ -1,0 +1,17 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~18 tests) under ['tests/plugins/test_a2a_outbound_recovery.py']; running with -j 24
+[100.0% |    18/~18 | ✓42 | ✗ 0] ✓ tests/plugins/test_a2a_outbound_recovery.py (42✓, 11.5s)
+
+=== Summary: 1 files, 42 tests passed, 0 failed (100% complete) in 11.5s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 11.5s  (runner wall: 11.5s, parallelism: 24x)
+  P50: 11.47s  P90: 11.47s  P95: 11.47s  P99: 11.47s  Max: 11.47s
+  <1s: 0 files (0%)  <2s: 0 files (0%)
+  Top 10 slowest:
+     11.47s  tests/plugins/test_a2a_outbound_recovery.py

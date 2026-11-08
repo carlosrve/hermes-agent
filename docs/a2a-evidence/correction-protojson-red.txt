@@ -1,0 +1,153 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~7 tests) under ['tests/plugins/test_a2a_outbound_validation.py']; running with -j 24
+[100.0% |     7/~7 | ✓0 | ✗9] ✗ tests/plugins/test_a2a_outbound_validation.py (9✗, 0.7s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_outbound_validation.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║     _validate(field_kind, value.get(field))
+  ║ plugins/platforms/a2a/outbound.py:64: in _validate
+  ║     raise ProtocolError('Invalid protocol string')
+  ║ E   plugins.platforms.a2a.outbound.ProtocolError: Invalid protocol string
+  ║ __________ test_gettask_error_validated_before_remote_missing[error0] __________
+  ║ tests/plugins/test_a2a_outbound_validation.py:163: in test_gettask_error_validated_before_remote_missing
+  ║     with pytest.raises(m.ProtocolError):
+  ║          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ║ E   Failed: DID NOT RAISE ProtocolError
+  ║ __________ test_gettask_error_validated_before_remote_missing[error1] __________
+  ║ tests/plugins/test_a2a_outbound_validation.py:163: in test_gettask_error_validated_before_remote_missing
+  ║     with pytest.raises(m.ProtocolError):
+  ║          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ║ E   Failed: DID NOT RAISE ProtocolError
+  ║ __________ test_gettask_error_validated_before_remote_missing[error2] __________
+  ║ tests/plugins/test_a2a_outbound_validation.py:163: in test_gettask_error_validated_before_remote_missing
+  ║     with pytest.raises(m.ProtocolError):
+  ║          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ║ E   Failed: DID NOT RAISE ProtocolError
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_protojson_read_forms_preserve_original_events[result0-TASK_STATE_COMPLETED]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_protojson_read_forms_preserve_original_events[result1-TASK_STATE_INPUT_REQUIRED]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_protojson_read_forms_preserve_original_events[result2-None]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_protojson_read_forms_preserve_original_events[result3-TASK_STATE_WORKING]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_protojson_read_forms_preserve_original_events[result4-TASK_STATE_WORKING]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_protojson_read_forms_preserve_original_events[result5-None]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_gettask_error_validated_before_remote_missing[error0]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_gettask_error_validated_before_remote_missing[error1]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_gettask_error_validated_before_remote_missing[error2]
+  ║ ====================== 9 failed, 109 deselected in 0.30s =======================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_outbound_validation.py -k protojson_read or error_validated --tb=short
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 0 tests passed, 9 failed (100% complete) in 0.7s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 0.7s  (runner wall: 0.7s, parallelism: 24x)
+  P50: 0.70s  P90: 0.70s  P95: 0.70s  P99: 0.70s  Max: 0.70s
+  <1s: 1 files (100%)  <2s: 1 files (100%)
+  Top 10 slowest:
+      0.70s  tests/plugins/test_a2a_outbound_validation.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_outbound_validation.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/lfc/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 118 items / 109 deselected / 9 selected
+
+tests/plugins/test_a2a_outbound_validation.py FFFFFFFFF                  [100%]
+
+=================================== FAILURES ===================================
+_ test_protojson_read_forms_preserve_original_events[result0-TASK_STATE_COMPLETED] _
+tests/plugins/test_a2a_outbound_validation.py:143: in test_protojson_read_forms_preserve_original_events
+    client._event(record, envelope(record, result), record['request']['id'])
+plugins/platforms/a2a/outbound.py:310: in _event
+    _validate(kind, value)
+plugins/platforms/a2a/outbound.py:94: in _validate
+    _validate(field_kind, value.get(field))
+plugins/platforms/a2a/outbound.py:94: in _validate
+    _validate(field_kind, value.get(field))
+plugins/platforms/a2a/outbound.py:64: in _validate
+    raise ProtocolError('Invalid protocol string')
+E   plugins.platforms.a2a.outbound.ProtocolError: Invalid protocol string
+_ test_protojson_read_forms_preserve_original_events[result1-TASK_STATE_INPUT_REQUIRED] _
+tests/plugins/test_a2a_outbound_validation.py:143: in test_protojson_read_forms_preserve_original_events
+    client._event(record, envelope(record, result), record['request']['id'])
+plugins/platforms/a2a/outbound.py:310: in _event
+    _validate(kind, value)
+plugins/platforms/a2a/outbound.py:94: in _validate
+    _validate(field_kind, value.get(field))
+plugins/platforms/a2a/outbound.py:94: in _validate
+    _validate(field_kind, value.get(field))
+plugins/platforms/a2a/outbound.py:64: in _validate
+    raise ProtocolError('Invalid protocol string')
+E   plugins.platforms.a2a.outbound.ProtocolError: Invalid protocol string
+_______ test_protojson_read_forms_preserve_original_events[result2-None] _______
+tests/plugins/test_a2a_outbound_validation.py:143: in test_protojson_read_forms_preserve_original_events
+    client._event(record, envelope(record, result), record['request']['id'])
+plugins/platforms/a2a/outbound.py:310: in _event
+    _validate(kind, value)
+plugins/platforms/a2a/outbound.py:94: in _validate
+    _validate(field_kind, value.get(field))
+plugins/platforms/a2a/outbound.py:64: in _validate
+    raise ProtocolError('Invalid protocol string')
+E   plugins.platforms.a2a.outbound.ProtocolError: Invalid protocol string
+_ test_protojson_read_forms_preserve_original_events[result3-TASK_STATE_WORKING] _
+tests/plugins/test_a2a_outbound_validation.py:143: in test_protojson_read_forms_preserve_original_events
+    client._event(record, envelope(record, result), record['request']['id'])
+plugins/platforms/a2a/outbound.py:307: in _event
+    raise ProtocolError('Invalid StreamResponse oneof')
+E   plugins.platforms.a2a.outbound.ProtocolError: Invalid StreamResponse oneof
+_ test_protojson_read_forms_preserve_original_events[result4-TASK_STATE_WORKING] _
+tests/plugins/test_a2a_outbound_validation.py:143: in test_protojson_read_forms_preserve_original_events
+    client._event(record, envelope(record, result), record['request']['id'])
+plugins/platforms/a2a/outbound.py:307: in _event
+    raise ProtocolError('Invalid StreamResponse oneof')
+E   plugins.platforms.a2a.outbound.ProtocolError: Invalid StreamResponse oneof
+_______ test_protojson_read_forms_preserve_original_events[result5-None] _______
+tests/plugins/test_a2a_outbound_validation.py:143: in test_protojson_read_forms_preserve_original_events
+    client._event(record, envelope(record, result), record['request']['id'])
+plugins/platforms/a2a/outbound.py:310: in _event
+    _validate(kind, value)
+plugins/platforms/a2a/outbound.py:94: in _validate
+    _validate(field_kind, value.get(field))
+plugins/platforms/a2a/outbound.py:64: in _validate
+    raise ProtocolError('Invalid protocol string')
+E   plugins.platforms.a2a.outbound.ProtocolError: Invalid protocol string
+__________ test_gettask_error_validated_before_remote_missing[error0] __________
+tests/plugins/test_a2a_outbound_validation.py:163: in test_gettask_error_validated_before_remote_missing
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+__________ test_gettask_error_validated_before_remote_missing[error1] __________
+tests/plugins/test_a2a_outbound_validation.py:163: in test_gettask_error_validated_before_remote_missing
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+__________ test_gettask_error_validated_before_remote_missing[error2] __________
+tests/plugins/test_a2a_outbound_validation.py:163: in test_gettask_error_validated_before_remote_missing
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_protojson_read_forms_preserve_original_events[result0-TASK_STATE_COMPLETED]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_protojson_read_forms_preserve_original_events[result1-TASK_STATE_INPUT_REQUIRED]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_protojson_read_forms_preserve_original_events[result2-None]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_protojson_read_forms_preserve_original_events[result3-TASK_STATE_WORKING]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_protojson_read_forms_preserve_original_events[result4-TASK_STATE_WORKING]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_protojson_read_forms_preserve_original_events[result5-None]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_gettask_error_validated_before_remote_missing[error0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_gettask_error_validated_before_remote_missing[error1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_gettask_error_validated_before_remote_missing[error2]
+====================== 9 failed, 109 deselected in 0.30s =======================
+
+=== 1 file with test failures (9 tests failed) ===
+  tests/plugins/test_a2a_outbound_validation.py  (9 tests failed)

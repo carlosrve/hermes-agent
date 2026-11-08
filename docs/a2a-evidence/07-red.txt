@@ -1,0 +1,439 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~7 tests) under ['tests/plugins/test_a2a_outbound_recovery.py']; running with -j 24
+[100.0% |     7/~7 | ✓ 5 | ✗18] ✗ tests/plugins/test_a2a_outbound_recovery.py (5✓ 18✗, 5.8s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_outbound_recovery.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║         monkeypatch.setenv('A2A_TEST_TOKEN', 'fixture-secret')
+  ║         events = [{'task': {'id': 'remote-1', 'contextId': 'ctx-1', 'status': {'state': 'TASK_STATE_COMPLETED'},
+  ║                             'artifacts': [{'parts': [{'text': 'fixture-secret'}]}]}}]
+  ║         with peer_server(store, events) as (url, received):
+  ║             client = m.Client(config(url), store)
+  ║ >           with pytest.raises(ValueError):
+  ║                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+  ║ E           Failed: DID NOT RAISE ValueError
+  ║ 
+  ║ tests/plugins/test_a2a_outbound_recovery.py:54: Failed
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change0]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change1]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change2]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change3]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change4]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change5]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change6]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change7]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change8]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change9]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change10]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change11]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change12]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_credentials_fail_closed_without_durable_secret
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_remote_state_not_replaced_by_local_intervention[TASK_STATE_WORKING]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_remote_state_not_replaced_by_local_intervention[TASK_STATE_INPUT_REQUIRED]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_remote_state_not_replaced_by_local_intervention[TASK_STATE_AUTH_REQUIRED]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_echoed_credential_is_not_persisted
+  ║ ========================= 18 failed, 5 passed in 5.40s =========================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_outbound_recovery.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 5 tests passed, 18 failed (100% complete) in 5.8s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 5.8s  (runner wall: 5.8s, parallelism: 24x)
+  P50: 5.81s  P90: 5.81s  P95: 5.81s  P99: 5.81s  Max: 5.81s
+  <1s: 0 files (0%)  <2s: 0 files (0%)
+  Top 10 slowest:
+      5.81s  tests/plugins/test_a2a_outbound_recovery.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_outbound_recovery.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/lfc/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 23 items
+
+tests/plugins/test_a2a_outbound_recovery.py FFFFFFFFFFFFFFFFFF.....      [100%]
+
+=================================== FAILURES ===================================
+______________ test_config_rejects_unapproved_transport[change0] _______________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-uz2jihux/pytest-of-hermeswebui/pytest-0/test_config_rejects_unapproved0')
+change = {'enabled': False}
+
+    @pytest.mark.parametrize('change', [
+        {'enabled': False}, {'peer': 'other'}, {'runtime': 'hermes'}, {'host': 'other'},
+        {'url': 'http://zurqui/rpc'}, {'url': 'https://user:secret@zurqui/rpc'},
+        {'url': 'https://zurqui/rpc?token=secret'}, {'url': 'https://zurqui/rpc#fragment'},
+        {'url': 'ftp://zurqui/rpc'}, {'url': 'https://public.example/rpc'},
+        {'token': 'literal-secret'}, {'timeout': 0}, {'timeout': 301},
+    ])
+    def test_config_rejects_unapproved_transport(tmp_path, change):
+        cfg = {**config('https://zurqui/rpc'), **change}
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/plugins/test_a2a_outbound_recovery.py:16: Failed
+______________ test_config_rejects_unapproved_transport[change1] _______________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-uz2jihux/pytest-of-hermeswebui/pytest-0/test_config_rejects_unapproved1')
+change = {'peer': 'other'}
+
+    @pytest.mark.parametrize('change', [
+        {'enabled': False}, {'peer': 'other'}, {'runtime': 'hermes'}, {'host': 'other'},
+        {'url': 'http://zurqui/rpc'}, {'url': 'https://user:secret@zurqui/rpc'},
+        {'url': 'https://zurqui/rpc?token=secret'}, {'url': 'https://zurqui/rpc#fragment'},
+        {'url': 'ftp://zurqui/rpc'}, {'url': 'https://public.example/rpc'},
+        {'token': 'literal-secret'}, {'timeout': 0}, {'timeout': 301},
+    ])
+    def test_config_rejects_unapproved_transport(tmp_path, change):
+        cfg = {**config('https://zurqui/rpc'), **change}
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/plugins/test_a2a_outbound_recovery.py:16: Failed
+______________ test_config_rejects_unapproved_transport[change2] _______________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-uz2jihux/pytest-of-hermeswebui/pytest-0/test_config_rejects_unapproved2')
+change = {'runtime': 'hermes'}
+
+    @pytest.mark.parametrize('change', [
+        {'enabled': False}, {'peer': 'other'}, {'runtime': 'hermes'}, {'host': 'other'},
+        {'url': 'http://zurqui/rpc'}, {'url': 'https://user:secret@zurqui/rpc'},
+        {'url': 'https://zurqui/rpc?token=secret'}, {'url': 'https://zurqui/rpc#fragment'},
+        {'url': 'ftp://zurqui/rpc'}, {'url': 'https://public.example/rpc'},
+        {'token': 'literal-secret'}, {'timeout': 0}, {'timeout': 301},
+    ])
+    def test_config_rejects_unapproved_transport(tmp_path, change):
+        cfg = {**config('https://zurqui/rpc'), **change}
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/plugins/test_a2a_outbound_recovery.py:16: Failed
+______________ test_config_rejects_unapproved_transport[change3] _______________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-uz2jihux/pytest-of-hermeswebui/pytest-0/test_config_rejects_unapproved3')
+change = {'host': 'other'}
+
+    @pytest.mark.parametrize('change', [
+        {'enabled': False}, {'peer': 'other'}, {'runtime': 'hermes'}, {'host': 'other'},
+        {'url': 'http://zurqui/rpc'}, {'url': 'https://user:secret@zurqui/rpc'},
+        {'url': 'https://zurqui/rpc?token=secret'}, {'url': 'https://zurqui/rpc#fragment'},
+        {'url': 'ftp://zurqui/rpc'}, {'url': 'https://public.example/rpc'},
+        {'token': 'literal-secret'}, {'timeout': 0}, {'timeout': 301},
+    ])
+    def test_config_rejects_unapproved_transport(tmp_path, change):
+        cfg = {**config('https://zurqui/rpc'), **change}
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/plugins/test_a2a_outbound_recovery.py:16: Failed
+______________ test_config_rejects_unapproved_transport[change4] _______________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-uz2jihux/pytest-of-hermeswebui/pytest-0/test_config_rejects_unapproved4')
+change = {'url': 'http://zurqui/rpc'}
+
+    @pytest.mark.parametrize('change', [
+        {'enabled': False}, {'peer': 'other'}, {'runtime': 'hermes'}, {'host': 'other'},
+        {'url': 'http://zurqui/rpc'}, {'url': 'https://user:secret@zurqui/rpc'},
+        {'url': 'https://zurqui/rpc?token=secret'}, {'url': 'https://zurqui/rpc#fragment'},
+        {'url': 'ftp://zurqui/rpc'}, {'url': 'https://public.example/rpc'},
+        {'token': 'literal-secret'}, {'timeout': 0}, {'timeout': 301},
+    ])
+    def test_config_rejects_unapproved_transport(tmp_path, change):
+        cfg = {**config('https://zurqui/rpc'), **change}
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/plugins/test_a2a_outbound_recovery.py:16: Failed
+______________ test_config_rejects_unapproved_transport[change5] _______________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-uz2jihux/pytest-of-hermeswebui/pytest-0/test_config_rejects_unapproved5')
+change = {'url': 'https://user:secret@zurqui/rpc'}
+
+    @pytest.mark.parametrize('change', [
+        {'enabled': False}, {'peer': 'other'}, {'runtime': 'hermes'}, {'host': 'other'},
+        {'url': 'http://zurqui/rpc'}, {'url': 'https://user:secret@zurqui/rpc'},
+        {'url': 'https://zurqui/rpc?token=secret'}, {'url': 'https://zurqui/rpc#fragment'},
+        {'url': 'ftp://zurqui/rpc'}, {'url': 'https://public.example/rpc'},
+        {'token': 'literal-secret'}, {'timeout': 0}, {'timeout': 301},
+    ])
+    def test_config_rejects_unapproved_transport(tmp_path, change):
+        cfg = {**config('https://zurqui/rpc'), **change}
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/plugins/test_a2a_outbound_recovery.py:16: Failed
+______________ test_config_rejects_unapproved_transport[change6] _______________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-uz2jihux/pytest-of-hermeswebui/pytest-0/test_config_rejects_unapproved6')
+change = {'url': 'https://zurqui/rpc?token=secret'}
+
+    @pytest.mark.parametrize('change', [
+        {'enabled': False}, {'peer': 'other'}, {'runtime': 'hermes'}, {'host': 'other'},
+        {'url': 'http://zurqui/rpc'}, {'url': 'https://user:secret@zurqui/rpc'},
+        {'url': 'https://zurqui/rpc?token=secret'}, {'url': 'https://zurqui/rpc#fragment'},
+        {'url': 'ftp://zurqui/rpc'}, {'url': 'https://public.example/rpc'},
+        {'token': 'literal-secret'}, {'timeout': 0}, {'timeout': 301},
+    ])
+    def test_config_rejects_unapproved_transport(tmp_path, change):
+        cfg = {**config('https://zurqui/rpc'), **change}
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/plugins/test_a2a_outbound_recovery.py:16: Failed
+______________ test_config_rejects_unapproved_transport[change7] _______________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-uz2jihux/pytest-of-hermeswebui/pytest-0/test_config_rejects_unapproved7')
+change = {'url': 'https://zurqui/rpc#fragment'}
+
+    @pytest.mark.parametrize('change', [
+        {'enabled': False}, {'peer': 'other'}, {'runtime': 'hermes'}, {'host': 'other'},
+        {'url': 'http://zurqui/rpc'}, {'url': 'https://user:secret@zurqui/rpc'},
+        {'url': 'https://zurqui/rpc?token=secret'}, {'url': 'https://zurqui/rpc#fragment'},
+        {'url': 'ftp://zurqui/rpc'}, {'url': 'https://public.example/rpc'},
+        {'token': 'literal-secret'}, {'timeout': 0}, {'timeout': 301},
+    ])
+    def test_config_rejects_unapproved_transport(tmp_path, change):
+        cfg = {**config('https://zurqui/rpc'), **change}
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/plugins/test_a2a_outbound_recovery.py:16: Failed
+______________ test_config_rejects_unapproved_transport[change8] _______________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-uz2jihux/pytest-of-hermeswebui/pytest-0/test_config_rejects_unapproved8')
+change = {'url': 'ftp://zurqui/rpc'}
+
+    @pytest.mark.parametrize('change', [
+        {'enabled': False}, {'peer': 'other'}, {'runtime': 'hermes'}, {'host': 'other'},
+        {'url': 'http://zurqui/rpc'}, {'url': 'https://user:secret@zurqui/rpc'},
+        {'url': 'https://zurqui/rpc?token=secret'}, {'url': 'https://zurqui/rpc#fragment'},
+        {'url': 'ftp://zurqui/rpc'}, {'url': 'https://public.example/rpc'},
+        {'token': 'literal-secret'}, {'timeout': 0}, {'timeout': 301},
+    ])
+    def test_config_rejects_unapproved_transport(tmp_path, change):
+        cfg = {**config('https://zurqui/rpc'), **change}
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/plugins/test_a2a_outbound_recovery.py:16: Failed
+______________ test_config_rejects_unapproved_transport[change9] _______________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-uz2jihux/pytest-of-hermeswebui/pytest-0/test_config_rejects_unapproved9')
+change = {'url': 'https://public.example/rpc'}
+
+    @pytest.mark.parametrize('change', [
+        {'enabled': False}, {'peer': 'other'}, {'runtime': 'hermes'}, {'host': 'other'},
+        {'url': 'http://zurqui/rpc'}, {'url': 'https://user:secret@zurqui/rpc'},
+        {'url': 'https://zurqui/rpc?token=secret'}, {'url': 'https://zurqui/rpc#fragment'},
+        {'url': 'ftp://zurqui/rpc'}, {'url': 'https://public.example/rpc'},
+        {'token': 'literal-secret'}, {'timeout': 0}, {'timeout': 301},
+    ])
+    def test_config_rejects_unapproved_transport(tmp_path, change):
+        cfg = {**config('https://zurqui/rpc'), **change}
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/plugins/test_a2a_outbound_recovery.py:16: Failed
+______________ test_config_rejects_unapproved_transport[change10] ______________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-uz2jihux/pytest-of-hermeswebui/pytest-0/test_config_rejects_unapproved10')
+change = {'token': 'literal-secret'}
+
+    @pytest.mark.parametrize('change', [
+        {'enabled': False}, {'peer': 'other'}, {'runtime': 'hermes'}, {'host': 'other'},
+        {'url': 'http://zurqui/rpc'}, {'url': 'https://user:secret@zurqui/rpc'},
+        {'url': 'https://zurqui/rpc?token=secret'}, {'url': 'https://zurqui/rpc#fragment'},
+        {'url': 'ftp://zurqui/rpc'}, {'url': 'https://public.example/rpc'},
+        {'token': 'literal-secret'}, {'timeout': 0}, {'timeout': 301},
+    ])
+    def test_config_rejects_unapproved_transport(tmp_path, change):
+        cfg = {**config('https://zurqui/rpc'), **change}
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/plugins/test_a2a_outbound_recovery.py:16: Failed
+______________ test_config_rejects_unapproved_transport[change11] ______________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-uz2jihux/pytest-of-hermeswebui/pytest-0/test_config_rejects_unapproved11')
+change = {'timeout': 0}
+
+    @pytest.mark.parametrize('change', [
+        {'enabled': False}, {'peer': 'other'}, {'runtime': 'hermes'}, {'host': 'other'},
+        {'url': 'http://zurqui/rpc'}, {'url': 'https://user:secret@zurqui/rpc'},
+        {'url': 'https://zurqui/rpc?token=secret'}, {'url': 'https://zurqui/rpc#fragment'},
+        {'url': 'ftp://zurqui/rpc'}, {'url': 'https://public.example/rpc'},
+        {'token': 'literal-secret'}, {'timeout': 0}, {'timeout': 301},
+    ])
+    def test_config_rejects_unapproved_transport(tmp_path, change):
+        cfg = {**config('https://zurqui/rpc'), **change}
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/plugins/test_a2a_outbound_recovery.py:16: Failed
+______________ test_config_rejects_unapproved_transport[change12] ______________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-uz2jihux/pytest-of-hermeswebui/pytest-0/test_config_rejects_unapproved12')
+change = {'timeout': 301}
+
+    @pytest.mark.parametrize('change', [
+        {'enabled': False}, {'peer': 'other'}, {'runtime': 'hermes'}, {'host': 'other'},
+        {'url': 'http://zurqui/rpc'}, {'url': 'https://user:secret@zurqui/rpc'},
+        {'url': 'https://zurqui/rpc?token=secret'}, {'url': 'https://zurqui/rpc#fragment'},
+        {'url': 'ftp://zurqui/rpc'}, {'url': 'https://public.example/rpc'},
+        {'token': 'literal-secret'}, {'timeout': 0}, {'timeout': 301},
+    ])
+    def test_config_rejects_unapproved_transport(tmp_path, change):
+        cfg = {**config('https://zurqui/rpc'), **change}
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/plugins/test_a2a_outbound_recovery.py:16: Failed
+_____________ test_credentials_fail_closed_without_durable_secret ______________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-uz2jihux/pytest-of-hermeswebui/pytest-0/test_credentials_fail_closed_w0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7efdae927b00>
+
+    def test_credentials_fail_closed_without_durable_secret(tmp_path, monkeypatch):
+        m = module()
+        client = m.Client(config('https://zurqui/rpc'), m.Store(tmp_path / 'requests'))
+        monkeypatch.delenv('A2A_TEST_TOKEN', raising=False)
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/plugins/test_a2a_outbound_recovery.py:24: Failed
+___ test_remote_state_not_replaced_by_local_intervention[TASK_STATE_WORKING] ___
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-uz2jihux/pytest-of-hermeswebui/pytest-0/test_remote_state_not_replaced0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7efdae925010>
+state = 'TASK_STATE_WORKING'
+
+    @pytest.mark.parametrize('state', ['TASK_STATE_WORKING', 'TASK_STATE_INPUT_REQUIRED', 'TASK_STATE_AUTH_REQUIRED'])
+    def test_remote_state_not_replaced_by_local_intervention(tmp_path, monkeypatch, state):
+        m = module()
+        store = m.Store(tmp_path / 'requests')
+        monkeypatch.setenv('A2A_TEST_TOKEN', 'fixture-secret')
+        events = [{'task': {'id': 'remote-1', 'contextId': 'ctx-1', 'status': {'state': state}}}]
+        with peer_server(store, events) as (url, received):
+            client = m.Client(config(url), store)
+            result = client.send(client.prepare('hello'))
+        assert result['remote_state'] == state
+>       assert result['local_state'] == ('uncertain' if state == 'TASK_STATE_WORKING' else 'intervention_required')
+E       AssertionError: assert 'observed' == 'uncertain'
+E         
+E         - uncertain
+E         + observed
+
+tests/plugins/test_a2a_outbound_recovery.py:42: AssertionError
+_ test_remote_state_not_replaced_by_local_intervention[TASK_STATE_INPUT_REQUIRED] _
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-uz2jihux/pytest-of-hermeswebui/pytest-0/test_remote_state_not_replaced1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7efdae926870>
+state = 'TASK_STATE_INPUT_REQUIRED'
+
+    @pytest.mark.parametrize('state', ['TASK_STATE_WORKING', 'TASK_STATE_INPUT_REQUIRED', 'TASK_STATE_AUTH_REQUIRED'])
+    def test_remote_state_not_replaced_by_local_intervention(tmp_path, monkeypatch, state):
+        m = module()
+        store = m.Store(tmp_path / 'requests')
+        monkeypatch.setenv('A2A_TEST_TOKEN', 'fixture-secret')
+        events = [{'task': {'id': 'remote-1', 'contextId': 'ctx-1', 'status': {'state': state}}}]
+        with peer_server(store, events) as (url, received):
+            client = m.Client(config(url), store)
+            result = client.send(client.prepare('hello'))
+        assert result['remote_state'] == state
+>       assert result['local_state'] == ('uncertain' if state == 'TASK_STATE_WORKING' else 'intervention_required')
+E       AssertionError: assert 'observed' == 'intervention_required'
+E         
+E         - intervention_required
+E         + observed
+
+tests/plugins/test_a2a_outbound_recovery.py:42: AssertionError
+_ test_remote_state_not_replaced_by_local_intervention[TASK_STATE_AUTH_REQUIRED] _
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-uz2jihux/pytest-of-hermeswebui/pytest-0/test_remote_state_not_replaced2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7efdae9255b0>
+state = 'TASK_STATE_AUTH_REQUIRED'
+
+    @pytest.mark.parametrize('state', ['TASK_STATE_WORKING', 'TASK_STATE_INPUT_REQUIRED', 'TASK_STATE_AUTH_REQUIRED'])
+    def test_remote_state_not_replaced_by_local_intervention(tmp_path, monkeypatch, state):
+        m = module()
+        store = m.Store(tmp_path / 'requests')
+        monkeypatch.setenv('A2A_TEST_TOKEN', 'fixture-secret')
+        events = [{'task': {'id': 'remote-1', 'contextId': 'ctx-1', 'status': {'state': state}}}]
+        with peer_server(store, events) as (url, received):
+            client = m.Client(config(url), store)
+            result = client.send(client.prepare('hello'))
+        assert result['remote_state'] == state
+>       assert result['local_state'] == ('uncertain' if state == 'TASK_STATE_WORKING' else 'intervention_required')
+E       AssertionError: assert 'observed' == 'intervention_required'
+E         
+E         - intervention_required
+E         + observed
+
+tests/plugins/test_a2a_outbound_recovery.py:42: AssertionError
+___________________ test_echoed_credential_is_not_persisted ____________________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-uz2jihux/pytest-of-hermeswebui/pytest-0/test_echoed_credential_is_not_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7efdae8a8f50>
+
+    def test_echoed_credential_is_not_persisted(tmp_path, monkeypatch):
+        m = module()
+        store = m.Store(tmp_path / 'requests')
+        monkeypatch.setenv('A2A_TEST_TOKEN', 'fixture-secret')
+        events = [{'task': {'id': 'remote-1', 'contextId': 'ctx-1', 'status': {'state': 'TASK_STATE_COMPLETED'},
+                            'artifacts': [{'parts': [{'text': 'fixture-secret'}]}]}}]
+        with peer_server(store, events) as (url, received):
+            client = m.Client(config(url), store)
+>           with pytest.raises(ValueError):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE ValueError
+
+tests/plugins/test_a2a_outbound_recovery.py:54: Failed
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change0]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change1]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change2]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change3]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change4]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change5]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change6]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change7]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change8]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change9]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change10]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change11]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_config_rejects_unapproved_transport[change12]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_credentials_fail_closed_without_durable_secret
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_remote_state_not_replaced_by_local_intervention[TASK_STATE_WORKING]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_remote_state_not_replaced_by_local_intervention[TASK_STATE_INPUT_REQUIRED]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_remote_state_not_replaced_by_local_intervention[TASK_STATE_AUTH_REQUIRED]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_echoed_credential_is_not_persisted
+========================= 18 failed, 5 passed in 5.40s =========================
+
+=== 1 file with test failures (18 tests failed) ===
+  tests/plugins/test_a2a_outbound_recovery.py  (18 tests failed)

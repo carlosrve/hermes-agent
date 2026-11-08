@@ -1,0 +1,76 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 2 test files (~8 tests) under ['tests/plugins/test_a2a_schema_registration.py', 'tests/plugins/test_a2a_tools_gate.py']; running with -j 24
+[ 75.0% |     6/~8 | ✓5 | ✗1] ✗ tests/plugins/test_a2a_tools_gate.py (5✓ 1✗, 0.6s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_tools_gate.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║ ============================= test session starts ==============================
+  ║ platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+  ║ rootdir: /workspace/a2a-integration
+  ║ configfile: pyproject.toml
+  ║ plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+  ║ asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+  ║ collected 6 items
+  ║ 
+  ║ tests/plugins/test_a2a_tools_gate.py .F....                              [100%]
+  ║ 
+  ║ =================================== FAILURES ===================================
+  ║ _____________ TestA2AToolsGate.test_all_five_tools_carry_the_gate ______________
+  ║ 
+  ║ self = <tests.plugins.test_a2a_tools_gate.TestA2AToolsGate testMethod=test_all_five_tools_carry_the_gate>
+  ║ 
+  ║ >   ???
+  ║ E   AssertionError: 6 != 5 : ['a2a_call', 'a2a_discover', 'a2a_history', 'a2a_list', 'a2a_orchestrate', 'a2a_outbound']
+  ║ 
+  ║ /workspace/lfc/a2a-integration/tests/plugins/test_a2a_tools_gate.py:59: AssertionError
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_tools_gate.py::TestA2AToolsGate::test_all_five_tools_carry_the_gate
+  ║ ========================= 1 failed, 5 passed in 0.23s ==========================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_tools_gate.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+[100.0% |     8/~8 | ✓7 | ✗1] ✓ tests/plugins/test_a2a_schema_registration.py (2✓, 1.1s)
+
+=== Summary: 2 files, 7 tests passed, 1 failed (100% complete) in 1.1s (24 workers) ===
+  Durations cached to test_durations.json (2 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   2
+  Total subprocess CPU-wall: 1.7s  (runner wall: 1.1s, parallelism: 24x)
+  P50: 1.08s  P90: 1.08s  P95: 1.08s  P99: 1.08s  Max: 1.08s
+  <1s: 1 files (50%)  <2s: 2 files (100%)
+  Top 10 slowest:
+      1.08s  tests/plugins/test_a2a_schema_registration.py
+      0.64s  tests/plugins/test_a2a_tools_gate.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_tools_gate.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 6 items
+
+tests/plugins/test_a2a_tools_gate.py .F....                              [100%]
+
+=================================== FAILURES ===================================
+_____________ TestA2AToolsGate.test_all_five_tools_carry_the_gate ______________
+
+self = <tests.plugins.test_a2a_tools_gate.TestA2AToolsGate testMethod=test_all_five_tools_carry_the_gate>
+
+>   ???
+E   AssertionError: 6 != 5 : ['a2a_call', 'a2a_discover', 'a2a_history', 'a2a_list', 'a2a_orchestrate', 'a2a_outbound']
+
+/workspace/lfc/a2a-integration/tests/plugins/test_a2a_tools_gate.py:59: AssertionError
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_tools_gate.py::TestA2AToolsGate::test_all_five_tools_carry_the_gate
+========================= 1 failed, 5 passed in 0.23s ==========================
+
+=== 1 file with test failures (1 test failed) ===
+  tests/plugins/test_a2a_tools_gate.py  (1 test failed)

@@ -1,0 +1,553 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~5 tests) under ['tests/plugins/test_a2a_outbound_validation.py']; running with -j 24
+[100.0% |     5/~5 | ✓ 30 | ✗ 79] ✗ tests/plugins/test_a2a_outbound_validation.py (30✓ 79✗, 1.3s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_outbound_validation.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-status.state-3]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-status.state-4]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-status.message-0]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-status.timestamp-0]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-status.timestamp-1]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-status.timestamp-2]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-history-0]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-history-1]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-artifacts-0]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-artifacts-1]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-artifacts-2]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[statusUpdate-bad-contextId-0]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[statusUpdate-bad-contextId-1]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact-0]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact-1]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact-2]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact.artifactId-0]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact.artifactId-1]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact.parts-0]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact.parts-1]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact.parts-2]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-append-0]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-append-1]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-lastChunk-0]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-lastChunk-1]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-metadata-0]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-metadata-1]
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_rejected_identity_does_not_partially_mutate_record
+  ║ FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_gettask_result_preserves_last_ack[result1]
+  ║ ======================== 79 failed, 30 passed in 0.91s =========================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_outbound_validation.py --tb=short
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 30 tests passed, 79 failed (100% complete) in 1.3s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 1.3s  (runner wall: 1.3s, parallelism: 24x)
+  P50: 1.34s  P90: 1.34s  P95: 1.34s  P99: 1.34s  Max: 1.34s
+  <1s: 0 files (0%)  <2s: 1 files (100%)
+  Top 10 slowest:
+      1.34s  tests/plugins/test_a2a_outbound_validation.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_outbound_validation.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/lfc/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 109 items
+
+tests/plugins/test_a2a_outbound_validation.py FFFFFF.F..FF..FFFFFFFFFFFF [ 23%]
+FFFFFFFFFFFFFFFFFFFFFFFFF.....FFFF......FFFFFFFFFFFFF.FFFFFFFFFFFFFF.... [ 89%]
+.......F.F.                                                              [100%]
+
+=================================== FAILURES ===================================
+___ test_malformed_variant_preserves_memory_and_durable_state[empty-message] ___
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+__ test_malformed_variant_preserves_memory_and_durable_state[task-no-status] ___
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-missing-messageId] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-missing-role] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-missing-parts] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-missing-contextId] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[task-missing-status] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[statusUpdate-missing-contextId] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[statusUpdate-missing-status] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-missing-contextId] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-missing-artifact] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-missing-artifact.artifactId] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-missing-artifact.parts] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-messageId-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-messageId-1] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-messageId-2] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-messageId-3] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-messageId-4] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-role-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-role-1] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-role-2] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-role-3] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-role-4] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-parts-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-parts-1] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-parts-2] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-parts-3] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-parts-4] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-parts-5] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-parts-6] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-parts-7] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-parts-8] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-contextId-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-contextId-1] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-contextId-2] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-contextId-3] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-taskId-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-taskId-1] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-taskId-2] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-taskId-3] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-metadata-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-metadata-1] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-extensions-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-extensions-1] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-referenceTaskIds-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[message-bad-referenceTaskIds-1] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[task-bad-contextId-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[task-bad-contextId-1] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[task-bad-contextId-2] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[task-bad-contextId-3] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[task-bad-status.state-3] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[task-bad-status.state-4] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[task-bad-status.message-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[task-bad-status.timestamp-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[task-bad-status.timestamp-1] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[task-bad-status.timestamp-2] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[task-bad-history-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[task-bad-history-1] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[task-bad-artifacts-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[task-bad-artifacts-1] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[task-bad-artifacts-2] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[statusUpdate-bad-contextId-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[statusUpdate-bad-contextId-1] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact-1] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact-2] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact.artifactId-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact.artifactId-1] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact.parts-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact.parts-1] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact.parts-2] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-append-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-append-1] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-lastChunk-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-lastChunk-1] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-metadata-0] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+_ test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-metadata-1] _
+tests/plugins/test_a2a_outbound_validation.py:99: in test_malformed_variant_preserves_memory_and_durable_state
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+___________ test_rejected_identity_does_not_partially_mutate_record ____________
+tests/plugins/test_a2a_outbound_validation.py:139: in test_rejected_identity_does_not_partially_mutate_record
+    assert record == before
+E   AssertionError: assert {'revision': ...lo'}]}}}, ...} == {'revision': ...lo'}]}}}, ...}
+E     
+E     Omitting 8 identical items, use -vv to show
+E     Differing items:
+E     {'task_id': 't'} != {'task_id': None}
+E     Use -v to get more diff
+__________ test_malformed_gettask_result_preserves_last_ack[result1] ___________
+tests/plugins/test_a2a_outbound_validation.py:156: in test_malformed_gettask_result_preserves_last_ack
+    with pytest.raises(m.ProtocolError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ProtocolError
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[empty-message]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-no-status]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-missing-messageId]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-missing-role]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-missing-parts]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-missing-contextId]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-missing-status]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[statusUpdate-missing-contextId]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[statusUpdate-missing-status]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-missing-contextId]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-missing-artifact]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-missing-artifact.artifactId]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-missing-artifact.parts]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-messageId-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-messageId-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-messageId-2]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-messageId-3]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-messageId-4]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-role-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-role-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-role-2]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-role-3]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-role-4]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-parts-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-parts-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-parts-2]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-parts-3]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-parts-4]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-parts-5]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-parts-6]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-parts-7]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-parts-8]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-contextId-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-contextId-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-contextId-2]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-contextId-3]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-taskId-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-taskId-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-taskId-2]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-taskId-3]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-metadata-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-metadata-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-extensions-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-extensions-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-referenceTaskIds-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[message-bad-referenceTaskIds-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-contextId-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-contextId-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-contextId-2]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-contextId-3]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-status.state-3]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-status.state-4]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-status.message-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-status.timestamp-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-status.timestamp-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-status.timestamp-2]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-history-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-history-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-artifacts-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-artifacts-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[task-bad-artifacts-2]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[statusUpdate-bad-contextId-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[statusUpdate-bad-contextId-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact-2]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact.artifactId-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact.artifactId-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact.parts-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact.parts-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-artifact.parts-2]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-append-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-append-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-lastChunk-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-lastChunk-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-metadata-0]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_variant_preserves_memory_and_durable_state[artifactUpdate-bad-metadata-1]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_rejected_identity_does_not_partially_mutate_record
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_malformed_gettask_result_preserves_last_ack[result1]
+======================== 79 failed, 30 passed in 0.91s =========================
+
+=== 1 file with test failures (79 tests failed) ===
+  tests/plugins/test_a2a_outbound_validation.py  (79 tests failed)

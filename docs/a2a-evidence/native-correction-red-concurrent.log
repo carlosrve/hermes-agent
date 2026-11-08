@@ -1,0 +1,193 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~11 tests) under ['tests/plugins/test_a2a_native_dispatch.py']; running with -j 24
+[100.0% |    11/~11 | ✓4 | ✗2] ✗ tests/plugins/test_a2a_native_dispatch.py (4✓ 2✗, 1.6s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_native_dispatch.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║             assert block is None
+  ║             assert name == 'a2a_outbound'
+  ║             ref = _ToolCallRef(name, actual, 'terminal-not-owner', 'call', [])
+  ║             if executor == 'concurrent':
+  ║                 from agent.agent_runtime_helpers import invoke_tool
+  ║                 return json.loads(invoke_tool(agent, name, actual, ref.task_id, ref.call_id,
+  ║                                               skip_tool_request_middleware=True,
+  ║                                               skip_tool_execution_middleware=True))
+  ║             return json.loads(_resolve_sequential_dispatch(agent, ref, []).execute(actual))
+  ║     
+  ║         draft = execute({'action': 'prepare', 'message': 'hello'})
+  ║ >       assert draft['status'] == 'ok', draft
+  ║ E       AssertionError: {'status': 'blocked', 'reason': 'trusted_grant_required'}
+  ║ E       assert 'blocked' == 'ok'
+  ║ E         
+  ║ E         - ok
+  ║ E         + blocked
+  ║ 
+  ║ tests/plugins/test_a2a_native_dispatch.py:215: AssertionError
+  ║ ------------------------------ Captured log call -------------------------------
+  ║ WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_outbound without override=True
+  ║ WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_discover without override=True
+  ║ WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_call without override=True
+  ║ WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_list without override=True
+  ║ WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_history without override=True
+  ║ WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_orchestrate without override=True
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_real_tool_search_executor_roundtrip[concurrent-auto]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_real_tool_search_executor_roundtrip[concurrent-on]
+  ║ ================== 2 failed, 4 passed, 38 deselected in 1.08s ==================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_native_dispatch.py -k real_tool_search_executor_roundtrip
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 4 tests passed, 2 failed (100% complete) in 1.6s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 1.6s  (runner wall: 1.6s, parallelism: 24x)
+  P50: 1.60s  P90: 1.60s  P95: 1.60s  P99: 1.60s  Max: 1.60s
+  <1s: 0 files (0%)  <2s: 1 files (100%)
+  Top 10 slowest:
+      1.60s  tests/plugins/test_a2a_native_dispatch.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_native_dispatch.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 44 items / 38 deselected / 6 selected
+
+tests/plugins/test_a2a_native_dispatch.py ...FF.                         [100%]
+
+=================================== FAILURES ===================================
+__________ test_real_tool_search_executor_roundtrip[concurrent-auto] ___________
+
+native = (<function native.<locals>.call at 0x7f4c5ddd8180>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...15e0>, PosixPath('/tmp/hermes-pytest-tmproot-2hw3e6qq/pytest-of-hermeswebui/pytest-0/test_real_tool_search_executor3'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f4c606f0f20>
+mode = 'auto', executor = 'concurrent'
+
+    @pytest.mark.parametrize('mode', ['auto', 'on', 'off'])
+    @pytest.mark.parametrize('executor', ['sequential', 'concurrent'])
+    def test_real_tool_search_executor_roundtrip(native, monkeypatch, mode, executor):
+        import model_tools
+        import tools.registry as registry_module
+        from tools.tool_search import ToolSearchConfig, assemble_tool_defs
+        from agent.tool_executor import (
+            _ToolCallRef, _resolve_sequential_dispatch, _unwrap_tool_search_call,
+        )
+        _, _, registry, home = native
+        monkeypatch.setattr(registry_module, 'registry', registry)
+        direct = model_tools.get_tool_definitions(
+            enabled_toolsets=['a2a_outbound'], disabled_toolsets=[],
+            quiet_mode=True, skip_tool_search_assembly=True)
+        assert {t['function']['name'] for t in direct} == {'a2a_outbound'}
+        assembly = assemble_tool_defs(direct, config=ToolSearchConfig(
+            enabled=mode, threshold_pct=5, search_default_limit=5, max_search_limit=20))
+        names = {t['function']['name'] for t in assembly.tool_defs}
+        assert ('a2a_outbound' in names) == (mode == 'off')
+        agent = SimpleNamespace(session_id='owner', valid_tool_names=names,
+                                enabled_toolsets=['a2a_outbound'], disabled_toolsets=[],
+                                _context_engine_tool_names=set(), _memory_manager=None, quiet_mode=False)
+    
+        def execute(args):
+            name, actual, block = _unwrap_tool_search_call(
+                agent, 'a2a_outbound' if mode == 'off' else 'tool_call',
+                args if mode == 'off' else {'calls': [{'name': 'a2a_outbound', 'arguments': args}]})
+            assert block is None
+            assert name == 'a2a_outbound'
+            ref = _ToolCallRef(name, actual, 'terminal-not-owner', 'call', [])
+            if executor == 'concurrent':
+                from agent.agent_runtime_helpers import invoke_tool
+                return json.loads(invoke_tool(agent, name, actual, ref.task_id, ref.call_id,
+                                              skip_tool_request_middleware=True,
+                                              skip_tool_execution_middleware=True))
+            return json.loads(_resolve_sequential_dispatch(agent, ref, []).execute(actual))
+    
+        draft = execute({'action': 'prepare', 'message': 'hello'})
+>       assert draft['status'] == 'ok', draft
+E       AssertionError: {'status': 'blocked', 'reason': 'trusted_grant_required'}
+E       assert 'blocked' == 'ok'
+E         
+E         - ok
+E         + blocked
+
+tests/plugins/test_a2a_native_dispatch.py:215: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_outbound without override=True
+WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_discover without override=True
+WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_call without override=True
+WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_list without override=True
+WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_history without override=True
+WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_orchestrate without override=True
+___________ test_real_tool_search_executor_roundtrip[concurrent-on] ____________
+
+native = (<function native.<locals>.call at 0x7f4c5cb08540>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...3710>, PosixPath('/tmp/hermes-pytest-tmproot-2hw3e6qq/pytest-of-hermeswebui/pytest-0/test_real_tool_search_executor4'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f4c5cb0caa0>
+mode = 'on', executor = 'concurrent'
+
+    @pytest.mark.parametrize('mode', ['auto', 'on', 'off'])
+    @pytest.mark.parametrize('executor', ['sequential', 'concurrent'])
+    def test_real_tool_search_executor_roundtrip(native, monkeypatch, mode, executor):
+        import model_tools
+        import tools.registry as registry_module
+        from tools.tool_search import ToolSearchConfig, assemble_tool_defs
+        from agent.tool_executor import (
+            _ToolCallRef, _resolve_sequential_dispatch, _unwrap_tool_search_call,
+        )
+        _, _, registry, home = native
+        monkeypatch.setattr(registry_module, 'registry', registry)
+        direct = model_tools.get_tool_definitions(
+            enabled_toolsets=['a2a_outbound'], disabled_toolsets=[],
+            quiet_mode=True, skip_tool_search_assembly=True)
+        assert {t['function']['name'] for t in direct} == {'a2a_outbound'}
+        assembly = assemble_tool_defs(direct, config=ToolSearchConfig(
+            enabled=mode, threshold_pct=5, search_default_limit=5, max_search_limit=20))
+        names = {t['function']['name'] for t in assembly.tool_defs}
+        assert ('a2a_outbound' in names) == (mode == 'off')
+        agent = SimpleNamespace(session_id='owner', valid_tool_names=names,
+                                enabled_toolsets=['a2a_outbound'], disabled_toolsets=[],
+                                _context_engine_tool_names=set(), _memory_manager=None, quiet_mode=False)
+    
+        def execute(args):
+            name, actual, block = _unwrap_tool_search_call(
+                agent, 'a2a_outbound' if mode == 'off' else 'tool_call',
+                args if mode == 'off' else {'calls': [{'name': 'a2a_outbound', 'arguments': args}]})
+            assert block is None
+            assert name == 'a2a_outbound'
+            ref = _ToolCallRef(name, actual, 'terminal-not-owner', 'call', [])
+            if executor == 'concurrent':
+                from agent.agent_runtime_helpers import invoke_tool
+                return json.loads(invoke_tool(agent, name, actual, ref.task_id, ref.call_id,
+                                              skip_tool_request_middleware=True,
+                                              skip_tool_execution_middleware=True))
+            return json.loads(_resolve_sequential_dispatch(agent, ref, []).execute(actual))
+    
+        draft = execute({'action': 'prepare', 'message': 'hello'})
+>       assert draft['status'] == 'ok', draft
+E       AssertionError: {'status': 'blocked', 'reason': 'trusted_grant_required'}
+E       assert 'blocked' == 'ok'
+E         
+E         - ok
+E         + blocked
+
+tests/plugins/test_a2a_native_dispatch.py:215: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_outbound without override=True
+WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_discover without override=True
+WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_call without override=True
+WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_list without override=True
+WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_history without override=True
+WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_orchestrate without override=True
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_real_tool_search_executor_roundtrip[concurrent-auto]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_real_tool_search_executor_roundtrip[concurrent-on]
+================== 2 failed, 4 passed, 38 deselected in 1.08s ==================
+
+=== 1 file with test failures (2 tests failed) ===
+  tests/plugins/test_a2a_native_dispatch.py  (2 tests failed)

@@ -1,0 +1,1160 @@
+FF...FF...FF...FF........FF...FF...FF...FF...FF...FF...FF...FFFFFFFFFFFF [ 88%]
+F........                                                                [100%]
+=================================== FAILURES ===================================
+____________ test_nonfinite_wire_preserves_last_ack[sse-data-1e999] ____________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e41491280>
+number = '1e999', path = 'data', transport = 'sse'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+___________ test_nonfinite_wire_preserves_last_ack[sse-data--1e999] ____________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e410d5ac0>
+number = '-1e999', path = 'data', transport = 'sse'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+__________ test_nonfinite_wire_preserves_last_ack[sse-metadata-1e999] __________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_5')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e410d59d0>
+number = '1e999', path = 'metadata', transport = 'sse'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+_________ test_nonfinite_wire_preserves_last_ack[sse-metadata--1e999] __________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_6')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e40c1ba70>
+number = '-1e999', path = 'metadata', transport = 'sse'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+__________ test_nonfinite_wire_preserves_last_ack[sse-artifact-1e999] __________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_10')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e408df680>
+number = '1e999', path = 'artifact', transport = 'sse'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+_________ test_nonfinite_wire_preserves_last_ack[sse-artifact--1e999] __________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_11')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e408dfd70>
+number = '-1e999', path = 'artifact', transport = 'sse'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+__________ test_nonfinite_wire_preserves_last_ack[sse-history-1e999] ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_15')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e407d7020>
+number = '1e999', path = 'history', transport = 'sse'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+__________ test_nonfinite_wire_preserves_last_ack[sse-history--1e999] __________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_16')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e407d7980>
+number = '-1e999', path = 'history', transport = 'sse'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+_________ test_nonfinite_wire_preserves_last_ack[sse-extension-1e999] __________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_25')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e407ebfe0>
+number = '1e999', path = 'extension', transport = 'sse'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+_________ test_nonfinite_wire_preserves_last_ack[sse-extension--1e999] _________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_26')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e407efb00>
+number = '-1e999', path = 'extension', transport = 'sse'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+__________ test_nonfinite_wire_preserves_last_ack[gettask-data-1e999] __________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_30')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e407eee10>
+number = '1e999', path = 'data', transport = 'gettask'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+_________ test_nonfinite_wire_preserves_last_ack[gettask-data--1e999] __________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_31')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e407ebb90>
+number = '-1e999', path = 'data', transport = 'gettask'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+________ test_nonfinite_wire_preserves_last_ack[gettask-metadata-1e999] ________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_35')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e40815490>
+number = '1e999', path = 'metadata', transport = 'gettask'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+_______ test_nonfinite_wire_preserves_last_ack[gettask-metadata--1e999] ________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_36')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e40814200>
+number = '-1e999', path = 'metadata', transport = 'gettask'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+________ test_nonfinite_wire_preserves_last_ack[gettask-artifact-1e999] ________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_40')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e40859b50>
+number = '1e999', path = 'artifact', transport = 'gettask'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+_______ test_nonfinite_wire_preserves_last_ack[gettask-artifact--1e999] ________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_41')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e408586e0>
+number = '-1e999', path = 'artifact', transport = 'gettask'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+________ test_nonfinite_wire_preserves_last_ack[gettask-history-1e999] _________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_45')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e40858140>
+number = '1e999', path = 'history', transport = 'gettask'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+________ test_nonfinite_wire_preserves_last_ack[gettask-history--1e999] ________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_46')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e40859580>
+number = '-1e999', path = 'history', transport = 'gettask'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+_________ test_nonfinite_wire_preserves_last_ack[gettask-error-1e999] __________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_50')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e40816a50>
+number = '1e999', path = 'error', transport = 'gettask'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+_________ test_nonfinite_wire_preserves_last_ack[gettask-error--1e999] _________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_51')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e40816e10>
+number = '-1e999', path = 'error', transport = 'gettask'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+_______ test_nonfinite_wire_preserves_last_ack[gettask-extension-1e999] ________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_55')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e40817f50>
+number = '1e999', path = 'extension', transport = 'gettask'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+_______ test_nonfinite_wire_preserves_last_ack[gettask-extension--1e999] _______
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_nonfinite_wire_preserves_56')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e407eca40>
+number = '-1e999', path = 'extension', transport = 'gettask'
+
+    @pytest.mark.parametrize('number', ['1e999', '-1e999', 'NaN', 'Infinity', '-Infinity'])
+    @pytest.mark.parametrize('path', ['data', 'metadata', 'artifact', 'history', 'error', 'extension'])
+    @pytest.mark.parametrize('transport', ['sse', 'gettask'])
+    def test_nonfinite_wire_preserves_last_ack(tmp_path, monkeypatch, number, path, transport):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        client._event(record, envelope(record, {'task': TASK}), record['request']['id'])
+        before = copy.deepcopy(record)
+        task = copy.deepcopy(TASK)
+        nested = {'nested': [0, {'value': 'NUMBER_MARKER'}]}
+        if path == 'data':
+            task['status']['message'] = {**MESSAGE, 'parts': [{'data': nested}]}
+        elif path == 'artifact':
+            task['artifacts'] = [{**ARTIFACT, 'metadata': nested, 'parts': [{'data': nested}]}]
+        elif path == 'history':
+            task['history'] = [{**MESSAGE, 'role': 'ROLE_USER', 'parts': [{'data': nested}]}]
+        else:
+            task[path] = nested
+    
+        @contextmanager
+        def response(body, stream):
+            result = {'task': task} if stream else task
+            payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': result}
+            if path == 'error':
+                payload.pop('result')
+                payload['error'] = {'code': -32001, 'message': 'missing',
+                                    'data': [{'@type': 'example.invalid/detail', **nested}]}
+            raw = json.dumps(payload).replace('"NUMBER_MARKER"', number)
+            yield io.BytesIO((('data: ' + raw + '\n\n') if stream else raw).encode()).read
+    
+        monkeypatch.setattr(client, '_open', response)
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:107: Failed
+_________ test_native_nonfinite_rejected_before_mutation[message-nan] __________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_native_nonfinite_rejected0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e407ee660>
+number = nan, kind = 'message'
+
+    @pytest.mark.parametrize('number', [float('nan'), float('inf'), float('-inf')])
+    @pytest.mark.parametrize('kind', VARIANTS)
+    def test_native_nonfinite_rejected_before_mutation(tmp_path, monkeypatch, number, kind):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        before = copy.deepcopy(record)
+        result = {kind: {**VARIANTS[kind], 'metadata': {'nested': [number]}}}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:124: Failed
+_________ test_native_nonfinite_rejected_before_mutation[message-inf] __________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_native_nonfinite_rejected1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e407ee270>
+number = inf, kind = 'message'
+
+    @pytest.mark.parametrize('number', [float('nan'), float('inf'), float('-inf')])
+    @pytest.mark.parametrize('kind', VARIANTS)
+    def test_native_nonfinite_rejected_before_mutation(tmp_path, monkeypatch, number, kind):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        before = copy.deepcopy(record)
+        result = {kind: {**VARIANTS[kind], 'metadata': {'nested': [number]}}}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:124: Failed
+_________ test_native_nonfinite_rejected_before_mutation[message--inf] _________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_native_nonfinite_rejected2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e407ea9f0>
+number = -inf, kind = 'message'
+
+    @pytest.mark.parametrize('number', [float('nan'), float('inf'), float('-inf')])
+    @pytest.mark.parametrize('kind', VARIANTS)
+    def test_native_nonfinite_rejected_before_mutation(tmp_path, monkeypatch, number, kind):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        before = copy.deepcopy(record)
+        result = {kind: {**VARIANTS[kind], 'metadata': {'nested': [number]}}}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:124: Failed
+___________ test_native_nonfinite_rejected_before_mutation[task-nan] ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_native_nonfinite_rejected3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e407ec9e0>
+number = nan, kind = 'task'
+
+    @pytest.mark.parametrize('number', [float('nan'), float('inf'), float('-inf')])
+    @pytest.mark.parametrize('kind', VARIANTS)
+    def test_native_nonfinite_rejected_before_mutation(tmp_path, monkeypatch, number, kind):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        before = copy.deepcopy(record)
+        result = {kind: {**VARIANTS[kind], 'metadata': {'nested': [number]}}}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:124: Failed
+___________ test_native_nonfinite_rejected_before_mutation[task-inf] ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_native_nonfinite_rejected4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e4083ccb0>
+number = inf, kind = 'task'
+
+    @pytest.mark.parametrize('number', [float('nan'), float('inf'), float('-inf')])
+    @pytest.mark.parametrize('kind', VARIANTS)
+    def test_native_nonfinite_rejected_before_mutation(tmp_path, monkeypatch, number, kind):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        before = copy.deepcopy(record)
+        result = {kind: {**VARIANTS[kind], 'metadata': {'nested': [number]}}}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:124: Failed
+__________ test_native_nonfinite_rejected_before_mutation[task--inf] ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_native_nonfinite_rejected5')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e4083d190>
+number = -inf, kind = 'task'
+
+    @pytest.mark.parametrize('number', [float('nan'), float('inf'), float('-inf')])
+    @pytest.mark.parametrize('kind', VARIANTS)
+    def test_native_nonfinite_rejected_before_mutation(tmp_path, monkeypatch, number, kind):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        before = copy.deepcopy(record)
+        result = {kind: {**VARIANTS[kind], 'metadata': {'nested': [number]}}}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:124: Failed
+_______ test_native_nonfinite_rejected_before_mutation[statusUpdate-nan] _______
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_native_nonfinite_rejected6')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e4083dd60>
+number = nan, kind = 'statusUpdate'
+
+    @pytest.mark.parametrize('number', [float('nan'), float('inf'), float('-inf')])
+    @pytest.mark.parametrize('kind', VARIANTS)
+    def test_native_nonfinite_rejected_before_mutation(tmp_path, monkeypatch, number, kind):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        before = copy.deepcopy(record)
+        result = {kind: {**VARIANTS[kind], 'metadata': {'nested': [number]}}}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:124: Failed
+_______ test_native_nonfinite_rejected_before_mutation[statusUpdate-inf] _______
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_native_nonfinite_rejected7')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e4083f050>
+number = inf, kind = 'statusUpdate'
+
+    @pytest.mark.parametrize('number', [float('nan'), float('inf'), float('-inf')])
+    @pytest.mark.parametrize('kind', VARIANTS)
+    def test_native_nonfinite_rejected_before_mutation(tmp_path, monkeypatch, number, kind):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        before = copy.deepcopy(record)
+        result = {kind: {**VARIANTS[kind], 'metadata': {'nested': [number]}}}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:124: Failed
+______ test_native_nonfinite_rejected_before_mutation[statusUpdate--inf] _______
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_native_nonfinite_rejected8')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e4083d6a0>
+number = -inf, kind = 'statusUpdate'
+
+    @pytest.mark.parametrize('number', [float('nan'), float('inf'), float('-inf')])
+    @pytest.mark.parametrize('kind', VARIANTS)
+    def test_native_nonfinite_rejected_before_mutation(tmp_path, monkeypatch, number, kind):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        before = copy.deepcopy(record)
+        result = {kind: {**VARIANTS[kind], 'metadata': {'nested': [number]}}}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:124: Failed
+______ test_native_nonfinite_rejected_before_mutation[artifactUpdate-nan] ______
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_native_nonfinite_rejected9')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e4083d670>
+number = nan, kind = 'artifactUpdate'
+
+    @pytest.mark.parametrize('number', [float('nan'), float('inf'), float('-inf')])
+    @pytest.mark.parametrize('kind', VARIANTS)
+    def test_native_nonfinite_rejected_before_mutation(tmp_path, monkeypatch, number, kind):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        before = copy.deepcopy(record)
+        result = {kind: {**VARIANTS[kind], 'metadata': {'nested': [number]}}}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:124: Failed
+______ test_native_nonfinite_rejected_before_mutation[artifactUpdate-inf] ______
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_native_nonfinite_rejected10')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e4083f6e0>
+number = inf, kind = 'artifactUpdate'
+
+    @pytest.mark.parametrize('number', [float('nan'), float('inf'), float('-inf')])
+    @pytest.mark.parametrize('kind', VARIANTS)
+    def test_native_nonfinite_rejected_before_mutation(tmp_path, monkeypatch, number, kind):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        before = copy.deepcopy(record)
+        result = {kind: {**VARIANTS[kind], 'metadata': {'nested': [number]}}}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:124: Failed
+_____ test_native_nonfinite_rejected_before_mutation[artifactUpdate--inf] ______
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_native_nonfinite_rejected11')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e4083d640>
+number = -inf, kind = 'artifactUpdate'
+
+    @pytest.mark.parametrize('number', [float('nan'), float('inf'), float('-inf')])
+    @pytest.mark.parametrize('kind', VARIANTS)
+    def test_native_nonfinite_rejected_before_mutation(tmp_path, monkeypatch, number, kind):
+        m, client, record = setup_client(tmp_path, monkeypatch)
+        before = copy.deepcopy(record)
+        result = {kind: {**VARIANTS[kind], 'metadata': {'nested': [number]}}}
+>       with pytest.raises(m.ProtocolError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ProtocolError
+
+tests/plugins/test_a2a_outbound_validation.py:124: Failed
+_______________ test_store_nonfinite_serialization_is_defensive ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-hermeswebui/pytest-29/test_store_nonfinite_serializa0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7e407effb0>
+
+    def test_store_nonfinite_serialization_is_defensive(tmp_path, monkeypatch):
+        _, client, record = setup_client(tmp_path, monkeypatch)
+        before = copy.deepcopy(record)
+        record['events'].append({'nested': [float('nan')]})
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/plugins/test_a2a_outbound_validation.py:134: Failed
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[sse-data-1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[sse-data--1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[sse-metadata-1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[sse-metadata--1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[sse-artifact-1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[sse-artifact--1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[sse-history-1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[sse-history--1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[sse-extension-1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[sse-extension--1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[gettask-data-1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[gettask-data--1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[gettask-metadata-1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[gettask-metadata--1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[gettask-artifact-1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[gettask-artifact--1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[gettask-history-1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[gettask-history--1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[gettask-error-1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[gettask-error--1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[gettask-extension-1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_nonfinite_wire_preserves_last_ack[gettask-extension--1e999]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_native_nonfinite_rejected_before_mutation[message-nan]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_native_nonfinite_rejected_before_mutation[message-inf]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_native_nonfinite_rejected_before_mutation[message--inf]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_native_nonfinite_rejected_before_mutation[task-nan]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_native_nonfinite_rejected_before_mutation[task-inf]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_native_nonfinite_rejected_before_mutation[task--inf]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_native_nonfinite_rejected_before_mutation[statusUpdate-nan]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_native_nonfinite_rejected_before_mutation[statusUpdate-inf]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_native_nonfinite_rejected_before_mutation[statusUpdate--inf]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_native_nonfinite_rejected_before_mutation[artifactUpdate-nan]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_native_nonfinite_rejected_before_mutation[artifactUpdate-inf]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_native_nonfinite_rejected_before_mutation[artifactUpdate--inf]
+FAILED tests/plugins/test_a2a_outbound_validation.py::test_store_nonfinite_serialization_is_defensive
+35 failed, 46 passed, 138 deselected in 0.79s

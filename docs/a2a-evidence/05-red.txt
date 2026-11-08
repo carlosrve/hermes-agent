@@ -1,0 +1,349 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~3 tests) under ['tests/plugins/test_a2a_outbound_recovery.py']; running with -j 24
+[100.0% |     3/~3 | ✓2 | ✗3] ✗ tests/plugins/test_a2a_outbound_recovery.py (2✓ 3✗, 2.0s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_outbound_recovery.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║ pid = 19359, sig = <Signals.SIGTERM: 15>, args = (), kwargs = {}
+  ║ 
+  ║     def _guarded_kill(pid, sig, *args, **kwargs):
+  ║         # Signal 0 is a pure liveness probe — it cannot terminate anything.
+  ║         # psutil.pid_exists() uses os.kill(pid, 0) on POSIX, and probing a
+  ║         # just-killed grandchild that was reparented to init (zombie with a
+  ║         # foreign parent chain) must not trip the guard. Flaked in CI on
+  ║         # test_entire_tree_is_sigkilled_not_just_parent.
+  ║         if int(sig) == 0:
+  ║             return real_kill(pid, sig, *args, **kwargs)
+  ║         if _is_own_subtree(int(pid)):
+  ║             return real_kill(pid, sig, *args, **kwargs)
+  ║ >       raise RuntimeError(
+  ║             f"tests/conftest.py live-system guard: blocked os.kill("
+  ║             f"{pid}, {sig}) — PID is outside the test process subtree. "
+  ║             "If this fired in CI it means the test reached a real "
+  ║             "kill_gateway_processes / stop_profile_gateway / cmd_update "
+  ║             "code path without mocking find_gateway_pids and os.kill. "
+  ║             "Mock both, or mark the test with "
+  ║             "@pytest.mark.live_system_guard_bypass if real signal "
+  ║             "delivery is genuinely required."
+  ║         )
+  ║ E       RuntimeError: tests/conftest.py live-system guard: blocked os.kill(19359, 15) — PID is outside the test process subtree. If this fired in CI it means the test reached a real kill_gateway_processes / stop_profile_gateway / cmd_update code path without mocking find_gateway_pids and os.kill. Mock both, or mark the test with @pytest.mark.live_system_guard_bypass if real signal delivery is genuinely required.
+  ║ 
+  ║ tests/conftest.py:1402: RuntimeError
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_separate_client_and_server_restart_never_resends[durable]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_separate_client_and_server_restart_never_resends[lost]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_separate_client_and_server_restart_never_resends[before-ack]
+  ║ ========================= 3 failed, 2 passed in 1.56s ==========================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_outbound_recovery.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 2 tests passed, 3 failed (100% complete) in 2.0s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 2.0s  (runner wall: 2.0s, parallelism: 24x)
+  P50: 1.97s  P90: 1.97s  P95: 1.97s  P99: 1.97s  Max: 1.97s
+  <1s: 0 files (0%)  <2s: 1 files (100%)
+  Top 10 slowest:
+      1.97s  tests/plugins/test_a2a_outbound_recovery.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_outbound_recovery.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/lfc/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 5 items
+
+tests/plugins/test_a2a_outbound_recovery.py FFF..                        [100%]
+
+=================================== FAILURES ===================================
+________ test_separate_client_and_server_restart_never_resends[durable] ________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-cynvqkpw/pytest-of-hermeswebui/pytest-0/test_separate_client_and_serve0')
+mode = 'durable'
+
+    @pytest.mark.parametrize('mode', ['durable', 'lost', 'before-ack'])
+    def test_separate_client_and_server_restart_never_resends(tmp_path, mode):
+        with subprocess_peer(tmp_path, mode) as port:
+            cfg = config(f'http://127.0.0.1:{port}/rpc')
+>           prepared = cli(tmp_path, cfg, 'prepare', 'hello')
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/plugins/test_a2a_outbound_recovery.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/plugins/test_a2a_outbound_recovery.py:39: in cli
+    return json.loads(result.stdout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/json/__init__.py:346: in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/json/decoder.py:338: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.decoder.JSONDecoder object at 0x7f960caca7e0>, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+>           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/usr/local/lib/python3.12/json/decoder.py:356: JSONDecodeError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-cynvqkpw/pytest-of-hermeswebui/pytest-0/test_separate_client_and_serve0')
+mode = 'durable'
+
+    @pytest.mark.parametrize('mode', ['durable', 'lost', 'before-ack'])
+    def test_separate_client_and_server_restart_never_resends(tmp_path, mode):
+>       with subprocess_peer(tmp_path, mode) as port:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/plugins/test_a2a_outbound_recovery.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/local/lib/python3.12/contextlib.py:158: in __exit__
+    self.gen.throw(value)
+tests/plugins/test_a2a_outbound_recovery.py:26: in subprocess_peer
+    process.terminate()
+/usr/local/lib/python3.12/subprocess.py:2211: in terminate
+    self.send_signal(signal.SIGTERM)
+/usr/local/lib/python3.12/subprocess.py:2203: in send_signal
+    os.kill(self.pid, sig)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+pid = 19355, sig = <Signals.SIGTERM: 15>, args = (), kwargs = {}
+
+    def _guarded_kill(pid, sig, *args, **kwargs):
+        # Signal 0 is a pure liveness probe — it cannot terminate anything.
+        # psutil.pid_exists() uses os.kill(pid, 0) on POSIX, and probing a
+        # just-killed grandchild that was reparented to init (zombie with a
+        # foreign parent chain) must not trip the guard. Flaked in CI on
+        # test_entire_tree_is_sigkilled_not_just_parent.
+        if int(sig) == 0:
+            return real_kill(pid, sig, *args, **kwargs)
+        if _is_own_subtree(int(pid)):
+            return real_kill(pid, sig, *args, **kwargs)
+>       raise RuntimeError(
+            f"tests/conftest.py live-system guard: blocked os.kill("
+            f"{pid}, {sig}) — PID is outside the test process subtree. "
+            "If this fired in CI it means the test reached a real "
+            "kill_gateway_processes / stop_profile_gateway / cmd_update "
+            "code path without mocking find_gateway_pids and os.kill. "
+            "Mock both, or mark the test with "
+            "@pytest.mark.live_system_guard_bypass if real signal "
+            "delivery is genuinely required."
+        )
+E       RuntimeError: tests/conftest.py live-system guard: blocked os.kill(19355, 15) — PID is outside the test process subtree. If this fired in CI it means the test reached a real kill_gateway_processes / stop_profile_gateway / cmd_update code path without mocking find_gateway_pids and os.kill. Mock both, or mark the test with @pytest.mark.live_system_guard_bypass if real signal delivery is genuinely required.
+
+tests/conftest.py:1402: RuntimeError
+_________ test_separate_client_and_server_restart_never_resends[lost] __________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-cynvqkpw/pytest-of-hermeswebui/pytest-0/test_separate_client_and_serve1')
+mode = 'lost'
+
+    @pytest.mark.parametrize('mode', ['durable', 'lost', 'before-ack'])
+    def test_separate_client_and_server_restart_never_resends(tmp_path, mode):
+        with subprocess_peer(tmp_path, mode) as port:
+            cfg = config(f'http://127.0.0.1:{port}/rpc')
+>           prepared = cli(tmp_path, cfg, 'prepare', 'hello')
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/plugins/test_a2a_outbound_recovery.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/plugins/test_a2a_outbound_recovery.py:39: in cli
+    return json.loads(result.stdout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/json/__init__.py:346: in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/json/decoder.py:338: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.decoder.JSONDecoder object at 0x7f960caca7e0>, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+>           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/usr/local/lib/python3.12/json/decoder.py:356: JSONDecodeError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-cynvqkpw/pytest-of-hermeswebui/pytest-0/test_separate_client_and_serve1')
+mode = 'lost'
+
+    @pytest.mark.parametrize('mode', ['durable', 'lost', 'before-ack'])
+    def test_separate_client_and_server_restart_never_resends(tmp_path, mode):
+>       with subprocess_peer(tmp_path, mode) as port:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/plugins/test_a2a_outbound_recovery.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/local/lib/python3.12/contextlib.py:158: in __exit__
+    self.gen.throw(value)
+tests/plugins/test_a2a_outbound_recovery.py:26: in subprocess_peer
+    process.terminate()
+/usr/local/lib/python3.12/subprocess.py:2211: in terminate
+    self.send_signal(signal.SIGTERM)
+/usr/local/lib/python3.12/subprocess.py:2203: in send_signal
+    os.kill(self.pid, sig)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+pid = 19357, sig = <Signals.SIGTERM: 15>, args = (), kwargs = {}
+
+    def _guarded_kill(pid, sig, *args, **kwargs):
+        # Signal 0 is a pure liveness probe — it cannot terminate anything.
+        # psutil.pid_exists() uses os.kill(pid, 0) on POSIX, and probing a
+        # just-killed grandchild that was reparented to init (zombie with a
+        # foreign parent chain) must not trip the guard. Flaked in CI on
+        # test_entire_tree_is_sigkilled_not_just_parent.
+        if int(sig) == 0:
+            return real_kill(pid, sig, *args, **kwargs)
+        if _is_own_subtree(int(pid)):
+            return real_kill(pid, sig, *args, **kwargs)
+>       raise RuntimeError(
+            f"tests/conftest.py live-system guard: blocked os.kill("
+            f"{pid}, {sig}) — PID is outside the test process subtree. "
+            "If this fired in CI it means the test reached a real "
+            "kill_gateway_processes / stop_profile_gateway / cmd_update "
+            "code path without mocking find_gateway_pids and os.kill. "
+            "Mock both, or mark the test with "
+            "@pytest.mark.live_system_guard_bypass if real signal "
+            "delivery is genuinely required."
+        )
+E       RuntimeError: tests/conftest.py live-system guard: blocked os.kill(19357, 15) — PID is outside the test process subtree. If this fired in CI it means the test reached a real kill_gateway_processes / stop_profile_gateway / cmd_update code path without mocking find_gateway_pids and os.kill. Mock both, or mark the test with @pytest.mark.live_system_guard_bypass if real signal delivery is genuinely required.
+
+tests/conftest.py:1402: RuntimeError
+______ test_separate_client_and_server_restart_never_resends[before-ack] _______
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-cynvqkpw/pytest-of-hermeswebui/pytest-0/test_separate_client_and_serve2')
+mode = 'before-ack'
+
+    @pytest.mark.parametrize('mode', ['durable', 'lost', 'before-ack'])
+    def test_separate_client_and_server_restart_never_resends(tmp_path, mode):
+        with subprocess_peer(tmp_path, mode) as port:
+            cfg = config(f'http://127.0.0.1:{port}/rpc')
+>           prepared = cli(tmp_path, cfg, 'prepare', 'hello')
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/plugins/test_a2a_outbound_recovery.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/plugins/test_a2a_outbound_recovery.py:39: in cli
+    return json.loads(result.stdout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/json/__init__.py:346: in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/json/decoder.py:338: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.decoder.JSONDecoder object at 0x7f960caca7e0>, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+>           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+/usr/local/lib/python3.12/json/decoder.py:356: JSONDecodeError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-cynvqkpw/pytest-of-hermeswebui/pytest-0/test_separate_client_and_serve2')
+mode = 'before-ack'
+
+    @pytest.mark.parametrize('mode', ['durable', 'lost', 'before-ack'])
+    def test_separate_client_and_server_restart_never_resends(tmp_path, mode):
+>       with subprocess_peer(tmp_path, mode) as port:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/plugins/test_a2a_outbound_recovery.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/local/lib/python3.12/contextlib.py:158: in __exit__
+    self.gen.throw(value)
+tests/plugins/test_a2a_outbound_recovery.py:26: in subprocess_peer
+    process.terminate()
+/usr/local/lib/python3.12/subprocess.py:2211: in terminate
+    self.send_signal(signal.SIGTERM)
+/usr/local/lib/python3.12/subprocess.py:2203: in send_signal
+    os.kill(self.pid, sig)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+pid = 19359, sig = <Signals.SIGTERM: 15>, args = (), kwargs = {}
+
+    def _guarded_kill(pid, sig, *args, **kwargs):
+        # Signal 0 is a pure liveness probe — it cannot terminate anything.
+        # psutil.pid_exists() uses os.kill(pid, 0) on POSIX, and probing a
+        # just-killed grandchild that was reparented to init (zombie with a
+        # foreign parent chain) must not trip the guard. Flaked in CI on
+        # test_entire_tree_is_sigkilled_not_just_parent.
+        if int(sig) == 0:
+            return real_kill(pid, sig, *args, **kwargs)
+        if _is_own_subtree(int(pid)):
+            return real_kill(pid, sig, *args, **kwargs)
+>       raise RuntimeError(
+            f"tests/conftest.py live-system guard: blocked os.kill("
+            f"{pid}, {sig}) — PID is outside the test process subtree. "
+            "If this fired in CI it means the test reached a real "
+            "kill_gateway_processes / stop_profile_gateway / cmd_update "
+            "code path without mocking find_gateway_pids and os.kill. "
+            "Mock both, or mark the test with "
+            "@pytest.mark.live_system_guard_bypass if real signal "
+            "delivery is genuinely required."
+        )
+E       RuntimeError: tests/conftest.py live-system guard: blocked os.kill(19359, 15) — PID is outside the test process subtree. If this fired in CI it means the test reached a real kill_gateway_processes / stop_profile_gateway / cmd_update code path without mocking find_gateway_pids and os.kill. Mock both, or mark the test with @pytest.mark.live_system_guard_bypass if real signal delivery is genuinely required.
+
+tests/conftest.py:1402: RuntimeError
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_separate_client_and_server_restart_never_resends[durable]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_separate_client_and_server_restart_never_resends[lost]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_separate_client_and_server_restart_never_resends[before-ack]
+========================= 3 failed, 2 passed in 1.56s ==========================
+
+=== 1 file with test failures (3 tests failed) ===
+  tests/plugins/test_a2a_outbound_recovery.py  (3 tests failed)

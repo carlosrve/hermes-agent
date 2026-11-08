@@ -1,0 +1,96 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~1 tests) under ['tests/plugins/test_a2a_native_tools.py']; running with -j 24
+[100.0% |     1/~1 | ✓0 | ✗1] ✗ tests/plugins/test_a2a_native_tools.py (1✗, 0.6s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_native_tools.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║ collected 1 item
+  ║ 
+  ║ tests/plugins/test_a2a_native_tools.py F                                 [100%]
+  ║ 
+  ║ =================================== FAILURES ===================================
+  ║ ______ test_native_registration_is_independent_and_direct_dispatch_denied ______
+  ║ 
+  ║ tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-gnawq1fq/pytest-of-hermeswebui/pytest-0/test_native_registration_is_in0')
+  ║ monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f0fdab65310>
+  ║ 
+  ║     def test_native_registration_is_independent_and_direct_dispatch_denied(tmp_path, monkeypatch):
+  ║         monkeypatch.setenv('HERMES_HOME', str(tmp_path))
+  ║         monkeypatch.setenv('A2A_PORT', '9900')
+  ║         registry = registered()
+  ║         entry = registry.get_entry('a2a_outbound')
+  ║         assert entry is not None
+  ║         assert entry.toolset == 'a2a_outbound'
+  ║         assert entry.check_fn() is False
+  ║         result = json.loads(registry.dispatch('a2a_outbound', {'action': 'prepare', 'message': 'hello'}))
+  ║         assert result['status'] == 'blocked'
+  ║ >       assert not list(tmp_path.iterdir())
+  ║ E       AssertionError: assert not [PosixPath('/tmp/hermes-pytest-tmproot-gnawq1fq/pytest-of-hermeswebui/pytest-0/test_native_registration_is_in0/hermes_test')]
+  ║ E        +  where [PosixPath('/tmp/hermes-pytest-tmproot-gnawq1fq/pytest-of-hermeswebui/pytest-0/test_native_registration_is_in0/hermes_test')] = list(<generator object Path.iterdir at 0x7f0fda8e1cb0>)
+  ║ E        +    where <generator object Path.iterdir at 0x7f0fda8e1cb0> = iterdir()
+  ║ E        +      where iterdir = PosixPath('/tmp/hermes-pytest-tmproot-gnawq1fq/pytest-of-hermeswebui/pytest-0/test_native_registration_is_in0').iterdir
+  ║ 
+  ║ tests/plugins/test_a2a_native_tools.py:29: AssertionError
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_native_tools.py::test_native_registration_is_independent_and_direct_dispatch_denied
+  ║ ============================== 1 failed in 0.21s ===============================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_native_tools.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 0 tests passed, 1 failed (100% complete) in 0.6s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 0.6s  (runner wall: 0.6s, parallelism: 24x)
+  P50: 0.64s  P90: 0.64s  P95: 0.64s  P99: 0.64s  Max: 0.64s
+  <1s: 1 files (100%)  <2s: 1 files (100%)
+  Top 10 slowest:
+      0.64s  tests/plugins/test_a2a_native_tools.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_native_tools.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 1 item
+
+tests/plugins/test_a2a_native_tools.py F                                 [100%]
+
+=================================== FAILURES ===================================
+______ test_native_registration_is_independent_and_direct_dispatch_denied ______
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-gnawq1fq/pytest-of-hermeswebui/pytest-0/test_native_registration_is_in0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f0fdab65310>
+
+    def test_native_registration_is_independent_and_direct_dispatch_denied(tmp_path, monkeypatch):
+        monkeypatch.setenv('HERMES_HOME', str(tmp_path))
+        monkeypatch.setenv('A2A_PORT', '9900')
+        registry = registered()
+        entry = registry.get_entry('a2a_outbound')
+        assert entry is not None
+        assert entry.toolset == 'a2a_outbound'
+        assert entry.check_fn() is False
+        result = json.loads(registry.dispatch('a2a_outbound', {'action': 'prepare', 'message': 'hello'}))
+        assert result['status'] == 'blocked'
+>       assert not list(tmp_path.iterdir())
+E       AssertionError: assert not [PosixPath('/tmp/hermes-pytest-tmproot-gnawq1fq/pytest-of-hermeswebui/pytest-0/test_native_registration_is_in0/hermes_test')]
+E        +  where [PosixPath('/tmp/hermes-pytest-tmproot-gnawq1fq/pytest-of-hermeswebui/pytest-0/test_native_registration_is_in0/hermes_test')] = list(<generator object Path.iterdir at 0x7f0fda8e1cb0>)
+E        +    where <generator object Path.iterdir at 0x7f0fda8e1cb0> = iterdir()
+E        +      where iterdir = PosixPath('/tmp/hermes-pytest-tmproot-gnawq1fq/pytest-of-hermeswebui/pytest-0/test_native_registration_is_in0').iterdir
+
+tests/plugins/test_a2a_native_tools.py:29: AssertionError
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_native_tools.py::test_native_registration_is_independent_and_direct_dispatch_denied
+============================== 1 failed in 0.21s ===============================
+
+=== 1 file with test failures (1 test failed) ===
+  tests/plugins/test_a2a_native_tools.py  (1 test failed)

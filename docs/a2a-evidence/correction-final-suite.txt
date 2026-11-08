@@ -1,0 +1,36 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 11 test files (~338 tests) under ['tests/plugins/test_a2a_outbound_recovery.py', 'tests/plugins/test_a2a_outbound_validation.py', 'tests/plugins/test_a2a_plugin.py', 'tests/plugins/test_a2a_phase23.py', 'tests/plugins/test_a2a_schema_registration.py', 'tests/plugins/test_a2a_tools_gate.py', 'tests/tools/test_a2a_reason_roundtrip.py', 'tests/tools/test_approval.py', 'tests/tools/test_approval_interrupt.py', 'tests/tools/test_approval_config_readonly.py', 'tests/gateway/test_approvals_command.py']; running with -j 24
+[  0.3% |     1/~338 | ✓1 | ✗0] ✓ tests/plugins/test_a2a_schema_registration.py (1✓, 0.8s)
+[  2.1% |     7/~338 | ✓7 | ✗0] ✓ tests/plugins/test_a2a_tools_gate.py (6✓, 1.0s)
+[  3.0% |    10/~338 | ✓10 | ✗ 0] ✓ tests/tools/test_approval_config_readonly.py (3✓, 1.1s)
+[  4.4% |    15/~338 | ✓15 | ✗ 0] ✓ tests/tools/test_a2a_reason_roundtrip.py (5✓, 1.2s)
+[ 19.8% |    67/~338 | ✓60 | ✗ 0] ✓ tests/plugins/test_a2a_phase23.py (45✓, 1.3s)
+[ 20.1% |    68/~338 | ✓61 | ✗ 0] ✓ tests/gateway/test_approvals_command.py (1✓, 1.3s)
+[ 22.2% |    75/~338 | ✓179 | ✗  0] ✓ tests/plugins/test_a2a_outbound_validation.py (118✓, 1.7s)
+[ 22.8% |    77/~338 | ✓181 | ✗  0] ✓ tests/tools/test_approval_interrupt.py (2✓, 2.2s)
+[ 57.1% |   193/~338 | ✓286 | ✗  0] ✓ tests/plugins/test_a2a_plugin.py (105✓, 3.1s)
+[ 92.3% |   312/~338 | ✓420 | ✗  0] ✓ tests/tools/test_approval.py (134✓, 4.0s)
+[100.0% |   338/~338 | ✓478 | ✗  0] ✓ tests/plugins/test_a2a_outbound_recovery.py (58✓, 19.2s)
+
+=== Summary: 11 files, 478 tests passed, 0 failed (100% complete) in 19.3s (24 workers) ===
+  Durations cached to test_durations.json (11 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   11
+  Total subprocess CPU-wall: 37.0s  (runner wall: 19.3s, parallelism: 24x)
+  P50: 1.31s  P90: 4.04s  P95: 19.25s  P99: 19.25s  Max: 19.25s
+  <1s: 1 files (9%)  <2s: 7 files (64%)
+  Top 10 slowest:
+     19.25s  tests/plugins/test_a2a_outbound_recovery.py
+      4.04s  tests/tools/test_approval.py
+      3.07s  tests/plugins/test_a2a_plugin.py
+      2.17s  tests/tools/test_approval_interrupt.py
+      1.67s  tests/plugins/test_a2a_outbound_validation.py
+      1.31s  tests/gateway/test_approvals_command.py
+      1.27s  tests/plugins/test_a2a_phase23.py
+      1.25s  tests/tools/test_a2a_reason_roundtrip.py
+      1.14s  tests/tools/test_approval_config_readonly.py
+      1.03s  tests/plugins/test_a2a_tools_gate.py

@@ -1,0 +1,382 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~25 tests) under ['tests/plugins/test_a2a_outbound_recovery.py']; running with -j 24
+[100.0% |    25/~25 | ✓0 | ✗4] ✗ tests/plugins/test_a2a_outbound_recovery.py (4✗, 10.6s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_outbound_recovery.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║  +    where wait = <threading.Event at 0x7f7c88597ef0: unset>.wait
+  ║ ----------------------------------------
+  ║ __________________ test_resume_prepared_does_not_consume_send __________________
+  ║ 
+  ║ tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-12ay4fxx/pytest-of-hermeswebui/pytest-0/test_resume_prepared_does_not_0')
+  ║ monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7c8ac198e0>
+  ║ 
+  ║     def test_resume_prepared_does_not_consume_send(tmp_path, monkeypatch):
+  ║         monkeypatch.setenv('A2A_TEST_TOKEN', 'fixture-secret')
+  ║         store = module().Store(tmp_path / 'requests')
+  ║         with peer_server(store, []) as (url, calls):
+  ║             client = module().Client(config(url), store)
+  ║             local_id = client.prepare('hello')
+  ║             before = store.load(local_id)
+  ║ >           assert client.resume(local_id) == before
+  ║ E           AssertionError: assert {'revision': ...lo'}]}}}, ...} == {'revision': ...lo'}]}}}, ...}
+  ║ E             
+  ║ E             Omitting 7 identical items, use -vv to show
+  ║ E             Differing items:
+  ║ E             {'local_state': 'uncertain'} != {'local_state': 'prepared'}
+  ║ E             {'revision': 1} != {'revision': 0}
+  ║ E             Use -v to get more diff
+  ║ 
+  ║ tests/plugins/test_a2a_outbound_recovery.py:517: AssertionError
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_concurrent_resume_is_read_only_while_writer_active[before-ack]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_concurrent_resume_is_read_only_while_writer_active[after-ack]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_concurrent_resume_is_read_only_while_writer_active[during-get]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_resume_prepared_does_not_consume_send
+  ║ ====================== 4 failed, 50 deselected in 10.18s =======================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_outbound_recovery.py -k concurrent_resume_is_read_only or resume_prepared
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 0 tests passed, 4 failed (100% complete) in 10.6s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 10.6s  (runner wall: 10.6s, parallelism: 24x)
+  P50: 10.59s  P90: 10.59s  P95: 10.59s  P99: 10.59s  Max: 10.59s
+  <1s: 0 files (0%)  <2s: 0 files (0%)
+  Top 10 slowest:
+     10.59s  tests/plugins/test_a2a_outbound_recovery.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_outbound_recovery.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/lfc/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 54 items / 50 deselected / 4 selected
+
+tests/plugins/test_a2a_outbound_recovery.py FFFF                         [100%]
+
+=================================== FAILURES ===================================
+_____ test_concurrent_resume_is_read_only_while_writer_active[before-ack] ______
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-12ay4fxx/pytest-of-hermeswebui/pytest-0/test_concurrent_resume_is_read0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7c8aef2ea0>
+phase = 'before-ack'
+
+    @pytest.mark.parametrize('phase', ['before-ack', 'after-ack', 'during-get'])
+    def test_concurrent_resume_is_read_only_while_writer_active(tmp_path, monkeypatch, phase):
+        """Cross-process observer, real loopback, deterministic network barriers."""
+        from concurrent.futures import ThreadPoolExecutor
+    
+        monkeypatch.setenv('A2A_TEST_TOKEN', 'fixture-secret')
+        m = module()
+        store = m.Store(tmp_path / 'requests')
+        entered, release = threading.Event(), threading.Event()
+        calls = []
+        task = {'id': 'remote-1', 'contextId': 'ctx-1', 'status': {'state': 'TASK_STATE_WORKING'}}
+    
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+    
+            def do_POST(self):
+                body = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+                calls.append(body['method'])
+                streaming = body['method'] == 'SendStreamingMessage'
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/event-stream' if streaming else 'application/json')
+                self.end_headers()
+                if (streaming and phase == 'before-ack') or (not streaming and phase == 'during-get'):
+                    entered.set()
+                    assert release.wait(8)
+                if streaming:
+                    payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': {'task': task}}
+                    self.wfile.write(('data: ' + json.dumps(payload) + '\n\n').encode())
+                    self.wfile.flush()
+                    if phase == 'after-ack':
+                        entered.set()
+                        assert release.wait(8)
+                        event = {'statusUpdate': {'taskId': 'remote-1', 'contextId': 'ctx-1',
+                                                 'status': {'state': 'TASK_STATE_INPUT_REQUIRED'}}}
+                        payload['result'] = event
+                        self.wfile.write(('data: ' + json.dumps(payload) + '\n\n').encode())
+                else:
+                    completed = {**task, 'status': {'state': 'TASK_STATE_COMPLETED'}}
+                    self.wfile.write(json.dumps({'jsonrpc': '2.0', 'id': body['id'], 'result': completed}).encode())
+    
+        server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        cfg = {**config(f'http://127.0.0.1:{server.server_port}/rpc'), 'timeout': 10}
+        client = m.Client(cfg, store)
+        local_id = client.prepare('hello')
+        try:
+            if phase == 'during-get':
+                client.send(local_id)
+            with ThreadPoolExecutor(max_workers=1) as pool:
+                pending = pool.submit(client.resume if phase == 'during-get' else client.send, local_id)
+                try:
+                    assert entered.wait(5)
+                    if phase == 'after-ack':
+                        deadline = time.monotonic() + 5
+                        while not store.load(local_id)['task_id'] and time.monotonic() < deadline:
+                            time.sleep(.01)
+                        assert store.load(local_id)['task_id'] == 'remote-1'
+                    before = store.load(local_id)
+>                   assert cli(tmp_path, cfg, 'resume', local_id) == before
+E                   AssertionError: assert {'revision': ...lo'}]}}}, ...} == {'revision': ...lo'}]}}}, ...}
+E                     
+E                     Omitting 8 identical items, use -vv to show
+E                     Differing items:
+E                     {'revision': 2} != {'revision': 1}
+E                     Use -v to get more diff
+
+tests/plugins/test_a2a_outbound_recovery.py:490: AssertionError
+______ test_concurrent_resume_is_read_only_while_writer_active[after-ack] ______
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-12ay4fxx/pytest-of-hermeswebui/pytest-0/test_concurrent_resume_is_read1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7c8bd63470>
+phase = 'after-ack'
+
+    @pytest.mark.parametrize('phase', ['before-ack', 'after-ack', 'during-get'])
+    def test_concurrent_resume_is_read_only_while_writer_active(tmp_path, monkeypatch, phase):
+        """Cross-process observer, real loopback, deterministic network barriers."""
+        from concurrent.futures import ThreadPoolExecutor
+    
+        monkeypatch.setenv('A2A_TEST_TOKEN', 'fixture-secret')
+        m = module()
+        store = m.Store(tmp_path / 'requests')
+        entered, release = threading.Event(), threading.Event()
+        calls = []
+        task = {'id': 'remote-1', 'contextId': 'ctx-1', 'status': {'state': 'TASK_STATE_WORKING'}}
+    
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+    
+            def do_POST(self):
+                body = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+                calls.append(body['method'])
+                streaming = body['method'] == 'SendStreamingMessage'
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/event-stream' if streaming else 'application/json')
+                self.end_headers()
+                if (streaming and phase == 'before-ack') or (not streaming and phase == 'during-get'):
+                    entered.set()
+                    assert release.wait(8)
+                if streaming:
+                    payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': {'task': task}}
+                    self.wfile.write(('data: ' + json.dumps(payload) + '\n\n').encode())
+                    self.wfile.flush()
+                    if phase == 'after-ack':
+                        entered.set()
+                        assert release.wait(8)
+                        event = {'statusUpdate': {'taskId': 'remote-1', 'contextId': 'ctx-1',
+                                                 'status': {'state': 'TASK_STATE_INPUT_REQUIRED'}}}
+                        payload['result'] = event
+                        self.wfile.write(('data: ' + json.dumps(payload) + '\n\n').encode())
+                else:
+                    completed = {**task, 'status': {'state': 'TASK_STATE_COMPLETED'}}
+                    self.wfile.write(json.dumps({'jsonrpc': '2.0', 'id': body['id'], 'result': completed}).encode())
+    
+        server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        cfg = {**config(f'http://127.0.0.1:{server.server_port}/rpc'), 'timeout': 10}
+        client = m.Client(cfg, store)
+        local_id = client.prepare('hello')
+        try:
+            if phase == 'during-get':
+                client.send(local_id)
+            with ThreadPoolExecutor(max_workers=1) as pool:
+                pending = pool.submit(client.resume if phase == 'during-get' else client.send, local_id)
+                try:
+                    assert entered.wait(5)
+                    if phase == 'after-ack':
+                        deadline = time.monotonic() + 5
+                        while not store.load(local_id)['task_id'] and time.monotonic() < deadline:
+                            time.sleep(.01)
+                        assert store.load(local_id)['task_id'] == 'remote-1'
+                    before = store.load(local_id)
+>                   assert cli(tmp_path, cfg, 'resume', local_id) == before
+E                   AssertionError: assert {'revision': ...lo'}]}}}, ...} == {'revision': ...lo'}]}}}, ...}
+E                     
+E                     Omitting 5 identical items, use -vv to show
+E                     Differing items:
+E                     {'local_state': 'observed'} != {'local_state': 'uncertain'}
+E                     {'events': [{'task': {'id': 'remote-1', 'contextId': 'ctx-1', 'status': {'state': 'TASK_STATE_WORKING'}}}, {'task': {'id': 'remote-1', 'contextId': 'ctx-1', 'status': {'state': 'TASK_STATE_COMPLETED'}}}]} != {'events': [{'task': {'id': 'remote-1', 'contextId': 'ctx-1', 'status': {'state': 'TASK_STATE_WORKING'}}}]}
+E                     {'remote_state': 'TASK_STATE_COMPLETED'} != {'remote_state': 'TASK_STATE_WORKING'}
+E                     {'revision': 3} != {'revision': 2}
+E                     Use -v to get more diff
+
+tests/plugins/test_a2a_outbound_recovery.py:490: AssertionError
+_____ test_concurrent_resume_is_read_only_while_writer_active[during-get] ______
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-12ay4fxx/pytest-of-hermeswebui/pytest-0/test_concurrent_resume_is_read2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7c8ac10d40>
+phase = 'during-get'
+
+    @pytest.mark.parametrize('phase', ['before-ack', 'after-ack', 'during-get'])
+    def test_concurrent_resume_is_read_only_while_writer_active(tmp_path, monkeypatch, phase):
+        """Cross-process observer, real loopback, deterministic network barriers."""
+        from concurrent.futures import ThreadPoolExecutor
+    
+        monkeypatch.setenv('A2A_TEST_TOKEN', 'fixture-secret')
+        m = module()
+        store = m.Store(tmp_path / 'requests')
+        entered, release = threading.Event(), threading.Event()
+        calls = []
+        task = {'id': 'remote-1', 'contextId': 'ctx-1', 'status': {'state': 'TASK_STATE_WORKING'}}
+    
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+    
+            def do_POST(self):
+                body = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+                calls.append(body['method'])
+                streaming = body['method'] == 'SendStreamingMessage'
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/event-stream' if streaming else 'application/json')
+                self.end_headers()
+                if (streaming and phase == 'before-ack') or (not streaming and phase == 'during-get'):
+                    entered.set()
+                    assert release.wait(8)
+                if streaming:
+                    payload = {'jsonrpc': '2.0', 'id': body['id'], 'result': {'task': task}}
+                    self.wfile.write(('data: ' + json.dumps(payload) + '\n\n').encode())
+                    self.wfile.flush()
+                    if phase == 'after-ack':
+                        entered.set()
+                        assert release.wait(8)
+                        event = {'statusUpdate': {'taskId': 'remote-1', 'contextId': 'ctx-1',
+                                                 'status': {'state': 'TASK_STATE_INPUT_REQUIRED'}}}
+                        payload['result'] = event
+                        self.wfile.write(('data: ' + json.dumps(payload) + '\n\n').encode())
+                else:
+                    completed = {**task, 'status': {'state': 'TASK_STATE_COMPLETED'}}
+                    self.wfile.write(json.dumps({'jsonrpc': '2.0', 'id': body['id'], 'result': completed}).encode())
+    
+        server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        cfg = {**config(f'http://127.0.0.1:{server.server_port}/rpc'), 'timeout': 10}
+        client = m.Client(cfg, store)
+        local_id = client.prepare('hello')
+        try:
+            if phase == 'during-get':
+                client.send(local_id)
+            with ThreadPoolExecutor(max_workers=1) as pool:
+                pending = pool.submit(client.resume if phase == 'during-get' else client.send, local_id)
+                try:
+                    assert entered.wait(5)
+                    if phase == 'after-ack':
+                        deadline = time.monotonic() + 5
+                        while not store.load(local_id)['task_id'] and time.monotonic() < deadline:
+                            time.sleep(.01)
+                        assert store.load(local_id)['task_id'] == 'remote-1'
+                    before = store.load(local_id)
+>                   assert cli(tmp_path, cfg, 'resume', local_id) == before
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/plugins/test_a2a_outbound_recovery.py:490: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-12ay4fxx/pytest-of-hermeswebui/pytest-0/test_concurrent_resume_is_read2')
+cfg = {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zurqui', ...}
+action = 'resume', value = '8122c50d1adf463980f60cd678775401', check = True
+
+    def cli(tmp_path, cfg, action, value, check=True):
+        config_path = tmp_path / 'peer.json'
+        config_path.write_text(json.dumps(cfg))
+        result = subprocess.run([sys.executable, '-m', 'plugins.platforms.a2a.outbound',
+                                 '--config', str(config_path), '--store', str(tmp_path / 'requests'),
+                                 action, value], capture_output=True, text=True, timeout=10,
+                                env={**os.environ, 'A2A_TEST_TOKEN': 'fixture-secret'})
+        if check:
+>           assert result.returncode == 0, result.stderr
+E           AssertionError: {"error": "JSONDecodeError", "action": "resume", "guidance": "No automatic resend. Inspect local record; resume only."}
+E             
+E           assert 2 == 0
+E            +  where 2 = CompletedProcess(args=['/workspace/lfc/a2a-integration/.venv/bin/python', '-m', 'plugins.platforms.a2a.outbound', '--c...ror": "JSONDecodeError", "action": "resume", "guidance": "No automatic resend. Inspect local record; resume only."}\n').returncode
+
+tests/plugins/test_a2a_outbound_recovery.py:93: AssertionError
+----------------------------- Captured stderr call -----------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 38938)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "/usr/local/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/local/lib/python3.12/socketserver.py", line 766, in __init__
+    self.handle()
+  File "/usr/local/lib/python3.12/http/server.py", line 440, in handle
+    self.handle_one_request()
+  File "/usr/local/lib/python3.12/http/server.py", line 428, in handle_one_request
+    method()
+  File "/workspace/lfc/a2a-integration/tests/plugins/test_a2a_outbound_recovery.py", line 455, in do_POST
+    assert release.wait(8)
+AssertionError: assert False
+ +  where False = wait(8)
+ +    where wait = <threading.Event at 0x7f7c88597ef0: unset>.wait
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 38954)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "/usr/local/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/local/lib/python3.12/socketserver.py", line 766, in __init__
+    self.handle()
+  File "/usr/local/lib/python3.12/http/server.py", line 440, in handle
+    self.handle_one_request()
+  File "/usr/local/lib/python3.12/http/server.py", line 428, in handle_one_request
+    method()
+  File "/workspace/lfc/a2a-integration/tests/plugins/test_a2a_outbound_recovery.py", line 455, in do_POST
+    assert release.wait(8)
+AssertionError: assert False
+ +  where False = wait(8)
+ +    where wait = <threading.Event at 0x7f7c88597ef0: unset>.wait
+----------------------------------------
+__________________ test_resume_prepared_does_not_consume_send __________________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-12ay4fxx/pytest-of-hermeswebui/pytest-0/test_resume_prepared_does_not_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f7c8ac198e0>
+
+    def test_resume_prepared_does_not_consume_send(tmp_path, monkeypatch):
+        monkeypatch.setenv('A2A_TEST_TOKEN', 'fixture-secret')
+        store = module().Store(tmp_path / 'requests')
+        with peer_server(store, []) as (url, calls):
+            client = module().Client(config(url), store)
+            local_id = client.prepare('hello')
+            before = store.load(local_id)
+>           assert client.resume(local_id) == before
+E           AssertionError: assert {'revision': ...lo'}]}}}, ...} == {'revision': ...lo'}]}}}, ...}
+E             
+E             Omitting 7 identical items, use -vv to show
+E             Differing items:
+E             {'local_state': 'uncertain'} != {'local_state': 'prepared'}
+E             {'revision': 1} != {'revision': 0}
+E             Use -v to get more diff
+
+tests/plugins/test_a2a_outbound_recovery.py:517: AssertionError
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_concurrent_resume_is_read_only_while_writer_active[before-ack]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_concurrent_resume_is_read_only_while_writer_active[after-ack]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_concurrent_resume_is_read_only_while_writer_active[during-get]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_resume_prepared_does_not_consume_send
+====================== 4 failed, 50 deselected in 10.18s =======================
+
+=== 1 file with test failures (4 tests failed) ===
+  tests/plugins/test_a2a_outbound_recovery.py  (4 tests failed)

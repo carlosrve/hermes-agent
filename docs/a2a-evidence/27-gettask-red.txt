@@ -1,0 +1,124 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~23 tests) under ['tests/plugins/test_a2a_outbound_recovery.py']; running with -j 24
+[100.0% |    23/~23 | ✓49 | ✗ 1] ✗ tests/plugins/test_a2a_outbound_recovery.py (49✓ 1✗, 13.8s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_outbound_recovery.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║         """Only GetTask. An unacknowledged request needs human reconciliation."""
+  ║         record = self.store.load(local_id)
+  ║         if record['binding'] != self.binding:
+  ║             raise ValueError('Peer binding changed; refusing recovery')
+  ║         if not record['task_id']:
+  ║             if record['local_state'] == 'observed':
+  ║                 return record
+  ║             record['local_state'] = 'uncertain'
+  ║             self.store.save(record)
+  ║             return record
+  ║         body = {'jsonrpc': '2.0', 'id': uuid.uuid4().hex, 'method': 'GetTask',
+  ║                 'params': {'id': record['task_id']}}
+  ║         with self._open(body, False) as read:
+  ║             raw = bytearray()
+  ║             while chunk := read(4096):
+  ║                 raw.extend(chunk)
+  ║                 if len(raw) > 1024 * 1024:
+  ║                     raise ProtocolError('GetTask response limit')
+  ║             envelope = _wire_json(raw)
+  ║             if not isinstance(envelope, dict) or envelope.get('id') != body['id'] or envelope.get('jsonrpc') != '2.0':
+  ║                 raise ProtocolError('Invalid GetTask correlation')
+  ║             if 'error' in envelope:
+  ║ >               if envelope['error'].get('code') == -32001:
+  ║                    ^^^^^^^^^^^^^^^^^^^^^
+  ║ E               AttributeError: 'list' object has no attribute 'get'
+  ║ 
+  ║ plugins/platforms/a2a/outbound.py:276: AttributeError
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_malformed_gettask_error_fails_closed
+  ║ ======================== 1 failed, 49 passed in 13.36s =========================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_outbound_recovery.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 49 tests passed, 1 failed (100% complete) in 13.8s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 13.8s  (runner wall: 13.8s, parallelism: 24x)
+  P50: 13.78s  P90: 13.78s  P95: 13.78s  P99: 13.78s  Max: 13.78s
+  <1s: 0 files (0%)  <2s: 0 files (0%)
+  Top 10 slowest:
+     13.78s  tests/plugins/test_a2a_outbound_recovery.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_outbound_recovery.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/lfc/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 50 items
+
+tests/plugins/test_a2a_outbound_recovery.py ............................ [ 56%]
+....................F.                                                   [100%]
+
+=================================== FAILURES ===================================
+__________________ test_malformed_gettask_error_fails_closed ___________________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-2sisth03/pytest-of-hermeswebui/pytest-0/test_malformed_gettask_error_f0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7efe2c27b380>
+
+    def test_malformed_gettask_error_fails_closed(tmp_path, monkeypatch):
+        monkeypatch.setenv('A2A_TEST_TOKEN', 'fixture-secret')
+        store = module().Store(tmp_path / 'requests')
+        with subprocess_peer(tmp_path, 'bad-get') as port:
+            client = module().Client(config(f'http://127.0.0.1:{port}/rpc'), store)
+            local_id = client.prepare('hello')
+            client.send(local_id)
+            with pytest.raises(ValueError):
+>               client.resume(local_id)
+
+tests/plugins/test_a2a_outbound_recovery.py:426: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <plugins.platforms.a2a.outbound.Client object at 0x7efe2c2b1e20>
+local_id = '776ad401c1ab45bbbea959ec277ce986'
+
+    def resume(self, local_id):
+        """Only GetTask. An unacknowledged request needs human reconciliation."""
+        record = self.store.load(local_id)
+        if record['binding'] != self.binding:
+            raise ValueError('Peer binding changed; refusing recovery')
+        if not record['task_id']:
+            if record['local_state'] == 'observed':
+                return record
+            record['local_state'] = 'uncertain'
+            self.store.save(record)
+            return record
+        body = {'jsonrpc': '2.0', 'id': uuid.uuid4().hex, 'method': 'GetTask',
+                'params': {'id': record['task_id']}}
+        with self._open(body, False) as read:
+            raw = bytearray()
+            while chunk := read(4096):
+                raw.extend(chunk)
+                if len(raw) > 1024 * 1024:
+                    raise ProtocolError('GetTask response limit')
+            envelope = _wire_json(raw)
+            if not isinstance(envelope, dict) or envelope.get('id') != body['id'] or envelope.get('jsonrpc') != '2.0':
+                raise ProtocolError('Invalid GetTask correlation')
+            if 'error' in envelope:
+>               if envelope['error'].get('code') == -32001:
+                   ^^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'list' object has no attribute 'get'
+
+plugins/platforms/a2a/outbound.py:276: AttributeError
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_malformed_gettask_error_fails_closed
+======================== 1 failed, 49 passed in 13.36s =========================
+
+=== 1 file with test failures (1 test failed) ===
+  tests/plugins/test_a2a_outbound_recovery.py  (1 test failed)

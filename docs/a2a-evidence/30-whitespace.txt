@@ -1,0 +1,22 @@
+[
+  {
+    "path": "plugins/platforms/a2a/outbound.py",
+    "returncode": 1,
+    "output": ""
+  },
+  {
+    "path": "tests/plugins/test_a2a_outbound_recovery.py",
+    "returncode": 1,
+    "output": ""
+  },
+  {
+    "path": "tests/plugins/fixtures/a2a_outbound_peer.py",
+    "returncode": 1,
+    "output": ""
+  },
+  {
+    "path": "docs/a2a-outbound-runbook.md",
+    "returncode": 1,
+    "output": ""
+  }
+]

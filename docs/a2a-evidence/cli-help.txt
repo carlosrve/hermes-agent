@@ -1,0 +1,13 @@
+usage: outbound.py [-h] --config CONFIG --store STORE
+                   {prepare,send,resume,show} value
+
+Opt-in outbound A2A 1.0 recovery. No inbound server or automatic resend.
+
+positional arguments:
+  {prepare,send,resume,show}
+  value                 Message for prepare, local ID for other actions
+
+options:
+  -h, --help            show this help message and exit
+  --config CONFIG       Explicit outbound peer JSON file
+  --store STORE         Private state directory; parent must exist

@@ -1,0 +1,13 @@
+1c8aaad2180bbf2fc34f097ab90d069170584ccd
+integration/upstream-2026-09-12
+1c8aaad2180bbf2fc34f097ab90d069170584ccd
+feature/a2a-outbound-recovery
+origin	https://github.com/carlosrve/hermes-agent.git (fetch)
+origin	https://github.com/carlosrve/hermes-agent.git (push)
+upstream	https://github.com/NousResearch/hermes-agent.git (fetch)
+upstream	https://github.com/NousResearch/hermes-agent.git (push)
+?? docs/a2a-evidence/
+?? docs/a2a-outbound-runbook.md
+?? plugins/platforms/a2a/outbound.py
+?? tests/plugins/fixtures/
+?? tests/plugins/test_a2a_outbound_recovery.py

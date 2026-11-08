@@ -1,0 +1,24 @@
+{
+  "head": "1c8aaad2180bbf2fc34f097ab90d069170584ccd",
+  "branch": "feature/a2a-outbound-recovery",
+  "sha256": {
+    "plugins/platforms/a2a/outbound.py": "b05044cb9f6d6ad86d85d911b4140e478cb57e8645483c5ab949a666e245644d",
+    "tests/plugins/test_a2a_outbound_recovery.py": "46fe88e2b369bac5b900de4e0d40ae5ef41bccfaddb63e6008e1f5636ff861a4",
+    "tests/plugins/test_a2a_outbound_validation.py": "df1ba62b3aec0908b3bdb107f5ebd1047decf2de798e8bc37b7ecc5770617f3a",
+    "docs/a2a-outbound-runbook.md": "6f2134a00d7bc61738c9d4f9c306d7208a30edb9396aae0aeeb6b8f4d751b469",
+    "docs/a2a-evidence/independent-review.md": "97f2ad9eca3b6bd031f276354aa22cdde9d1d73dd0f162e3b9aaeefa01cd27bf",
+    "docs/a2a-evidence/correction-a2a-v1.0.0.proto": "4b74c0baa923ae0acb55474e548f1d6e5d3f83b80d757b65f8bf3e99a3c2257f",
+    "docs/a2a-evidence/correction-final-suite.txt": "86b032a428431002d32090dc7fc1504d0a45872ab073e51fdb1b517439c90c80",
+    "docs/a2a-evidence/correction-lint.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/a2a-evidence/correction-protojson-green.txt": "63661f6f06c56a59b3edebd099cc68fd7ca3744cb57d0f0dac1853fdf76bb041",
+    "docs/a2a-evidence/correction-protojson-red.txt": "79e1ce105c5be4e5c547604ddba56bfe66399f271e15ab9170db0b371d968f52",
+    "docs/a2a-evidence/correction-r1-green.txt": "ea8e673ab3e1bb3b92de7d2c5b7a539471ba355f07433567c68d3aa93bd0b36d",
+    "docs/a2a-evidence/correction-r1-red.txt": "c1ec601ec4f711e31b6ad11a8703c87f0b4dd88b5ae029755bb0abdef07c7c8f",
+    "docs/a2a-evidence/correction-r2-first-green.txt": "1637792669be3b6c60d831d74c92c5aa43bcd62bf488ac4232e0a05325dc1b50",
+    "docs/a2a-evidence/correction-r2-green.txt": "6302485819fc20c9b1ecaba774fe21bd85c550c1d1dabf1899d68ea14cd10cac",
+    "docs/a2a-evidence/correction-r2-red.txt": "72c017d705a2d6b24b0a42f0176e8adb19e37e8b55856ac1830ba97b9b985aad",
+    "docs/a2a-evidence/correction-report.md": "45aa27a3fa44827aaf66b496361fd1d0778efe3e812745ebabc57f1f7ad802ad",
+    "docs/a2a-evidence/correction-verification-final.txt": "f1c0a5a761c540e1564c95d973adeed1bafc7b1bfb9f4c967d33cec3351fda60",
+    "docs/a2a-evidence/correction-verification.txt": "18551cf164aa7c71106acb9fcd3ee98f9db549afb7d7d95b53197e2f940d1375"
+  }
+}

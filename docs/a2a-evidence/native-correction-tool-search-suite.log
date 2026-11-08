@@ -1,0 +1,423 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 3 test files (~72 tests) under ['tests/tools/test_tool_search.py', 'tests/tools/test_tool_search_multiquery.py', 'tests/tools/test_connector_local_batches.py']; running with -j 24
+[ 37.5% |    27/~72 | ✓28 | ✗ 0] ✓ tests/tools/test_tool_search_multiquery.py (28✓, 0.9s)
+[ 40.3% |    29/~72 | ✓32 | ✗ 0] ✓ tests/tools/test_connector_local_batches.py (4✓, 1.4s)
+[100.0% |    72/~72 | ✓73 | ✗ 4] ✗ tests/tools/test_tool_search.py (41✓ 4✗, 3.2s)
+
+  ╔╍ Failed: tests/tools/test_tool_search.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║         ``parse_int``, if specified, will be called with the string
+  ║         of every JSON int to be decoded. By default this is equivalent to
+  ║         int(num_str). This can be used to use another datatype or parser
+  ║         for JSON integers (e.g. float).
+  ║     
+  ║         ``parse_constant``, if specified, will be called with one of the
+  ║         following strings: -Infinity, Infinity, NaN.
+  ║         This can be used to raise an exception if invalid JSON numbers
+  ║         are encountered.
+  ║     
+  ║         To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+  ║         kwarg; otherwise ``JSONDecoder`` is used.
+  ║         """
+  ║         if isinstance(s, str):
+  ║             if s.startswith('\ufeff'):
+  ║                 raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+  ║                                       s, 0)
+  ║         else:
+  ║             if not isinstance(s, (bytes, bytearray)):
+  ║ >               raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+  ║                                 f'not {s.__class__.__name__}')
+  ║ E               TypeError: the JSON object must be str, bytes or bytearray, not NoneType
+  ║ 
+  ║ /usr/local/lib/python3.12/json/__init__.py:339: TypeError
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/tools/test_tool_search.py::TestDeferredCallSchemaProbe::test_invalid_enum_is_blocked_before_dispatch
+  ║ FAILED tests/tools/test_tool_search.py::TestDeferredCallSchemaProbe::test_validator_reports_nested_constraint_path[nested_type-arguments0-arguments.options.count-type]
+  ║ FAILED tests/tools/test_tool_search.py::TestDeferredCallSchemaProbe::test_validator_reports_nested_constraint_path[nested_required-arguments1-arguments.options-required]
+  ║ FAILED tests/tools/test_tool_search.py::TestDeferredCallSchemaProbe::test_validator_reports_nested_constraint_path[nested_extra-arguments2-arguments.options-additionalProperties]
+  ║ ========================= 4 failed, 41 passed in 2.68s =========================
+  ║
+  ║  Repro: python -m pytest tests/tools/test_tool_search.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 3 files, 73 tests passed, 4 failed (100% complete) in 3.2s (24 workers) ===
+  Durations cached to test_durations.json (3 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   3
+  Total subprocess CPU-wall: 5.5s  (runner wall: 3.2s, parallelism: 24x)
+  P50: 1.39s  P90: 3.19s  P95: 3.19s  P99: 3.19s  Max: 3.19s
+  <1s: 1 files (33%)  <2s: 2 files (67%)
+  Top 10 slowest:
+      3.19s  tests/tools/test_tool_search.py
+      1.39s  tests/tools/test_connector_local_batches.py
+      0.93s  tests/tools/test_tool_search_multiquery.py
+
+=== Failure output ===
+
+--- tests/tools/test_tool_search.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 45 items
+
+tests/tools/test_tool_search.py ....................................FFFF [ 88%]
+.....                                                                    [100%]
+
+=================================== FAILURES ===================================
+___ TestDeferredCallSchemaProbe.test_invalid_enum_is_blocked_before_dispatch ___
+
+self = <tests.tools.test_tool_search.TestDeferredCallSchemaProbe object at 0x7f5a9ce051f0>
+
+    def test_invalid_enum_is_blocked_before_dispatch(self):
+        import model_tools
+    
+        calls = []
+        name = "mcp_probe_enum_validation"
+        toolset = "mcp-probe-enum-validation"
+        self._register_schema(name, toolset, {
+            "type": "object",
+            "properties": {
+                "priority": {"type": "string", "enum": ["low", "high"]},
+            },
+            "required": ["priority"],
+        }, calls)
+    
+        result = json.loads(model_tools.handle_function_call(
+            function_name="tool_call",
+            function_args={"name": name, "arguments": {"priority": "urgent"}},
+            enabled_toolsets=[toolset],
+        ))
+    
+>       assert calls == []
+E       AssertionError: assert [{'priority': 'urgent'}] == []
+E         
+E         Left contains one more item: {'priority': 'urgent'}
+E         Use -v to get more diff
+
+tests/tools/test_tool_search.py:791: AssertionError
+_ TestDeferredCallSchemaProbe.test_validator_reports_nested_constraint_path[nested_type-arguments0-arguments.options.count-type] _
+
+self = <tests.tools.test_tool_search.TestDeferredCallSchemaProbe object at 0x7f5a9ce05d90>
+suffix = 'nested_type', arguments = {'options': {'count': 'not-an-integer'}}
+expected_path = 'arguments.options.count', expected_constraint = 'type'
+
+    @pytest.mark.parametrize(
+        ("suffix", "arguments", "expected_path", "expected_constraint"),
+        [
+            (
+                "nested_type",
+                {"options": {"count": "not-an-integer"}},
+                "arguments.options.count",
+                "type",
+            ),
+            (
+                "nested_required",
+                {"options": {}},
+                "arguments.options",
+                "required",
+            ),
+            (
+                "nested_extra",
+                {"options": {"count": 1, "extra": True}},
+                "arguments.options",
+                "additionalProperties",
+            ),
+        ],
+    )
+    def test_validator_reports_nested_constraint_path(
+        self, suffix, arguments, expected_path, expected_constraint,
+    ):
+        from tools.tool_search import validate_deferred_call_args
+    
+        calls = []
+        name = f"mcp_probe_{suffix}"
+        self._register_schema(name, "mcp-probe-nested", {
+            "type": "object",
+            "properties": {
+                "options": {
+                    "type": "object",
+                    "properties": {"count": {"type": "integer"}},
+                    "required": ["count"],
+                    "additionalProperties": False,
+                },
+            },
+            "required": ["options"],
+        }, calls)
+    
+>       result = json.loads(validate_deferred_call_args(name, arguments))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tools/test_tool_search.py:839: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = None, cls = None, object_hook = None, parse_float = None, parse_int = None
+parse_constant = None, object_pairs_hook = None, kw = {}
+
+    def loads(s, *, cls=None, object_hook=None, parse_float=None,
+            parse_int=None, parse_constant=None, object_pairs_hook=None, **kw):
+        """Deserialize ``s`` (a ``str``, ``bytes`` or ``bytearray`` instance
+        containing a JSON document) to a Python object.
+    
+        ``object_hook`` is an optional function that will be called with the
+        result of any object literal decode (a ``dict``). The return value of
+        ``object_hook`` will be used instead of the ``dict``. This feature
+        can be used to implement custom decoders (e.g. JSON-RPC class hinting).
+    
+        ``object_pairs_hook`` is an optional function that will be called with the
+        result of any object literal decoded with an ordered list of pairs.  The
+        return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+        This feature can be used to implement custom decoders.  If ``object_hook``
+        is also defined, the ``object_pairs_hook`` takes priority.
+    
+        ``parse_float``, if specified, will be called with the string
+        of every JSON float to be decoded. By default this is equivalent to
+        float(num_str). This can be used to use another datatype or parser
+        for JSON floats (e.g. decimal.Decimal).
+    
+        ``parse_int``, if specified, will be called with the string
+        of every JSON int to be decoded. By default this is equivalent to
+        int(num_str). This can be used to use another datatype or parser
+        for JSON integers (e.g. float).
+    
+        ``parse_constant``, if specified, will be called with one of the
+        following strings: -Infinity, Infinity, NaN.
+        This can be used to raise an exception if invalid JSON numbers
+        are encountered.
+    
+        To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+        kwarg; otherwise ``JSONDecoder`` is used.
+        """
+        if isinstance(s, str):
+            if s.startswith('\ufeff'):
+                raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+                                      s, 0)
+        else:
+            if not isinstance(s, (bytes, bytearray)):
+>               raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+                                f'not {s.__class__.__name__}')
+E               TypeError: the JSON object must be str, bytes or bytearray, not NoneType
+
+/usr/local/lib/python3.12/json/__init__.py:339: TypeError
+_ TestDeferredCallSchemaProbe.test_validator_reports_nested_constraint_path[nested_required-arguments1-arguments.options-required] _
+
+self = <tests.tools.test_tool_search.TestDeferredCallSchemaProbe object at 0x7f5a9ce05e50>
+suffix = 'nested_required', arguments = {'options': {}}
+expected_path = 'arguments.options', expected_constraint = 'required'
+
+    @pytest.mark.parametrize(
+        ("suffix", "arguments", "expected_path", "expected_constraint"),
+        [
+            (
+                "nested_type",
+                {"options": {"count": "not-an-integer"}},
+                "arguments.options.count",
+                "type",
+            ),
+            (
+                "nested_required",
+                {"options": {}},
+                "arguments.options",
+                "required",
+            ),
+            (
+                "nested_extra",
+                {"options": {"count": 1, "extra": True}},
+                "arguments.options",
+                "additionalProperties",
+            ),
+        ],
+    )
+    def test_validator_reports_nested_constraint_path(
+        self, suffix, arguments, expected_path, expected_constraint,
+    ):
+        from tools.tool_search import validate_deferred_call_args
+    
+        calls = []
+        name = f"mcp_probe_{suffix}"
+        self._register_schema(name, "mcp-probe-nested", {
+            "type": "object",
+            "properties": {
+                "options": {
+                    "type": "object",
+                    "properties": {"count": {"type": "integer"}},
+                    "required": ["count"],
+                    "additionalProperties": False,
+                },
+            },
+            "required": ["options"],
+        }, calls)
+    
+>       result = json.loads(validate_deferred_call_args(name, arguments))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tools/test_tool_search.py:839: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = None, cls = None, object_hook = None, parse_float = None, parse_int = None
+parse_constant = None, object_pairs_hook = None, kw = {}
+
+    def loads(s, *, cls=None, object_hook=None, parse_float=None,
+            parse_int=None, parse_constant=None, object_pairs_hook=None, **kw):
+        """Deserialize ``s`` (a ``str``, ``bytes`` or ``bytearray`` instance
+        containing a JSON document) to a Python object.
+    
+        ``object_hook`` is an optional function that will be called with the
+        result of any object literal decode (a ``dict``). The return value of
+        ``object_hook`` will be used instead of the ``dict``. This feature
+        can be used to implement custom decoders (e.g. JSON-RPC class hinting).
+    
+        ``object_pairs_hook`` is an optional function that will be called with the
+        result of any object literal decoded with an ordered list of pairs.  The
+        return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+        This feature can be used to implement custom decoders.  If ``object_hook``
+        is also defined, the ``object_pairs_hook`` takes priority.
+    
+        ``parse_float``, if specified, will be called with the string
+        of every JSON float to be decoded. By default this is equivalent to
+        float(num_str). This can be used to use another datatype or parser
+        for JSON floats (e.g. decimal.Decimal).
+    
+        ``parse_int``, if specified, will be called with the string
+        of every JSON int to be decoded. By default this is equivalent to
+        int(num_str). This can be used to use another datatype or parser
+        for JSON integers (e.g. float).
+    
+        ``parse_constant``, if specified, will be called with one of the
+        following strings: -Infinity, Infinity, NaN.
+        This can be used to raise an exception if invalid JSON numbers
+        are encountered.
+    
+        To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+        kwarg; otherwise ``JSONDecoder`` is used.
+        """
+        if isinstance(s, str):
+            if s.startswith('\ufeff'):
+                raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+                                      s, 0)
+        else:
+            if not isinstance(s, (bytes, bytearray)):
+>               raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+                                f'not {s.__class__.__name__}')
+E               TypeError: the JSON object must be str, bytes or bytearray, not NoneType
+
+/usr/local/lib/python3.12/json/__init__.py:339: TypeError
+_ TestDeferredCallSchemaProbe.test_validator_reports_nested_constraint_path[nested_extra-arguments2-arguments.options-additionalProperties] _
+
+self = <tests.tools.test_tool_search.TestDeferredCallSchemaProbe object at 0x7f5a9ce05f10>
+suffix = 'nested_extra', arguments = {'options': {'count': 1, 'extra': True}}
+expected_path = 'arguments.options'
+expected_constraint = 'additionalProperties'
+
+    @pytest.mark.parametrize(
+        ("suffix", "arguments", "expected_path", "expected_constraint"),
+        [
+            (
+                "nested_type",
+                {"options": {"count": "not-an-integer"}},
+                "arguments.options.count",
+                "type",
+            ),
+            (
+                "nested_required",
+                {"options": {}},
+                "arguments.options",
+                "required",
+            ),
+            (
+                "nested_extra",
+                {"options": {"count": 1, "extra": True}},
+                "arguments.options",
+                "additionalProperties",
+            ),
+        ],
+    )
+    def test_validator_reports_nested_constraint_path(
+        self, suffix, arguments, expected_path, expected_constraint,
+    ):
+        from tools.tool_search import validate_deferred_call_args
+    
+        calls = []
+        name = f"mcp_probe_{suffix}"
+        self._register_schema(name, "mcp-probe-nested", {
+            "type": "object",
+            "properties": {
+                "options": {
+                    "type": "object",
+                    "properties": {"count": {"type": "integer"}},
+                    "required": ["count"],
+                    "additionalProperties": False,
+                },
+            },
+            "required": ["options"],
+        }, calls)
+    
+>       result = json.loads(validate_deferred_call_args(name, arguments))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tools/test_tool_search.py:839: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = None, cls = None, object_hook = None, parse_float = None, parse_int = None
+parse_constant = None, object_pairs_hook = None, kw = {}
+
+    def loads(s, *, cls=None, object_hook=None, parse_float=None,
+            parse_int=None, parse_constant=None, object_pairs_hook=None, **kw):
+        """Deserialize ``s`` (a ``str``, ``bytes`` or ``bytearray`` instance
+        containing a JSON document) to a Python object.
+    
+        ``object_hook`` is an optional function that will be called with the
+        result of any object literal decode (a ``dict``). The return value of
+        ``object_hook`` will be used instead of the ``dict``. This feature
+        can be used to implement custom decoders (e.g. JSON-RPC class hinting).
+    
+        ``object_pairs_hook`` is an optional function that will be called with the
+        result of any object literal decoded with an ordered list of pairs.  The
+        return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+        This feature can be used to implement custom decoders.  If ``object_hook``
+        is also defined, the ``object_pairs_hook`` takes priority.
+    
+        ``parse_float``, if specified, will be called with the string
+        of every JSON float to be decoded. By default this is equivalent to
+        float(num_str). This can be used to use another datatype or parser
+        for JSON floats (e.g. decimal.Decimal).
+    
+        ``parse_int``, if specified, will be called with the string
+        of every JSON int to be decoded. By default this is equivalent to
+        int(num_str). This can be used to use another datatype or parser
+        for JSON integers (e.g. float).
+    
+        ``parse_constant``, if specified, will be called with one of the
+        following strings: -Infinity, Infinity, NaN.
+        This can be used to raise an exception if invalid JSON numbers
+        are encountered.
+    
+        To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
+        kwarg; otherwise ``JSONDecoder`` is used.
+        """
+        if isinstance(s, str):
+            if s.startswith('\ufeff'):
+                raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+                                      s, 0)
+        else:
+            if not isinstance(s, (bytes, bytearray)):
+>               raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+                                f'not {s.__class__.__name__}')
+E               TypeError: the JSON object must be str, bytes or bytearray, not NoneType
+
+/usr/local/lib/python3.12/json/__init__.py:339: TypeError
+=========================== short test summary info ============================
+FAILED tests/tools/test_tool_search.py::TestDeferredCallSchemaProbe::test_invalid_enum_is_blocked_before_dispatch
+FAILED tests/tools/test_tool_search.py::TestDeferredCallSchemaProbe::test_validator_reports_nested_constraint_path[nested_type-arguments0-arguments.options.count-type]
+FAILED tests/tools/test_tool_search.py::TestDeferredCallSchemaProbe::test_validator_reports_nested_constraint_path[nested_required-arguments1-arguments.options-required]
+FAILED tests/tools/test_tool_search.py::TestDeferredCallSchemaProbe::test_validator_reports_nested_constraint_path[nested_extra-arguments2-arguments.options-additionalProperties]
+========================= 4 failed, 41 passed in 2.68s =========================
+
+=== 1 file with test failures (4 tests failed) ===
+  tests/tools/test_tool_search.py  (4 tests failed)

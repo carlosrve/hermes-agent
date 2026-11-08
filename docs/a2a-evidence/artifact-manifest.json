@@ -1,0 +1,7 @@
+[
+  {"path":"plugins/platforms/a2a/outbound.py","bytes":18218,"lines":403,"sha256":"8369a2b6946340e6f3c647899105a3faaf66948f02f8250afd86fc5ad7973cdf"},
+  {"path":"tests/plugins/test_a2a_outbound_recovery.py","bytes":20712,"lines":448,"sha256":"e934ee27136b4d5764d52c9e5d9b4ceb83a99a4920e6bb02131d15ac0f0089ab"},
+  {"path":"tests/plugins/fixtures/a2a_outbound_peer.py","bytes":3432,"lines":87,"sha256":"cd8c29f6d92eba2d442aa9d57c515feb0ad6caf54f63bd0a661b9233cd2b6e3a"},
+  {"path":"docs/a2a-outbound-runbook.md","bytes":12229,"lines":201,"sha256":"7011566d98c743a039ed4315f1cec906284118e96adf64ae9d10749d81dfc766"},
+  {"path":"docs/a2a-evidence/README.md","bytes":6458,"lines":131,"sha256":"58f971fe791b72b4732952d5f1e1a194407953eda867902d13566a8d711a56a6"}
+]

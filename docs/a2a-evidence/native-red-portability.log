@@ -1,0 +1,92 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~3 tests) under ['tests/plugins/test_a2a_native_tools.py']; running with -j 24
+[100.0% |     3/~3 | ✓2 | ✗1] ✗ tests/plugins/test_a2a_native_tools.py (2✓ 1✗, 1.1s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_native_tools.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║ rootdir: /workspace/a2a-integration
+  ║ configfile: pyproject.toml
+  ║ plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+  ║ asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+  ║ collected 3 items
+  ║ 
+  ║ tests/plugins/test_a2a_native_tools.py ..F                               [100%]
+  ║ 
+  ║ =================================== FAILURES ===================================
+  ║ _______ test_unavailable_posix_client_does_not_break_legacy_registration _______
+  ║ 
+  ║ monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fae23703fb0>
+  ║ 
+  ║     def test_unavailable_posix_client_does_not_break_legacy_registration(monkeypatch):
+  ║         import sys
+  ║         config = dict(enabled=True, peer='zuri', runtime='codex', host='zurqui',
+  ║                       url='https://zurqui/rpc', token_env='NATIVE_TEST_BEARER')
+  ║         monkeypatch.setitem(sys.modules, 'plugins.platforms.a2a.outbound', None)
+  ║         registry = registered(config)
+  ║ >       assert not registry.get_entry('a2a_outbound').check_fn()
+  ║ E       AssertionError: assert not True
+  ║ E        +  where True = <function register_tools.<locals>.<lambda> at 0x7fae22920720>()
+  ║ E        +    where <function register_tools.<locals>.<lambda> at 0x7fae22920720> = ToolEntry(name='a2a_outbound', toolset='a2a_outbound', schema={'name': 'a2a_outbound', 'description': 'Prepare and obs...is blocked pending a human authorization bridge.', emoji='', max_result_size_chars=None, dynamic_schema_overrides=None).check_fn
+  ║ E        +      where ToolEntry(name='a2a_outbound', toolset='a2a_outbound', schema={'name': 'a2a_outbound', 'description': 'Prepare and obs...is blocked pending a human authorization bridge.', emoji='', max_result_size_chars=None, dynamic_schema_overrides=None) = get_entry('a2a_outbound')
+  ║ E        +        where get_entry = <tools.registry.ToolRegistry object at 0x7fae2292e1e0>.get_entry
+  ║ 
+  ║ tests/plugins/test_a2a_native_tools.py:70: AssertionError
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_native_tools.py::test_unavailable_posix_client_does_not_break_legacy_registration
+  ║ ========================= 1 failed, 2 passed in 0.62s ==========================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_native_tools.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 2 tests passed, 1 failed (100% complete) in 1.1s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 1.1s  (runner wall: 1.1s, parallelism: 24x)
+  P50: 1.06s  P90: 1.06s  P95: 1.06s  P99: 1.06s  Max: 1.06s
+  <1s: 0 files (0%)  <2s: 1 files (100%)
+  Top 10 slowest:
+      1.06s  tests/plugins/test_a2a_native_tools.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_native_tools.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 3 items
+
+tests/plugins/test_a2a_native_tools.py ..F                               [100%]
+
+=================================== FAILURES ===================================
+_______ test_unavailable_posix_client_does_not_break_legacy_registration _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fae23703fb0>
+
+    def test_unavailable_posix_client_does_not_break_legacy_registration(monkeypatch):
+        import sys
+        config = dict(enabled=True, peer='zuri', runtime='codex', host='zurqui',
+                      url='https://zurqui/rpc', token_env='NATIVE_TEST_BEARER')
+        monkeypatch.setitem(sys.modules, 'plugins.platforms.a2a.outbound', None)
+        registry = registered(config)
+>       assert not registry.get_entry('a2a_outbound').check_fn()
+E       AssertionError: assert not True
+E        +  where True = <function register_tools.<locals>.<lambda> at 0x7fae22920720>()
+E        +    where <function register_tools.<locals>.<lambda> at 0x7fae22920720> = ToolEntry(name='a2a_outbound', toolset='a2a_outbound', schema={'name': 'a2a_outbound', 'description': 'Prepare and obs...is blocked pending a human authorization bridge.', emoji='', max_result_size_chars=None, dynamic_schema_overrides=None).check_fn
+E        +      where ToolEntry(name='a2a_outbound', toolset='a2a_outbound', schema={'name': 'a2a_outbound', 'description': 'Prepare and obs...is blocked pending a human authorization bridge.', emoji='', max_result_size_chars=None, dynamic_schema_overrides=None) = get_entry('a2a_outbound')
+E        +        where get_entry = <tools.registry.ToolRegistry object at 0x7fae2292e1e0>.get_entry
+
+tests/plugins/test_a2a_native_tools.py:70: AssertionError
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_native_tools.py::test_unavailable_posix_client_does_not_break_legacy_registration
+========================= 1 failed, 2 passed in 0.62s ==========================
+
+=== 1 file with test failures (1 test failed) ===
+  tests/plugins/test_a2a_native_tools.py  (1 test failed)

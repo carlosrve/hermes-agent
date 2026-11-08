@@ -1,0 +1,588 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~3 tests) under ['tests/plugins/test_a2a_native_dispatch.py']; running with -j 24
+[100.0% |     3/~3 | ✓ 0 | ✗19] ✗ tests/plugins/test_a2a_native_dispatch.py (19✗, 2.1s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_native_dispatch.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║ E         + ok
+  ║ 
+  ║ tests/plugins/test_a2a_native_dispatch.py:69: AssertionError
+  ║ ------------------------------ Captured log call -------------------------------
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_dispatch_requires_explicit_runtime_grant[override0]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_dispatch_requires_explicit_runtime_grant[override1]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_dispatch_requires_explicit_runtime_grant[override2]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_dispatch_requires_explicit_runtime_grant[override3]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_dispatch_requires_explicit_runtime_grant[override4]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_dispatch_requires_explicit_runtime_grant[override5]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_dispatch_requires_explicit_runtime_grant[override6]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_send_is_blocked_without_claim_or_fake_notification
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[approved]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[force]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[url]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[token]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[token_env]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[store]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[rpc]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[peer]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[session_id]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[profile]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[a2a_scope]
+  ║ ============================== 19 failed in 1.68s ==============================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_native_dispatch.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 0 tests passed, 19 failed (100% complete) in 2.1s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 2.1s  (runner wall: 2.1s, parallelism: 24x)
+  P50: 2.13s  P90: 2.13s  P95: 2.13s  P99: 2.13s  Max: 2.13s
+  <1s: 0 files (0%)  <2s: 0 files (0%)
+  Top 10 slowest:
+      2.13s  tests/plugins/test_a2a_native_dispatch.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_native_dispatch.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 19 items
+
+tests/plugins/test_a2a_native_dispatch.py FFFFFFFFFFFFFFFFFFF            [100%]
+
+=================================== FAILURES ===================================
+___________ test_dispatch_requires_explicit_runtime_grant[override0] ___________
+
+native = (<function native.<locals>.call at 0x7f75ef7d0860>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...1610>, PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_dispatch_requires_explici0'))
+override = {'enabled_tools': None}
+
+    @pytest.mark.parametrize('override', [
+        {'enabled_tools': None}, {'enabled_tools': []}, {'enabled_toolsets': None},
+        {'enabled_toolsets': []}, {'disabled_toolsets': ['a2a_outbound']},
+        {'session_id': None}, {'session_id': ''},
+    ])
+    def test_dispatch_requires_explicit_runtime_grant(native, override):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+>       assert call({'action': 'prepare', 'message': 'hello'}, **override)['status'] == 'blocked'
+E       AssertionError: assert 'ok' == 'blocked'
+E         
+E         - blocked
+E         + ok
+
+tests/plugins/test_a2a_native_dispatch.py:42: AssertionError
+------------------------------ Captured log setup ------------------------------
+WARNING  tools.registry:registry.py:124 Could not import tool module tools.browser_tool: No module named 'requests'
+WARNING  tools.registry:registry.py:124 Could not import tool module tools.delegate_tool: No module named 'requests'
+WARNING  tools.registry:registry.py:124 Could not import tool module tools.terminal_tool: No module named 'requests'
+WARNING  tools.registry:registry.py:124 Could not import tool module tools.x_search_tool: No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+___________ test_dispatch_requires_explicit_runtime_grant[override1] ___________
+
+native = (<function native.<locals>.call at 0x7f75ef3bbc40>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...1730>, PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_dispatch_requires_explici1'))
+override = {'enabled_tools': []}
+
+    @pytest.mark.parametrize('override', [
+        {'enabled_tools': None}, {'enabled_tools': []}, {'enabled_toolsets': None},
+        {'enabled_toolsets': []}, {'disabled_toolsets': ['a2a_outbound']},
+        {'session_id': None}, {'session_id': ''},
+    ])
+    def test_dispatch_requires_explicit_runtime_grant(native, override):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+>       assert call({'action': 'prepare', 'message': 'hello'}, **override)['status'] == 'blocked'
+E       AssertionError: assert 'ok' == 'blocked'
+E         
+E         - blocked
+E         + ok
+
+tests/plugins/test_a2a_native_dispatch.py:42: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+___________ test_dispatch_requires_explicit_runtime_grant[override2] ___________
+
+native = (<function native.<locals>.call at 0x7f75ef941940>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...0d40>, PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_dispatch_requires_explici2'))
+override = {'enabled_toolsets': None}
+
+    @pytest.mark.parametrize('override', [
+        {'enabled_tools': None}, {'enabled_tools': []}, {'enabled_toolsets': None},
+        {'enabled_toolsets': []}, {'disabled_toolsets': ['a2a_outbound']},
+        {'session_id': None}, {'session_id': ''},
+    ])
+    def test_dispatch_requires_explicit_runtime_grant(native, override):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+>       assert call({'action': 'prepare', 'message': 'hello'}, **override)['status'] == 'blocked'
+E       AssertionError: assert 'ok' == 'blocked'
+E         
+E         - blocked
+E         + ok
+
+tests/plugins/test_a2a_native_dispatch.py:42: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+___________ test_dispatch_requires_explicit_runtime_grant[override3] ___________
+
+native = (<function native.<locals>.call at 0x7f75ef3cb2e0>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...bdd0>, PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_dispatch_requires_explici3'))
+override = {'enabled_toolsets': []}
+
+    @pytest.mark.parametrize('override', [
+        {'enabled_tools': None}, {'enabled_tools': []}, {'enabled_toolsets': None},
+        {'enabled_toolsets': []}, {'disabled_toolsets': ['a2a_outbound']},
+        {'session_id': None}, {'session_id': ''},
+    ])
+    def test_dispatch_requires_explicit_runtime_grant(native, override):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+>       assert call({'action': 'prepare', 'message': 'hello'}, **override)['status'] == 'blocked'
+E       AssertionError: assert 'ok' == 'blocked'
+E         
+E         - blocked
+E         + ok
+
+tests/plugins/test_a2a_native_dispatch.py:42: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+___________ test_dispatch_requires_explicit_runtime_grant[override4] ___________
+
+native = (<function native.<locals>.call at 0x7f75efa03420>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...1220>, PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_dispatch_requires_explici4'))
+override = {'disabled_toolsets': ['a2a_outbound']}
+
+    @pytest.mark.parametrize('override', [
+        {'enabled_tools': None}, {'enabled_tools': []}, {'enabled_toolsets': None},
+        {'enabled_toolsets': []}, {'disabled_toolsets': ['a2a_outbound']},
+        {'session_id': None}, {'session_id': ''},
+    ])
+    def test_dispatch_requires_explicit_runtime_grant(native, override):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+>       assert call({'action': 'prepare', 'message': 'hello'}, **override)['status'] == 'blocked'
+E       AssertionError: assert 'ok' == 'blocked'
+E         
+E         - blocked
+E         + ok
+
+tests/plugins/test_a2a_native_dispatch.py:42: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+___________ test_dispatch_requires_explicit_runtime_grant[override5] ___________
+
+native = (<function native.<locals>.call at 0x7f75ef8502c0>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...fb30>, PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_dispatch_requires_explici5'))
+override = {'session_id': None}
+
+    @pytest.mark.parametrize('override', [
+        {'enabled_tools': None}, {'enabled_tools': []}, {'enabled_toolsets': None},
+        {'enabled_toolsets': []}, {'disabled_toolsets': ['a2a_outbound']},
+        {'session_id': None}, {'session_id': ''},
+    ])
+    def test_dispatch_requires_explicit_runtime_grant(native, override):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        assert call({'action': 'prepare', 'message': 'hello'}, **override)['status'] == 'blocked'
+>       assert set(home.rglob('*')) == before
+E       AssertionError: assert {PosixPath('/...mories'), ...} == {PosixPath('/...test/skills')}
+E         
+E         Extra items in the left set:
+E         PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_dispatch_requires_explici5/memories')
+E         PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_dispatch_requires_explici5/hooks')
+E         PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_dispatch_requires_explici5/logs/curator')
+E         PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_dispatch_requires_explici5/SOUL.md')
+E         PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_dispatch_requires_explici5/skills')...
+E         
+E         ...Full output truncated (7 lines hidden), use '-vv' to show
+
+tests/plugins/test_a2a_native_dispatch.py:43: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+___________ test_dispatch_requires_explicit_runtime_grant[override6] ___________
+
+native = (<function native.<locals>.call at 0x7f75ef2402c0>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...f9e0>, PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_dispatch_requires_explici6'))
+override = {'session_id': ''}
+
+    @pytest.mark.parametrize('override', [
+        {'enabled_tools': None}, {'enabled_tools': []}, {'enabled_toolsets': None},
+        {'enabled_toolsets': []}, {'disabled_toolsets': ['a2a_outbound']},
+        {'session_id': None}, {'session_id': ''},
+    ])
+    def test_dispatch_requires_explicit_runtime_grant(native, override):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        assert call({'action': 'prepare', 'message': 'hello'}, **override)['status'] == 'blocked'
+>       assert set(home.rglob('*')) == before
+E       AssertionError: assert {PosixPath('/...mories'), ...} == {PosixPath('/...test/skills')}
+E         
+E         Extra items in the left set:
+E         PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_dispatch_requires_explici6/audio_cache')
+E         PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_dispatch_requires_explici6/skills')
+E         PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_dispatch_requires_explici6/memories')
+E         PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_dispatch_requires_explici6/logs')
+E         PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_dispatch_requires_explici6/hooks')...
+E         
+E         ...Full output truncated (7 lines hidden), use '-vv' to show
+
+tests/plugins/test_a2a_native_dispatch.py:43: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+___________ test_send_is_blocked_without_claim_or_fake_notification ____________
+
+native = (<function native.<locals>.call at 0x7f75ef3856c0>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...7d10>, PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_send_is_blocked_without_c0'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f75f03c4a40>
+
+    def test_send_is_blocked_without_claim_or_fake_notification(native, monkeypatch):
+        call, _, registry, home = native
+        draft = call({'action': 'prepare', 'message': 'hello'})
+        local_id = draft['local_id']
+        before = {p: p.read_bytes() for p in home.rglob('*.sqlite3')}
+        monkeypatch.setenv('HERMES_YOLO_MODE', '1')
+        for _ in range(2):
+            sent = call({'action': 'send', 'local_id': local_id})
+>           assert sent['status'] == 'blocked'
+E           AssertionError: assert 'ok' == 'blocked'
+E             
+E             - blocked
+E             + ok
+
+tests/plugins/test_a2a_native_dispatch.py:54: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+__________ test_model_cannot_supply_authority_or_transport[approved] ___________
+
+native = (<function native.<locals>.call at 0x7f75ef263a60>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...f1d0>, PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho0'))
+extra = 'approved'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+>       assert result['status'] == 'blocked'
+E       AssertionError: assert 'ok' == 'blocked'
+E         
+E         - blocked
+E         + ok
+
+tests/plugins/test_a2a_native_dispatch.py:69: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+____________ test_model_cannot_supply_authority_or_transport[force] ____________
+
+native = (<function native.<locals>.call at 0x7f75efbb9e40>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...ac30>, PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho1'))
+extra = 'force'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+>       assert result['status'] == 'blocked'
+E       AssertionError: assert 'ok' == 'blocked'
+E         
+E         - blocked
+E         + ok
+
+tests/plugins/test_a2a_native_dispatch.py:69: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+_____________ test_model_cannot_supply_authority_or_transport[url] _____________
+
+native = (<function native.<locals>.call at 0x7f75ef2c2d40>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...d2b0>, PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho2'))
+extra = 'url'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+>       assert result['status'] == 'blocked'
+E       AssertionError: assert 'ok' == 'blocked'
+E         
+E         - blocked
+E         + ok
+
+tests/plugins/test_a2a_native_dispatch.py:69: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+____________ test_model_cannot_supply_authority_or_transport[token] ____________
+
+native = (<function native.<locals>.call at 0x7f75ef1639c0>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...6030>, PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho3'))
+extra = 'token'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+>       assert result['status'] == 'blocked'
+E       AssertionError: assert 'ok' == 'blocked'
+E         
+E         - blocked
+E         + ok
+
+tests/plugins/test_a2a_native_dispatch.py:69: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+__________ test_model_cannot_supply_authority_or_transport[token_env] __________
+
+native = (<function native.<locals>.call at 0x7f75ef236700>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...2db0>, PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho4'))
+extra = 'token_env'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+>       assert result['status'] == 'blocked'
+E       AssertionError: assert 'ok' == 'blocked'
+E         
+E         - blocked
+E         + ok
+
+tests/plugins/test_a2a_native_dispatch.py:69: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+____________ test_model_cannot_supply_authority_or_transport[store] ____________
+
+native = (<function native.<locals>.call at 0x7f75ef8519e0>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...3740>, PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho5'))
+extra = 'store'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+>       assert result['status'] == 'blocked'
+E       AssertionError: assert 'ok' == 'blocked'
+E         
+E         - blocked
+E         + ok
+
+tests/plugins/test_a2a_native_dispatch.py:69: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+_____________ test_model_cannot_supply_authority_or_transport[rpc] _____________
+
+native = (<function native.<locals>.call at 0x7f75ef34d6c0>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...2a20>, PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho6'))
+extra = 'rpc'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+>       assert result['status'] == 'blocked'
+E       AssertionError: assert 'ok' == 'blocked'
+E         
+E         - blocked
+E         + ok
+
+tests/plugins/test_a2a_native_dispatch.py:69: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+____________ test_model_cannot_supply_authority_or_transport[peer] _____________
+
+native = (<function native.<locals>.call at 0x7f75ef26be20>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...0230>, PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho7'))
+extra = 'peer'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+>       assert result['status'] == 'blocked'
+E       AssertionError: assert 'ok' == 'blocked'
+E         
+E         - blocked
+E         + ok
+
+tests/plugins/test_a2a_native_dispatch.py:69: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+_________ test_model_cannot_supply_authority_or_transport[session_id] __________
+
+native = (<function native.<locals>.call at 0x7f75f01d98a0>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...04d0>, PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho8'))
+extra = 'session_id'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+>       assert result['status'] == 'blocked'
+E       AssertionError: assert 'ok' == 'blocked'
+E         
+E         - blocked
+E         + ok
+
+tests/plugins/test_a2a_native_dispatch.py:69: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+___________ test_model_cannot_supply_authority_or_transport[profile] ___________
+
+native = (<function native.<locals>.call at 0x7f75ef385da0>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...e480>, PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho9'))
+extra = 'profile'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+>       assert result['status'] == 'blocked'
+E       AssertionError: assert 'ok' == 'blocked'
+E         
+E         - blocked
+E         + ok
+
+tests/plugins/test_a2a_native_dispatch.py:69: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+__________ test_model_cannot_supply_authority_or_transport[a2a_scope] __________
+
+native = (<function native.<locals>.call at 0x7f75ef2f9800>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...8e0>, PosixPath('/tmp/hermes-pytest-tmproot-iwukn3hx/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho10'))
+extra = 'a2a_scope'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+>       assert result['status'] == 'blocked'
+E       AssertionError: assert 'ok' == 'blocked'
+E         
+E         - blocked
+E         + ok
+
+tests/plugins/test_a2a_native_dispatch.py:69: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_dispatch_requires_explicit_runtime_grant[override0]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_dispatch_requires_explicit_runtime_grant[override1]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_dispatch_requires_explicit_runtime_grant[override2]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_dispatch_requires_explicit_runtime_grant[override3]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_dispatch_requires_explicit_runtime_grant[override4]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_dispatch_requires_explicit_runtime_grant[override5]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_dispatch_requires_explicit_runtime_grant[override6]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_send_is_blocked_without_claim_or_fake_notification
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[approved]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[force]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[url]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[token]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[token_env]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[store]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[rpc]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[peer]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[session_id]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[profile]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[a2a_scope]
+============================== 19 failed in 1.68s ==============================
+
+=== 1 file with test failures (19 tests failed) ===
+  tests/plugins/test_a2a_native_dispatch.py  (19 tests failed)

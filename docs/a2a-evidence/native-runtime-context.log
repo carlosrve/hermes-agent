@@ -1,0 +1,108 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~10 tests) under ['tests/plugins/test_a2a_native_dispatch.py']; running with -j 24
+[100.0% |    10/~10 | ✓37 | ✗ 1] ✗ tests/plugins/test_a2a_native_dispatch.py (37✓ 1✗, 2.8s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_native_dispatch.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║ 
+  ║ tests/plugins/test_a2a_native_dispatch.py:178: 
+  ║ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+  ║ agent/tool_executor.py:48: in <module>
+  ║     from tools.terminal_tool_lifecycle import get_active_env
+  ║ tools/terminal_tool_lifecycle.py:19: in <module>
+  ║     from tools.terminal_tool_backends import (
+  ║ tools/terminal_tool_backends.py:15: in <module>
+  ║     from tools.environments.managed_modal import ManagedModalEnvironment as _ManagedModalEnvironment
+  ║ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+  ║ 
+  ║     """Managed Modal environment backed by tool-gateway.
+  ║     
+  ║     Deliberately overrides :meth:`BaseEnvironment.execute`: the tool-gateway does command
+  ║     preparation, CWD tracking and env-snapshot management server-side, so the base
+  ║     ``_wrap_command`` / ``_wait_for_process`` / snapshot machinery does not apply.
+  ║     """
+  ║     
+  ║     from __future__ import annotations
+  ║     
+  ║     import json
+  ║     import logging
+  ║     import os
+  ║ >   import requests
+  ║ E   ModuleNotFoundError: No module named 'requests'
+  ║ 
+  ║ tools/environments/managed_modal.py:13: ModuleNotFoundError
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_real_agent_executor_derives_identity_and_grants_from_agent
+  ║ ========================= 1 failed, 37 passed in 2.38s =========================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_native_dispatch.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 37 tests passed, 1 failed (100% complete) in 2.8s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 2.8s  (runner wall: 2.8s, parallelism: 24x)
+  P50: 2.83s  P90: 2.83s  P95: 2.83s  P99: 2.83s  Max: 2.83s
+  <1s: 0 files (0%)  <2s: 0 files (0%)
+  Top 10 slowest:
+      2.83s  tests/plugins/test_a2a_native_dispatch.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_native_dispatch.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 38 items
+
+tests/plugins/test_a2a_native_dispatch.py .............................. [ 78%]
+.......F                                                                 [100%]
+
+=================================== FAILURES ===================================
+_______ test_real_agent_executor_derives_identity_and_grants_from_agent ________
+
+native = (<function native.<locals>.call at 0x7f5966647d80>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...1a00>, PosixPath('/tmp/hermes-pytest-tmproot-a54wuuhd/pytest-of-hermeswebui/pytest-0/test_real_agent_executor_deriv0'))
+
+    def test_real_agent_executor_derives_identity_and_grants_from_agent(native):
+>       from agent.tool_executor import _ToolCallRef, _resolve_sequential_dispatch
+
+tests/plugins/test_a2a_native_dispatch.py:178: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+agent/tool_executor.py:48: in <module>
+    from tools.terminal_tool_lifecycle import get_active_env
+tools/terminal_tool_lifecycle.py:19: in <module>
+    from tools.terminal_tool_backends import (
+tools/terminal_tool_backends.py:15: in <module>
+    from tools.environments.managed_modal import ManagedModalEnvironment as _ManagedModalEnvironment
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """Managed Modal environment backed by tool-gateway.
+    
+    Deliberately overrides :meth:`BaseEnvironment.execute`: the tool-gateway does command
+    preparation, CWD tracking and env-snapshot management server-side, so the base
+    ``_wrap_command`` / ``_wait_for_process`` / snapshot machinery does not apply.
+    """
+    
+    from __future__ import annotations
+    
+    import json
+    import logging
+    import os
+>   import requests
+E   ModuleNotFoundError: No module named 'requests'
+
+tools/environments/managed_modal.py:13: ModuleNotFoundError
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_real_agent_executor_derives_identity_and_grants_from_agent
+========================= 1 failed, 37 passed in 2.38s =========================
+
+=== 1 file with test failures (1 test failed) ===
+  tests/plugins/test_a2a_native_dispatch.py  (1 test failed)

@@ -1,0 +1,102 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 4 test files (~125 tests) under ['tests/tools/test_approval.py', 'tests/tools/test_approval_interrupt.py', 'tests/tools/test_approval_config_readonly.py', 'tests/gateway/test_approvals_command.py']; running with -j 24
+[  2.4% |     3/~125 | ✓3 | ✗0] ✓ tests/tools/test_approval_config_readonly.py (3✓, 0.7s)
+[  3.2% |     4/~125 | ✓4 | ✗0] ✓ tests/gateway/test_approvals_command.py (1✓, 0.9s)
+[  4.8% |     6/~125 | ✓6 | ✗0] ✓ tests/tools/test_approval_interrupt.py (2✓, 1.9s)
+[100.0% |   125/~125 | ✓138 | ✗  2] ✗ tests/tools/test_approval.py (132✓ 2✗, 3.6s)
+
+  ╔╍ Failed: tests/tools/test_approval.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║ collected 134 items
+  ║ 
+  ║ tests/tools/test_approval.py ........................................... [ 32%]
+  ║ ........................................................FF.............. [ 85%]
+  ║ ...................                                                      [100%]
+  ║ 
+  ║ =================================== FAILURES ===================================
+  ║ _ TestFailClosedUnderPromptToolkit.test_denies_when_prompt_toolkit_active_and_no_callback _
+  ║ 
+  ║ self = <tests.tools.test_approval.TestFailClosedUnderPromptToolkit object at 0x7fa60fd12c30>
+  ║ 
+  ║     def test_denies_when_prompt_toolkit_active_and_no_callback(self):
+  ║ >       import prompt_toolkit.application.current as ptc
+  ║ E       ModuleNotFoundError: No module named 'prompt_toolkit'
+  ║ 
+  ║ tests/tools/test_approval.py:1135: ModuleNotFoundError
+  ║ __ TestFailClosedUnderPromptToolkit.test_callback_path_still_wins_over_guard ___
+  ║ 
+  ║ self = <tests.tools.test_approval.TestFailClosedUnderPromptToolkit object at 0x7fa60fd13320>
+  ║ 
+  ║     def test_callback_path_still_wins_over_guard(self):
+  ║         """Guard must not short-circuit a valid callback."""
+  ║ >       import prompt_toolkit.application.current as ptc
+  ║ E       ModuleNotFoundError: No module named 'prompt_toolkit'
+  ║ 
+  ║ tests/tools/test_approval.py:1164: ModuleNotFoundError
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/tools/test_approval.py::TestFailClosedUnderPromptToolkit::test_denies_when_prompt_toolkit_active_and_no_callback
+  ║ FAILED tests/tools/test_approval.py::TestFailClosedUnderPromptToolkit::test_callback_path_still_wins_over_guard
+  ║ ======================== 2 failed, 132 passed in 3.11s =========================
+  ║
+  ║  Repro: python -m pytest tests/tools/test_approval.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 4 files, 138 tests passed, 2 failed (100% complete) in 3.6s (24 workers) ===
+  Durations cached to test_durations.json (4 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   4
+  Total subprocess CPU-wall: 7.1s  (runner wall: 3.6s, parallelism: 24x)
+  P50: 1.87s  P90: 3.60s  P95: 3.60s  P99: 3.60s  Max: 3.60s
+  <1s: 2 files (50%)  <2s: 3 files (75%)
+  Top 10 slowest:
+      3.60s  tests/tools/test_approval.py
+      1.87s  tests/tools/test_approval_interrupt.py
+      0.93s  tests/gateway/test_approvals_command.py
+      0.74s  tests/tools/test_approval_config_readonly.py
+
+=== Failure output ===
+
+--- tests/tools/test_approval.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/lfc/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 134 items
+
+tests/tools/test_approval.py ........................................... [ 32%]
+........................................................FF.............. [ 85%]
+...................                                                      [100%]
+
+=================================== FAILURES ===================================
+_ TestFailClosedUnderPromptToolkit.test_denies_when_prompt_toolkit_active_and_no_callback _
+
+self = <tests.tools.test_approval.TestFailClosedUnderPromptToolkit object at 0x7fa60fd12c30>
+
+    def test_denies_when_prompt_toolkit_active_and_no_callback(self):
+>       import prompt_toolkit.application.current as ptc
+E       ModuleNotFoundError: No module named 'prompt_toolkit'
+
+tests/tools/test_approval.py:1135: ModuleNotFoundError
+__ TestFailClosedUnderPromptToolkit.test_callback_path_still_wins_over_guard ___
+
+self = <tests.tools.test_approval.TestFailClosedUnderPromptToolkit object at 0x7fa60fd13320>
+
+    def test_callback_path_still_wins_over_guard(self):
+        """Guard must not short-circuit a valid callback."""
+>       import prompt_toolkit.application.current as ptc
+E       ModuleNotFoundError: No module named 'prompt_toolkit'
+
+tests/tools/test_approval.py:1164: ModuleNotFoundError
+=========================== short test summary info ============================
+FAILED tests/tools/test_approval.py::TestFailClosedUnderPromptToolkit::test_denies_when_prompt_toolkit_active_and_no_callback
+FAILED tests/tools/test_approval.py::TestFailClosedUnderPromptToolkit::test_callback_path_still_wins_over_guard
+======================== 2 failed, 132 passed in 3.11s =========================
+
+=== 1 file with test failures (2 tests failed) ===
+  tests/tools/test_approval.py  (2 tests failed)

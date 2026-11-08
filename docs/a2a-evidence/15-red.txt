@@ -1,0 +1,246 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~18 tests) under ['tests/plugins/test_a2a_outbound_recovery.py']; running with -j 24
+[100.0% |    18/~18 | ✓38 | ✗ 4] ✗ tests/plugins/test_a2a_outbound_recovery.py (38✓ 4✗, 11.6s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_outbound_recovery.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║         if not isinstance(result, dict):
+  ║             raise ProtocolError('Invalid StreamResponse')
+  ║         kinds = [k for k in ('task', 'statusUpdate', 'artifactUpdate', 'message') if k in result]
+  ║         if len(kinds) != 1 or not isinstance(result[kinds[0]], dict):
+  ║             raise ProtocolError('Invalid StreamResponse oneof')
+  ║         kind = kinds[0]
+  ║         value = result[kind]
+  ║         task_id = value.get('id') if kind == 'task' else value.get('taskId')
+  ║         context_id = value.get('contextId')
+  ║         for field, new in (('task_id', task_id), ('context_id', context_id)):
+  ║             if new:
+  ║                 if not isinstance(new, str) or len(new) > 1024:
+  ║                     raise ProtocolError('Invalid remote identity')
+  ║                 if record[field] and record[field] != new:
+  ║                     raise ProtocolError('Remote identity changed')
+  ║                 record[field] = new
+  ║         if kind != 'message' and not task_id:
+  ║             raise ProtocolError('Missing remote task identity')
+  ║         if 'status' in value:
+  ║ >           state = value['status'].get('state')
+  ║                     ^^^^^^^^^^^^^^^^^^^
+  ║ E           AttributeError: 'NoneType' object has no attribute 'get'
+  ║ 
+  ║ plugins/platforms/a2a/outbound.py:162: AttributeError
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_intervention_ends_stream_without_processing_followup
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_completed_message_remains_durable_on_resume_without_task
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_malformed_peer_data_fails_as_protocol_error[result0]
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_malformed_peer_data_fails_as_protocol_error[result2]
+  ║ ======================== 4 failed, 38 passed in 11.14s =========================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_outbound_recovery.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 38 tests passed, 4 failed (100% complete) in 11.6s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 11.6s  (runner wall: 11.6s, parallelism: 24x)
+  P50: 11.55s  P90: 11.55s  P95: 11.55s  P99: 11.55s  Max: 11.55s
+  <1s: 0 files (0%)  <2s: 0 files (0%)
+  Top 10 slowest:
+     11.55s  tests/plugins/test_a2a_outbound_recovery.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_outbound_recovery.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/lfc/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 42 items
+
+tests/plugins/test_a2a_outbound_recovery.py ............................ [ 66%]
+........FFF.F.                                                           [100%]
+
+=================================== FAILURES ===================================
+__________ test_intervention_ends_stream_without_processing_followup ___________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-5_8ze5dr/pytest-of-hermeswebui/pytest-0/test_intervention_ends_stream_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f08b6ed7890>
+
+    def test_intervention_ends_stream_without_processing_followup(tmp_path, monkeypatch):
+        monkeypatch.setenv('A2A_TEST_TOKEN', 'fixture-secret')
+        store = module().Store(tmp_path / 'requests')
+        events = [{'task': {'id': 'remote-1', 'contextId': 'ctx-1', 'status': {'state': 'TASK_STATE_INPUT_REQUIRED'}}},
+                  {'statusUpdate': {'taskId': 'remote-1', 'contextId': 'ctx-1', 'status': {'state': 'TASK_STATE_COMPLETED'}}}]
+        with peer_server(store, events) as (url, calls):
+            client = module().Client(config(url), store)
+            result = client.send(client.prepare('hello'))
+>       assert result['local_state'] == 'intervention_required'
+E       AssertionError: assert 'observed' == 'intervention_required'
+E         
+E         - intervention_required
+E         + observed
+
+tests/plugins/test_a2a_outbound_recovery.py:323: AssertionError
+________ test_completed_message_remains_durable_on_resume_without_task _________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-5_8ze5dr/pytest-of-hermeswebui/pytest-0/test_completed_message_remains0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f08b814e210>
+
+    def test_completed_message_remains_durable_on_resume_without_task(tmp_path, monkeypatch):
+        monkeypatch.setenv('A2A_TEST_TOKEN', 'fixture-secret')
+        store = module().Store(tmp_path / 'requests')
+        events = [{'message': {'messageId': 'm1', 'role': 'ROLE_AGENT', 'parts': [{'text': 'answer'}]}}]
+        with peer_server(store, events) as (url, calls):
+            client = module().Client(config(url), store)
+            local_id = client.prepare('hello')
+            result = client.send(local_id)
+            resumed = client.resume(local_id)
+>       assert result == resumed
+E       AssertionError: assert {'revision': ...lo'}]}}}, ...} == {'revision': ...lo'}]}}}, ...}
+E         
+E         Omitting 7 identical items, use -vv to show
+E         Differing items:
+E         {'local_state': 'observed'} != {'local_state': 'uncertain'}
+E         {'revision': 2} != {'revision': 3}
+E         Use -v to get more diff
+
+tests/plugins/test_a2a_outbound_recovery.py:336: AssertionError
+__________ test_malformed_peer_data_fails_as_protocol_error[result0] ___________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-5_8ze5dr/pytest-of-hermeswebui/pytest-0/test_malformed_peer_data_fails0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f08b814cb90>
+result = {'task': {'id': 't', 'contextId': 'c', 'status': []}}
+
+    @pytest.mark.parametrize('result', [
+        {'task': {'id': 't', 'contextId': 'c', 'status': []}},
+        {'task': {'id': 0, 'contextId': 'c', 'status': {'state': 'TASK_STATE_WORKING'}}},
+        {'statusUpdate': {'taskId': 't', 'contextId': 'c', 'status': None}},
+    ])
+    def test_malformed_peer_data_fails_as_protocol_error(tmp_path, monkeypatch, result):
+        monkeypatch.setenv('A2A_TEST_TOKEN', 'fixture-secret')
+        store = module().Store(tmp_path / 'requests')
+        with peer_server(store, [result]) as (url, calls):
+            client = module().Client(config(url), store)
+            with pytest.raises(ValueError):
+>               client.send(client.prepare('hello'))
+
+tests/plugins/test_a2a_outbound_recovery.py:351: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+plugins/platforms/a2a/outbound.py:180: in send
+    self._event(record, event, record['request']['id'])
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <plugins.platforms.a2a.outbound.Client object at 0x7f08b6f03290>
+record = {'revision': 1, 'local_id': 'edd897736b1b4ccd843c0e0dcf563064', 'binding': {'peer': 'zuri', 'runtime': 'codex', 'host'...'message': {'role': 'ROLE_USER', 'messageId': 'd8be60372463469fa90f372ecafae5e6', 'parts': [{'text': 'hello'}]}}}, ...}
+envelope = {'jsonrpc': '2.0', 'id': 'edd897736b1b4ccd843c0e0dcf563064', 'result': {'task': {'id': 't', 'contextId': 'c', 'status': []}}}
+request_id = 'edd897736b1b4ccd843c0e0dcf563064'
+
+    def _event(self, record, envelope, request_id):
+        if self._token() in json.dumps(envelope, ensure_ascii=False):
+            raise ProtocolError('Credential echoed by peer; response rejected')
+        if not isinstance(envelope, dict) or envelope.get('jsonrpc') != '2.0' or envelope.get('id') != request_id:
+            raise ProtocolError('Invalid JSON-RPC correlation')
+        if 'error' in envelope:
+            raise ProtocolError('Peer JSON-RPC error')
+        result = envelope.get('result')
+        if not isinstance(result, dict):
+            raise ProtocolError('Invalid StreamResponse')
+        kinds = [k for k in ('task', 'statusUpdate', 'artifactUpdate', 'message') if k in result]
+        if len(kinds) != 1 or not isinstance(result[kinds[0]], dict):
+            raise ProtocolError('Invalid StreamResponse oneof')
+        kind = kinds[0]
+        value = result[kind]
+        task_id = value.get('id') if kind == 'task' else value.get('taskId')
+        context_id = value.get('contextId')
+        for field, new in (('task_id', task_id), ('context_id', context_id)):
+            if new:
+                if not isinstance(new, str) or len(new) > 1024:
+                    raise ProtocolError('Invalid remote identity')
+                if record[field] and record[field] != new:
+                    raise ProtocolError('Remote identity changed')
+                record[field] = new
+        if kind != 'message' and not task_id:
+            raise ProtocolError('Missing remote task identity')
+        if 'status' in value:
+>           state = value['status'].get('state')
+                    ^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'list' object has no attribute 'get'
+
+plugins/platforms/a2a/outbound.py:162: AttributeError
+__________ test_malformed_peer_data_fails_as_protocol_error[result2] ___________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-5_8ze5dr/pytest-of-hermeswebui/pytest-0/test_malformed_peer_data_fails2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f08b6ed6180>
+result = {'statusUpdate': {'taskId': 't', 'contextId': 'c', 'status': None}}
+
+    @pytest.mark.parametrize('result', [
+        {'task': {'id': 't', 'contextId': 'c', 'status': []}},
+        {'task': {'id': 0, 'contextId': 'c', 'status': {'state': 'TASK_STATE_WORKING'}}},
+        {'statusUpdate': {'taskId': 't', 'contextId': 'c', 'status': None}},
+    ])
+    def test_malformed_peer_data_fails_as_protocol_error(tmp_path, monkeypatch, result):
+        monkeypatch.setenv('A2A_TEST_TOKEN', 'fixture-secret')
+        store = module().Store(tmp_path / 'requests')
+        with peer_server(store, [result]) as (url, calls):
+            client = module().Client(config(url), store)
+            with pytest.raises(ValueError):
+>               client.send(client.prepare('hello'))
+
+tests/plugins/test_a2a_outbound_recovery.py:351: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+plugins/platforms/a2a/outbound.py:180: in send
+    self._event(record, event, record['request']['id'])
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <plugins.platforms.a2a.outbound.Client object at 0x7f08b6f6c3e0>
+record = {'revision': 1, 'local_id': '553fa4856ea44d8fb23a0176c83f8e55', 'binding': {'peer': 'zuri', 'runtime': 'codex', 'host'...'message': {'role': 'ROLE_USER', 'messageId': 'b6de1c075f9a4d818dbf69b3ca661a93', 'parts': [{'text': 'hello'}]}}}, ...}
+envelope = {'jsonrpc': '2.0', 'id': '553fa4856ea44d8fb23a0176c83f8e55', 'result': {'statusUpdate': {'taskId': 't', 'contextId': 'c', 'status': None}}}
+request_id = '553fa4856ea44d8fb23a0176c83f8e55'
+
+    def _event(self, record, envelope, request_id):
+        if self._token() in json.dumps(envelope, ensure_ascii=False):
+            raise ProtocolError('Credential echoed by peer; response rejected')
+        if not isinstance(envelope, dict) or envelope.get('jsonrpc') != '2.0' or envelope.get('id') != request_id:
+            raise ProtocolError('Invalid JSON-RPC correlation')
+        if 'error' in envelope:
+            raise ProtocolError('Peer JSON-RPC error')
+        result = envelope.get('result')
+        if not isinstance(result, dict):
+            raise ProtocolError('Invalid StreamResponse')
+        kinds = [k for k in ('task', 'statusUpdate', 'artifactUpdate', 'message') if k in result]
+        if len(kinds) != 1 or not isinstance(result[kinds[0]], dict):
+            raise ProtocolError('Invalid StreamResponse oneof')
+        kind = kinds[0]
+        value = result[kind]
+        task_id = value.get('id') if kind == 'task' else value.get('taskId')
+        context_id = value.get('contextId')
+        for field, new in (('task_id', task_id), ('context_id', context_id)):
+            if new:
+                if not isinstance(new, str) or len(new) > 1024:
+                    raise ProtocolError('Invalid remote identity')
+                if record[field] and record[field] != new:
+                    raise ProtocolError('Remote identity changed')
+                record[field] = new
+        if kind != 'message' and not task_id:
+            raise ProtocolError('Missing remote task identity')
+        if 'status' in value:
+>           state = value['status'].get('state')
+                    ^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'NoneType' object has no attribute 'get'
+
+plugins/platforms/a2a/outbound.py:162: AttributeError
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_intervention_ends_stream_without_processing_followup
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_completed_message_remains_durable_on_resume_without_task
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_malformed_peer_data_fails_as_protocol_error[result0]
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_malformed_peer_data_fails_as_protocol_error[result2]
+======================== 4 failed, 38 passed in 11.14s =========================
+
+=== 1 file with test failures (4 tests failed) ===
+  tests/plugins/test_a2a_outbound_recovery.py  (4 tests failed)

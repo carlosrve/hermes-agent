@@ -1,0 +1,25 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 5 test files (~180 tests) under ['tests/plugins/test_a2a_plugin.py', 'tests/plugins/test_a2a_phase23.py', 'tests/plugins/test_a2a_schema_registration.py', 'tests/plugins/test_a2a_tools_gate.py', 'tests/tools/test_a2a_reason_roundtrip.py']; running with -j 24
+[  3.3% |     6/~180 | ✓6 | ✗0] ✓ tests/plugins/test_a2a_tools_gate.py (6✓, 0.7s)
+[  3.9% |     7/~180 | ✓7 | ✗0] ✓ tests/plugins/test_a2a_schema_registration.py (1✓, 0.7s)
+[ 32.8% |    59/~180 | ✓52 | ✗ 0] ✓ tests/plugins/test_a2a_phase23.py (45✓, 0.8s)
+[ 35.6% |    64/~180 | ✓57 | ✗ 0] ✓ tests/tools/test_a2a_reason_roundtrip.py (5✓, 0.8s)
+[100.0% |   180/~180 | ✓162 | ✗  0] ✓ tests/plugins/test_a2a_plugin.py (105✓, 2.7s)
+
+=== Summary: 5 files, 162 tests passed, 0 failed (100% complete) in 2.7s (24 workers) ===
+  Durations cached to test_durations.json (5 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   5
+  Total subprocess CPU-wall: 5.7s  (runner wall: 2.7s, parallelism: 24x)
+  P50: 0.81s  P90: 2.67s  P95: 2.67s  P99: 2.67s  Max: 2.67s
+  <1s: 4 files (80%)  <2s: 4 files (80%)
+  Top 10 slowest:
+      2.67s  tests/plugins/test_a2a_plugin.py
+      0.85s  tests/tools/test_a2a_reason_roundtrip.py
+      0.81s  tests/plugins/test_a2a_phase23.py
+      0.69s  tests/plugins/test_a2a_schema_registration.py
+      0.68s  tests/plugins/test_a2a_tools_gate.py

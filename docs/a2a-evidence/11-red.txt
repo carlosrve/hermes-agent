@@ -1,0 +1,111 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~15 tests) under ['tests/plugins/test_a2a_outbound_recovery.py']; running with -j 24
+[100.0% |    15/~15 | ✓35 | ✗ 2] ✗ tests/plugins/test_a2a_outbound_recovery.py (35✓ 2✗, 16.1s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_outbound_recovery.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║             cfg['timeout'] = 1
+  ║             client = module().Client(cfg, module().Store(tmp_path / 'requests'))
+  ║             local_id = client.prepare('hello')
+  ║             start = time.monotonic()
+  ║ >           with pytest.raises(TimeoutError):
+  ║                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ║ E           Failed: DID NOT RAISE TimeoutError
+  ║ 
+  ║ tests/plugins/test_a2a_outbound_recovery.py:296: Failed
+  ║ ___________ test_stale_recovery_cannot_overwrite_newer_durable_event ___________
+  ║ 
+  ║ tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-j_hy7f53/pytest-of-hermeswebui/pytest-0/test_stale_recovery_cannot_ove0')
+  ║ 
+  ║     def test_stale_recovery_cannot_overwrite_newer_durable_event(tmp_path):
+  ║         store = module().Store(tmp_path / 'requests')
+  ║         local_id = store.prepare({'peer': 'zuri'}, 'hello')
+  ║         stale = store.load(local_id)
+  ║         latest = store.load(local_id)
+  ║         latest['local_state'] = 'uncertain'
+  ║         latest['task_id'] = 'acknowledged'
+  ║         store.save(latest)
+  ║ >       with pytest.raises(ValueError, match='Concurrent'):
+  ║              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ║ E       Failed: DID NOT RAISE ValueError
+  ║ 
+  ║ tests/plugins/test_a2a_outbound_recovery.py:310: Failed
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_stream_deadline_not_extended_by_heartbeats
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_stale_recovery_cannot_overwrite_newer_durable_event
+  ║ ======================== 2 failed, 35 passed in 15.63s =========================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_outbound_recovery.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 35 tests passed, 2 failed (100% complete) in 16.1s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 16.1s  (runner wall: 16.1s, parallelism: 24x)
+  P50: 16.11s  P90: 16.11s  P95: 16.11s  P99: 16.11s  Max: 16.11s
+  <1s: 0 files (0%)  <2s: 0 files (0%)
+  Top 10 slowest:
+     16.11s  tests/plugins/test_a2a_outbound_recovery.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_outbound_recovery.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/lfc/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 37 items
+
+tests/plugins/test_a2a_outbound_recovery.py ............................ [ 75%]
+......FF.                                                                [100%]
+
+=================================== FAILURES ===================================
+_______________ test_stream_deadline_not_extended_by_heartbeats ________________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-j_hy7f53/pytest-of-hermeswebui/pytest-0/test_stream_deadline_not_exten0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f1f52aab8c0>
+
+    def test_stream_deadline_not_extended_by_heartbeats(tmp_path, monkeypatch):
+        monkeypatch.setenv('A2A_TEST_TOKEN', 'fixture-secret')
+        with subprocess_peer(tmp_path, 'drip') as port:
+            cfg = config(f'http://127.0.0.1:{port}/rpc')
+            cfg['timeout'] = 1
+            client = module().Client(cfg, module().Store(tmp_path / 'requests'))
+            local_id = client.prepare('hello')
+            start = time.monotonic()
+>           with pytest.raises(TimeoutError):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE TimeoutError
+
+tests/plugins/test_a2a_outbound_recovery.py:296: Failed
+___________ test_stale_recovery_cannot_overwrite_newer_durable_event ___________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-j_hy7f53/pytest-of-hermeswebui/pytest-0/test_stale_recovery_cannot_ove0')
+
+    def test_stale_recovery_cannot_overwrite_newer_durable_event(tmp_path):
+        store = module().Store(tmp_path / 'requests')
+        local_id = store.prepare({'peer': 'zuri'}, 'hello')
+        stale = store.load(local_id)
+        latest = store.load(local_id)
+        latest['local_state'] = 'uncertain'
+        latest['task_id'] = 'acknowledged'
+        store.save(latest)
+>       with pytest.raises(ValueError, match='Concurrent'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/plugins/test_a2a_outbound_recovery.py:310: Failed
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_stream_deadline_not_extended_by_heartbeats
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_stale_recovery_cannot_overwrite_newer_durable_event
+======================== 2 failed, 35 passed in 15.63s =========================
+
+=== 1 file with test failures (2 tests failed) ===
+  tests/plugins/test_a2a_outbound_recovery.py  (2 tests failed)

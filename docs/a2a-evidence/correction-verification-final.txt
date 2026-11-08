@@ -1,0 +1,16 @@
+COMMAND: .venv/bin/python -m ruff check plugins/platforms/a2a/outbound.py tests/plugins/test_a2a_outbound_recovery.py tests/plugins/test_a2a_outbound_validation.py tests/plugins/fixtures/a2a_outbound_peer.py
+EXIT: 0 OUTPUT: All checks passed!
+ 
+COMMAND: git diff --check
+EXIT: 0 OUTPUT:  
+COMMAND: git diff --no-index --check /dev/null plugins/platforms/a2a/outbound.py
+EXIT: 1 OUTPUT:  
+COMMAND: git diff --no-index --check /dev/null tests/plugins/test_a2a_outbound_recovery.py
+EXIT: 1 OUTPUT:  
+COMMAND: git diff --no-index --check /dev/null tests/plugins/test_a2a_outbound_validation.py
+EXIT: 1 OUTPUT:  
+COMMAND: git diff --no-index --check /dev/null docs/a2a-outbound-runbook.md
+EXIT: 1 OUTPUT:  
+No-index exit 1 means new-file diff; no whitespace diagnostics.
+PER-FILE COUNTS: [1, 6, 3, 5, 45, 1, 118, 2, 105, 134, 58] TOTAL: 478 BASELINE: 352 NEW: 126
+VERIFIED

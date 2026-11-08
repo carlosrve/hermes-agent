@@ -1,0 +1,88 @@
+{
+  "native-correction-verified-suite.log": {
+    "summary": "=== Summary: 15 files, 690 tests passed, 0 failed (100% complete) in 19.2s (24 workers) ===",
+    "files": [
+      [
+        "tests/tools/test_approval_config_readonly.py",
+        3
+      ],
+      [
+        "tests/plugins/test_a2a_phase23.py",
+        45
+      ],
+      [
+        "tests/tools/test_a2a_reason_roundtrip.py",
+        5
+      ],
+      [
+        "tests/plugins/test_a2a_tools_gate.py",
+        6
+      ],
+      [
+        "tests/gateway/test_approvals_command.py",
+        1
+      ],
+      [
+        "tests/plugins/test_a2a_schema_registration.py",
+        2
+      ],
+      [
+        "tests/plugins/test_a2a_native_tools.py",
+        3
+      ],
+      [
+        "tests/tools/test_approval_interrupt.py",
+        2
+      ],
+      [
+        "tests/plugins/test_a2a_outbound_validation.py",
+        219
+      ],
+      [
+        "tests/test_model_tools.py",
+        28
+      ],
+      [
+        "tests/plugins/test_a2a_plugin.py",
+        105
+      ],
+      [
+        "tests/test_model_tools_async_bridge.py",
+        12
+      ],
+      [
+        "tests/tools/test_approval.py",
+        134
+      ],
+      [
+        "tests/plugins/test_a2a_native_dispatch.py",
+        67
+      ],
+      [
+        "tests/plugins/test_a2a_outbound_recovery.py",
+        58
+      ]
+    ],
+    "computed_total": 690
+  },
+  "native-correction-tool-search-verified.log": {
+    "summary": "=== Summary: 3 files, 77 tests passed, 0 failed (100% complete) in 3.1s (24 workers) ===",
+    "files": [
+      [
+        "tests/tools/test_tool_search_multiquery.py",
+        28
+      ],
+      [
+        "tests/tools/test_connector_local_batches.py",
+        4
+      ],
+      [
+        "tests/tools/test_tool_search.py",
+        45
+      ]
+    ],
+    "computed_total": 77
+  },
+  "new_native_cases": 29,
+  "outbound_sha256": "6efca80535214c90769af2828ef411f0fef6fe0b58ae7545bafc1997601376f0"
+}

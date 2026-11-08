@@ -1,0 +1,438 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 2 test files (~5 tests) under ['tests/plugins/test_a2a_native_tools.py', 'tests/plugins/test_a2a_native_dispatch.py']; running with -j 24
+[ 40.0% |     2/~5 | ✓2 | ✗0] ✓ tests/plugins/test_a2a_native_tools.py (2✓, 1.1s)
+[100.0% |     5/~5 | ✓10 | ✗11] ✗ tests/plugins/test_a2a_native_dispatch.py (8✓ 11✗, 1.7s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_native_dispatch.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║ E         
+  ║ E         Extra items in the left set:
+  ║ E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho10/audio_cache')
+  ║ E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho10/logs/curator')
+  ║ E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho10/hooks')
+  ║ E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho10/pairing')
+  ║ E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho10/SOUL.md')...
+  ║ E         
+  ║ E         ...Full output truncated (7 lines hidden), use '-vv' to show
+  ║ 
+  ║ tests/plugins/test_a2a_native_dispatch.py:71: AssertionError
+  ║ ------------------------------ Captured log call -------------------------------
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[approved]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[force]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[url]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[token]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[token_env]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[store]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[rpc]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[peer]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[session_id]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[profile]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[a2a_scope]
+  ║ ========================= 11 failed, 8 passed in 1.27s =========================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_native_dispatch.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 2 files, 10 tests passed, 11 failed (100% complete) in 1.7s (24 workers) ===
+  Durations cached to test_durations.json (2 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   2
+  Total subprocess CPU-wall: 2.8s  (runner wall: 1.7s, parallelism: 24x)
+  P50: 1.71s  P90: 1.71s  P95: 1.71s  P99: 1.71s  Max: 1.71s
+  <1s: 0 files (0%)  <2s: 2 files (100%)
+  Top 10 slowest:
+      1.71s  tests/plugins/test_a2a_native_dispatch.py
+      1.05s  tests/plugins/test_a2a_native_tools.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_native_dispatch.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 19 items
+
+tests/plugins/test_a2a_native_dispatch.py ........FFFFFFFFFFF            [100%]
+
+=================================== FAILURES ===================================
+__________ test_model_cannot_supply_authority_or_transport[approved] ___________
+
+native = (<function native.<locals>.call at 0x7f5d7f7f7b00>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...1b80>, PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho0'))
+extra = 'approved'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+        assert result['status'] == 'blocked'
+        assert result['reason'] == 'invalid_arguments'
+>       assert set(home.rglob('*')) == before
+E       AssertionError: assert {PosixPath('/...mories'), ...} == {PosixPath('/...test/skills')}
+E         
+E         Extra items in the left set:
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho0/memories')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho0/logs/curator')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho0/sessions')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho0/audio_cache')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho0/cron')...
+E         
+E         ...Full output truncated (7 lines hidden), use '-vv' to show
+
+tests/plugins/test_a2a_native_dispatch.py:71: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+____________ test_model_cannot_supply_authority_or_transport[force] ____________
+
+native = (<function native.<locals>.call at 0x7f5d7f9a9620>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...4560>, PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho1'))
+extra = 'force'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+        assert result['status'] == 'blocked'
+        assert result['reason'] == 'invalid_arguments'
+>       assert set(home.rglob('*')) == before
+E       AssertionError: assert {PosixPath('/...mories'), ...} == {PosixPath('/...test/skills')}
+E         
+E         Extra items in the left set:
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho1/logs/curator')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho1/skills')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho1/hooks')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho1/logs')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho1/SOUL.md')...
+E         
+E         ...Full output truncated (7 lines hidden), use '-vv' to show
+
+tests/plugins/test_a2a_native_dispatch.py:71: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+_____________ test_model_cannot_supply_authority_or_transport[url] _____________
+
+native = (<function native.<locals>.call at 0x7f5d7f7e0b80>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...1ee0>, PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho2'))
+extra = 'url'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+        assert result['status'] == 'blocked'
+        assert result['reason'] == 'invalid_arguments'
+>       assert set(home.rglob('*')) == before
+E       AssertionError: assert {PosixPath('/...mories'), ...} == {PosixPath('/...test/skills')}
+E         
+E         Extra items in the left set:
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho2/image_cache')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho2/SOUL.md')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho2/memories')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho2/pairing')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho2/audio_cache')...
+E         
+E         ...Full output truncated (7 lines hidden), use '-vv' to show
+
+tests/plugins/test_a2a_native_dispatch.py:71: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+____________ test_model_cannot_supply_authority_or_transport[token] ____________
+
+native = (<function native.<locals>.call at 0x7f5d7f6efd80>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...d070>, PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho3'))
+extra = 'token'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+        assert result['status'] == 'blocked'
+        assert result['reason'] == 'invalid_arguments'
+>       assert set(home.rglob('*')) == before
+E       AssertionError: assert {PosixPath('/...mories'), ...} == {PosixPath('/...test/skills')}
+E         
+E         Extra items in the left set:
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho3/memories')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho3/sessions')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho3/pairing')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho3/hooks')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho3/SOUL.md')...
+E         
+E         ...Full output truncated (7 lines hidden), use '-vv' to show
+
+tests/plugins/test_a2a_native_dispatch.py:71: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+__________ test_model_cannot_supply_authority_or_transport[token_env] __________
+
+native = (<function native.<locals>.call at 0x7f5d7f787d80>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...0800>, PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho4'))
+extra = 'token_env'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+        assert result['status'] == 'blocked'
+        assert result['reason'] == 'invalid_arguments'
+>       assert set(home.rglob('*')) == before
+E       AssertionError: assert {PosixPath('/...mories'), ...} == {PosixPath('/...test/skills')}
+E         
+E         Extra items in the left set:
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho4/image_cache')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho4/cron')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho4/pairing')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho4/audio_cache')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho4/logs/curator')...
+E         
+E         ...Full output truncated (7 lines hidden), use '-vv' to show
+
+tests/plugins/test_a2a_native_dispatch.py:71: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+____________ test_model_cannot_supply_authority_or_transport[store] ____________
+
+native = (<function native.<locals>.call at 0x7f5d7f727ba0>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...7950>, PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho5'))
+extra = 'store'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+        assert result['status'] == 'blocked'
+        assert result['reason'] == 'invalid_arguments'
+>       assert set(home.rglob('*')) == before
+E       AssertionError: assert {PosixPath('/...mories'), ...} == {PosixPath('/...test/skills')}
+E         
+E         Extra items in the left set:
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho5/logs')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho5/image_cache')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho5/memories')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho5/logs/curator')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho5/SOUL.md')...
+E         
+E         ...Full output truncated (7 lines hidden), use '-vv' to show
+
+tests/plugins/test_a2a_native_dispatch.py:71: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+_____________ test_model_cannot_supply_authority_or_transport[rpc] _____________
+
+native = (<function native.<locals>.call at 0x7f5d7f9aa520>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...fbf0>, PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho6'))
+extra = 'rpc'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+        assert result['status'] == 'blocked'
+        assert result['reason'] == 'invalid_arguments'
+>       assert set(home.rglob('*')) == before
+E       AssertionError: assert {PosixPath('/...mories'), ...} == {PosixPath('/...test/skills')}
+E         
+E         Extra items in the left set:
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho6/audio_cache')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho6/memories')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho6/image_cache')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho6/logs')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho6/hooks')...
+E         
+E         ...Full output truncated (7 lines hidden), use '-vv' to show
+
+tests/plugins/test_a2a_native_dispatch.py:71: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+____________ test_model_cannot_supply_authority_or_transport[peer] _____________
+
+native = (<function native.<locals>.call at 0x7f5d7f788f40>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...fb90>, PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho7'))
+extra = 'peer'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+        assert result['status'] == 'blocked'
+        assert result['reason'] == 'invalid_arguments'
+>       assert set(home.rglob('*')) == before
+E       AssertionError: assert {PosixPath('/...mories'), ...} == {PosixPath('/...test/skills')}
+E         
+E         Extra items in the left set:
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho7/cron')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho7/memories')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho7/SOUL.md')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho7/image_cache')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho7/logs')...
+E         
+E         ...Full output truncated (7 lines hidden), use '-vv' to show
+
+tests/plugins/test_a2a_native_dispatch.py:71: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+_________ test_model_cannot_supply_authority_or_transport[session_id] __________
+
+native = (<function native.<locals>.call at 0x7f5d7f635120>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...c200>, PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho8'))
+extra = 'session_id'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+        assert result['status'] == 'blocked'
+        assert result['reason'] == 'invalid_arguments'
+>       assert set(home.rglob('*')) == before
+E       AssertionError: assert {PosixPath('/...mories'), ...} == {PosixPath('/...test/skills')}
+E         
+E         Extra items in the left set:
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho8/sessions')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho8/SOUL.md')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho8/pairing')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho8/memories')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho8/hooks')...
+E         
+E         ...Full output truncated (7 lines hidden), use '-vv' to show
+
+tests/plugins/test_a2a_native_dispatch.py:71: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+___________ test_model_cannot_supply_authority_or_transport[profile] ___________
+
+native = (<function native.<locals>.call at 0x7f5d7f7e2c00>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...2e40>, PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho9'))
+extra = 'profile'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+        assert result['status'] == 'blocked'
+        assert result['reason'] == 'invalid_arguments'
+>       assert set(home.rglob('*')) == before
+E       AssertionError: assert {PosixPath('/...mories'), ...} == {PosixPath('/...test/skills')}
+E         
+E         Extra items in the left set:
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho9/hooks')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho9/image_cache')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho9/cron')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho9/SOUL.md')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho9/pairing')...
+E         
+E         ...Full output truncated (7 lines hidden), use '-vv' to show
+
+tests/plugins/test_a2a_native_dispatch.py:71: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+__________ test_model_cannot_supply_authority_or_transport[a2a_scope] __________
+
+native = (<function native.<locals>.call at 0x7f5d7f4e9580>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...a40>, PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho10'))
+extra = 'a2a_scope'
+
+    @pytest.mark.parametrize('extra', ['approved', 'force', 'url', 'token', 'token_env', 'store',
+                                      'rpc', 'peer', 'session_id', 'profile', 'a2a_scope'])
+    def test_model_cannot_supply_authority_or_transport(native, extra):
+        call, _, _, home = native
+        before = set(home.rglob('*'))
+        result = call({'action': 'prepare', 'message': 'hello', extra: 'forged'})
+        assert result['status'] == 'blocked'
+        assert result['reason'] == 'invalid_arguments'
+>       assert set(home.rglob('*')) == before
+E       AssertionError: assert {PosixPath('/...mories'), ...} == {PosixPath('/...test/skills')}
+E         
+E         Extra items in the left set:
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho10/audio_cache')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho10/logs/curator')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho10/hooks')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho10/pairing')
+E         PosixPath('/tmp/hermes-pytest-tmproot-5i6stfyb/pytest-of-hermeswebui/pytest-0/test_model_cannot_supply_autho10/SOUL.md')...
+E         
+E         ...Full output truncated (7 lines hidden), use '-vv' to show
+
+tests/plugins/test_a2a_native_dispatch.py:71: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[approved]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[force]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[url]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[token]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[token_env]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[store]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[rpc]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[peer]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[session_id]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[profile]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_model_cannot_supply_authority_or_transport[a2a_scope]
+========================= 11 failed, 8 passed in 1.27s =========================
+
+=== 1 file with test failures (11 tests failed) ===
+  tests/plugins/test_a2a_native_dispatch.py  (11 tests failed)

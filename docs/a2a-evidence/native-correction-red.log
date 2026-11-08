@@ -1,0 +1,161 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~11 tests) under ['tests/plugins/test_a2a_native_dispatch.py']; running with -j 24
+[100.0% |    11/~11 | ✓1 | ✗2] ✗ tests/plugins/test_a2a_native_dispatch.py (1✓ 2✗, 1.2s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_native_dispatch.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║             enabled_toolsets=['a2a_outbound'], disabled_toolsets=[],
+  ║             quiet_mode=True, skip_tool_search_assembly=True)
+  ║         assert {t['function']['name'] for t in direct} == {'a2a_outbound'}
+  ║         assembly = assemble_tool_defs(direct, config=ToolSearchConfig(
+  ║             enabled=mode, threshold_pct=5, search_default_limit=5, max_search_limit=20))
+  ║         names = {t['function']['name'] for t in assembly.tool_defs}
+  ║         assert ('a2a_outbound' in names) == (mode == 'off')
+  ║         agent = SimpleNamespace(session_id='owner', valid_tool_names=names,
+  ║                                 enabled_toolsets=['a2a_outbound'], disabled_toolsets=[],
+  ║                                 _context_engine_tool_names=set(), _memory_manager=None, quiet_mode=False)
+  ║     
+  ║         def execute(args):
+  ║             name, actual, block = _unwrap_tool_search_call(
+  ║                 agent, 'a2a_outbound' if mode == 'off' else 'tool_call',
+  ║                 args if mode == 'off' else {'calls': [{'name': 'a2a_outbound', 'arguments': args}]})
+  ║             assert block is None
+  ║             assert name == 'a2a_outbound'
+  ║             ref = _ToolCallRef(name, actual, 'terminal-not-owner', 'call', [])
+  ║             return json.loads(_resolve_sequential_dispatch(agent, ref, []).execute(actual))
+  ║     
+  ║         draft = execute({'action': 'prepare', 'message': 'hello'})
+  ║ >       assert draft['local_state'] == 'prepared'
+  ║                ^^^^^^^^^^^^^^^^^^^^
+  ║ E       KeyError: 'local_state'
+  ║ 
+  ║ tests/plugins/test_a2a_native_dispatch.py:209: KeyError
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_real_tool_search_executor_roundtrip[auto]
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_real_tool_search_executor_roundtrip[on]
+  ║ ================== 2 failed, 1 passed, 38 deselected in 0.75s ==================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_native_dispatch.py -k real_tool_search_executor_roundtrip
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 1 tests passed, 2 failed (100% complete) in 1.2s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 1.2s  (runner wall: 1.2s, parallelism: 24x)
+  P50: 1.24s  P90: 1.24s  P95: 1.24s  P99: 1.24s  Max: 1.24s
+  <1s: 0 files (0%)  <2s: 1 files (100%)
+  Top 10 slowest:
+      1.24s  tests/plugins/test_a2a_native_dispatch.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_native_dispatch.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 41 items / 38 deselected / 3 selected
+
+tests/plugins/test_a2a_native_dispatch.py FF.                            [100%]
+
+=================================== FAILURES ===================================
+________________ test_real_tool_search_executor_roundtrip[auto] ________________
+
+native = (<function native.<locals>.call at 0x7fd17f1ecc20>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...9b20>, PosixPath('/tmp/hermes-pytest-tmproot-ujkin_bk/pytest-of-hermeswebui/pytest-0/test_real_tool_search_executor0'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd18043be90>
+mode = 'auto'
+
+    @pytest.mark.parametrize('mode', ['auto', 'on', 'off'])
+    def test_real_tool_search_executor_roundtrip(native, monkeypatch, mode):
+        import model_tools
+        import tools.registry as registry_module
+        from tools.tool_search import ToolSearchConfig, assemble_tool_defs
+        from agent.tool_executor import (
+            _ToolCallRef, _resolve_sequential_dispatch, _unwrap_tool_search_call,
+        )
+        _, _, registry, home = native
+        monkeypatch.setattr(registry_module, 'registry', registry)
+        direct = model_tools.get_tool_definitions(
+            enabled_toolsets=['a2a_outbound'], disabled_toolsets=[],
+            quiet_mode=True, skip_tool_search_assembly=True)
+        assert {t['function']['name'] for t in direct} == {'a2a_outbound'}
+        assembly = assemble_tool_defs(direct, config=ToolSearchConfig(
+            enabled=mode, threshold_pct=5, search_default_limit=5, max_search_limit=20))
+        names = {t['function']['name'] for t in assembly.tool_defs}
+        assert ('a2a_outbound' in names) == (mode == 'off')
+        agent = SimpleNamespace(session_id='owner', valid_tool_names=names,
+                                enabled_toolsets=['a2a_outbound'], disabled_toolsets=[],
+                                _context_engine_tool_names=set(), _memory_manager=None, quiet_mode=False)
+    
+        def execute(args):
+            name, actual, block = _unwrap_tool_search_call(
+                agent, 'a2a_outbound' if mode == 'off' else 'tool_call',
+                args if mode == 'off' else {'calls': [{'name': 'a2a_outbound', 'arguments': args}]})
+            assert block is None
+            assert name == 'a2a_outbound'
+            ref = _ToolCallRef(name, actual, 'terminal-not-owner', 'call', [])
+            return json.loads(_resolve_sequential_dispatch(agent, ref, []).execute(actual))
+    
+        draft = execute({'action': 'prepare', 'message': 'hello'})
+>       assert draft['local_state'] == 'prepared'
+               ^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'local_state'
+
+tests/plugins/test_a2a_native_dispatch.py:209: KeyError
+_________________ test_real_tool_search_executor_roundtrip[on] _________________
+
+native = (<function native.<locals>.call at 0x7fd17f263240>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...4800>, PosixPath('/tmp/hermes-pytest-tmproot-ujkin_bk/pytest-of-hermeswebui/pytest-0/test_real_tool_search_executor1'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fd1804382c0>
+mode = 'on'
+
+    @pytest.mark.parametrize('mode', ['auto', 'on', 'off'])
+    def test_real_tool_search_executor_roundtrip(native, monkeypatch, mode):
+        import model_tools
+        import tools.registry as registry_module
+        from tools.tool_search import ToolSearchConfig, assemble_tool_defs
+        from agent.tool_executor import (
+            _ToolCallRef, _resolve_sequential_dispatch, _unwrap_tool_search_call,
+        )
+        _, _, registry, home = native
+        monkeypatch.setattr(registry_module, 'registry', registry)
+        direct = model_tools.get_tool_definitions(
+            enabled_toolsets=['a2a_outbound'], disabled_toolsets=[],
+            quiet_mode=True, skip_tool_search_assembly=True)
+        assert {t['function']['name'] for t in direct} == {'a2a_outbound'}
+        assembly = assemble_tool_defs(direct, config=ToolSearchConfig(
+            enabled=mode, threshold_pct=5, search_default_limit=5, max_search_limit=20))
+        names = {t['function']['name'] for t in assembly.tool_defs}
+        assert ('a2a_outbound' in names) == (mode == 'off')
+        agent = SimpleNamespace(session_id='owner', valid_tool_names=names,
+                                enabled_toolsets=['a2a_outbound'], disabled_toolsets=[],
+                                _context_engine_tool_names=set(), _memory_manager=None, quiet_mode=False)
+    
+        def execute(args):
+            name, actual, block = _unwrap_tool_search_call(
+                agent, 'a2a_outbound' if mode == 'off' else 'tool_call',
+                args if mode == 'off' else {'calls': [{'name': 'a2a_outbound', 'arguments': args}]})
+            assert block is None
+            assert name == 'a2a_outbound'
+            ref = _ToolCallRef(name, actual, 'terminal-not-owner', 'call', [])
+            return json.loads(_resolve_sequential_dispatch(agent, ref, []).execute(actual))
+    
+        draft = execute({'action': 'prepare', 'message': 'hello'})
+>       assert draft['local_state'] == 'prepared'
+               ^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'local_state'
+
+tests/plugins/test_a2a_native_dispatch.py:209: KeyError
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_real_tool_search_executor_roundtrip[auto]
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_real_tool_search_executor_roundtrip[on]
+================== 2 failed, 1 passed, 38 deselected in 0.75s ==================
+
+=== 1 file with test failures (2 tests failed) ===
+  tests/plugins/test_a2a_native_dispatch.py  (2 tests failed)

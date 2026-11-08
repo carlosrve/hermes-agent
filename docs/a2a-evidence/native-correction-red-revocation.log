@@ -1,0 +1,130 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~12 tests) under ['tests/plugins/test_a2a_native_dispatch.py']; running with -j 24
+[100.0% |    12/~12 | ✓11 | ✗ 1] ✗ tests/plugins/test_a2a_native_dispatch.py (11✓ 1✗, 1.6s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_native_dispatch.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║         elif revocation == 'disabled':
+  ║             agent.disabled_toolsets = ['a2a_outbound']
+  ║         elif revocation == 'composite':
+  ║             agent.disabled_toolsets = ['native-denied-bundle']
+  ║         elif revocation == 'visible':
+  ║             agent.valid_tool_names = set()
+  ║         elif revocation == 'config':
+  ║             config['enabled'] = False
+  ║         else:
+  ║             registry.deregister('a2a_outbound')
+  ║         before = set(home.glob('a2a-native-*'))
+  ║         result = json.loads(dispatch.execute(args))
+  ║ >       assert result.get('status') == 'blocked' or 'error' in result, result
+  ║ E       AssertionError: {'status': 'ok', 'local_id': '111711e886774811901a83b67d4cfa73', 'local_state': 'prepared', 'remote_state': None, ...}
+  ║ E       assert ('ok' == 'blocked'
+  ║ E         
+  ║ E         - blocked
+  ║ E         + ok or 'error' in {'status': 'ok', 'local_id': '111711e886774811901a83b67d4cfa73', 'local_state': 'prepared', 'remote_state': None, ...})
+  ║ 
+  ║ tests/plugins/test_a2a_native_dispatch.py:264: AssertionError
+  ║ ------------------------------ Captured log call -------------------------------
+  ║ WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_outbound without override=True
+  ║ WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_discover without override=True
+  ║ WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_call without override=True
+  ║ WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_list without override=True
+  ║ WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_history without override=True
+  ║ WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_orchestrate without override=True
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_grant_revoked_after_unwrap_is_rechecked_at_dispatch[composite-False]
+  ║ ================= 1 failed, 11 passed, 44 deselected in 1.02s ==================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_native_dispatch.py -k grant_revoked
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 11 tests passed, 1 failed (100% complete) in 1.6s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 1.6s  (runner wall: 1.6s, parallelism: 24x)
+  P50: 1.62s  P90: 1.62s  P95: 1.62s  P99: 1.62s  Max: 1.62s
+  <1s: 0 files (0%)  <2s: 1 files (100%)
+  Top 10 slowest:
+      1.62s  tests/plugins/test_a2a_native_dispatch.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_native_dispatch.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 56 items / 44 deselected / 12 selected
+
+tests/plugins/test_a2a_native_dispatch.py ....F.......                   [100%]
+
+=================================== FAILURES ===================================
+__ test_grant_revoked_after_unwrap_is_rechecked_at_dispatch[composite-False] ___
+
+native = (<function native.<locals>.call at 0x7f52c0060ae0>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...9b20>, PosixPath('/tmp/hermes-pytest-tmproot-b5sp6c21/pytest-of-hermeswebui/pytest-0/test_grant_revoked_after_unwra4'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f52c16a3c80>
+deferred = False, revocation = 'composite'
+
+    @pytest.mark.parametrize('deferred', [False, True])
+    @pytest.mark.parametrize('revocation', ['selection', 'disabled', 'composite', 'visible', 'config', 'registry'])
+    def test_grant_revoked_after_unwrap_is_rechecked_at_dispatch(native, monkeypatch, deferred, revocation):
+        import tools.registry as registry_module
+        import toolsets
+        from agent.tool_executor import _ToolCallRef, _resolve_sequential_dispatch, _unwrap_tool_search_call
+        _, config, registry, home = native
+        monkeypatch.setattr(registry_module, 'registry', registry)
+        monkeypatch.setitem(toolsets.TOOLSETS, 'native-denied-bundle',
+                            {'tools': ['a2a_outbound'], 'includes': []})
+        agent = SimpleNamespace(session_id='owner',
+                                valid_tool_names={'tool_call'} if deferred else {'a2a_outbound'},
+                                enabled_toolsets=['a2a_outbound'], disabled_toolsets=[],
+                                _context_engine_tool_names=set(), _memory_manager=None, quiet_mode=False)
+        args = {'action': 'prepare', 'message': 'revoked draft'}
+        if deferred:
+            name, args, block = _unwrap_tool_search_call(agent, 'tool_call',
+                {'calls': [{'name': 'a2a_outbound', 'arguments': args}]})
+            assert block is None and name == 'a2a_outbound'
+        ref = _ToolCallRef('a2a_outbound', args, 'terminal', 'call', [])
+        dispatch = _resolve_sequential_dispatch(agent, ref, [])
+        if revocation == 'selection':
+            agent.enabled_toolsets = []
+        elif revocation == 'disabled':
+            agent.disabled_toolsets = ['a2a_outbound']
+        elif revocation == 'composite':
+            agent.disabled_toolsets = ['native-denied-bundle']
+        elif revocation == 'visible':
+            agent.valid_tool_names = set()
+        elif revocation == 'config':
+            config['enabled'] = False
+        else:
+            registry.deregister('a2a_outbound')
+        before = set(home.glob('a2a-native-*'))
+        result = json.loads(dispatch.execute(args))
+>       assert result.get('status') == 'blocked' or 'error' in result, result
+E       AssertionError: {'status': 'ok', 'local_id': '111711e886774811901a83b67d4cfa73', 'local_state': 'prepared', 'remote_state': None, ...}
+E       assert ('ok' == 'blocked'
+E         
+E         - blocked
+E         + ok or 'error' in {'status': 'ok', 'local_id': '111711e886774811901a83b67d4cfa73', 'local_state': 'prepared', 'remote_state': None, ...})
+
+tests/plugins/test_a2a_native_dispatch.py:264: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_outbound without override=True
+WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_discover without override=True
+WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_call without override=True
+WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_list without override=True
+WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_history without override=True
+WARNING  hermes_cli.plugins:plugins.py:480 Plugin a2a-platform tried to shadow global tool a2a_orchestrate without override=True
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_grant_revoked_after_unwrap_is_rechecked_at_dispatch[composite-False]
+================= 1 failed, 11 passed, 44 deselected in 1.02s ==================
+
+=== 1 file with test failures (1 test failed) ===
+  tests/plugins/test_a2a_native_dispatch.py  (1 test failed)

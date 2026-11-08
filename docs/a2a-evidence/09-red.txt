@@ -1,0 +1,98 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~13 tests) under ['tests/plugins/test_a2a_outbound_recovery.py']; running with -j 24
+[100.0% |    13/~13 | ✓34 | ✗ 1] ✗ tests/plugins/test_a2a_outbound_recovery.py (34✓ 1✗, 8.0s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_outbound_recovery.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║ tests/plugins/test_a2a_outbound_recovery.py ......................F..... [ 80%]
+  ║ .......                                                                  [100%]
+  ║ 
+  ║ =================================== FAILURES ===================================
+  ║ _______________ test_only_one_process_can_claim_a_prepared_send ________________
+  ║ 
+  ║ tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-l3zpidwe/pytest-of-hermeswebui/pytest-0/test_only_one_process_can_clai0')
+  ║ monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f12c7b2b680>
+  ║ 
+  ║     def test_only_one_process_can_claim_a_prepared_send(tmp_path, monkeypatch):
+  ║         m = module()
+  ║         store = m.Store(tmp_path / 'requests')
+  ║         binding = {'peer': 'zuri', 'runtime': 'codex', 'host': 'zurqui', 'url': 'https://zurqui/rpc'}
+  ║         local_id = store.prepare(binding, 'hello')
+  ║         script = ('from plugins.platforms.a2a.outbound import Store; import sys; '
+  ║                   'Store(sys.argv[1]).claim_send(sys.argv[2], ' + repr(binding) + ')')
+  ║         children = [subprocess.Popen([sys.executable, '-c', script, str(store.directory), local_id],
+  ║                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE) for _ in range(2)]
+  ║         for child in children:
+  ║             child.communicate(timeout=5)
+  ║ >       assert sorted(p.returncode for p in children) == [0, 1]
+  ║ E       assert [1, 1] == [0, 1]
+  ║ E         
+  ║ E         At index 0 diff: 1 != 0
+  ║ E         Use -v to get more diff
+  ║ 
+  ║ tests/plugins/test_a2a_outbound_recovery.py:205: AssertionError
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_only_one_process_can_claim_a_prepared_send
+  ║ ========================= 1 failed, 34 passed in 7.56s =========================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_outbound_recovery.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 34 tests passed, 1 failed (100% complete) in 8.0s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 8.0s  (runner wall: 8.0s, parallelism: 24x)
+  P50: 7.99s  P90: 7.99s  P95: 7.99s  P99: 7.99s  Max: 7.99s
+  <1s: 0 files (0%)  <2s: 0 files (0%)
+  Top 10 slowest:
+      7.99s  tests/plugins/test_a2a_outbound_recovery.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_outbound_recovery.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/lfc/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 35 items
+
+tests/plugins/test_a2a_outbound_recovery.py ......................F..... [ 80%]
+.......                                                                  [100%]
+
+=================================== FAILURES ===================================
+_______________ test_only_one_process_can_claim_a_prepared_send ________________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-l3zpidwe/pytest-of-hermeswebui/pytest-0/test_only_one_process_can_clai0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f12c7b2b680>
+
+    def test_only_one_process_can_claim_a_prepared_send(tmp_path, monkeypatch):
+        m = module()
+        store = m.Store(tmp_path / 'requests')
+        binding = {'peer': 'zuri', 'runtime': 'codex', 'host': 'zurqui', 'url': 'https://zurqui/rpc'}
+        local_id = store.prepare(binding, 'hello')
+        script = ('from plugins.platforms.a2a.outbound import Store; import sys; '
+                  'Store(sys.argv[1]).claim_send(sys.argv[2], ' + repr(binding) + ')')
+        children = [subprocess.Popen([sys.executable, '-c', script, str(store.directory), local_id],
+                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE) for _ in range(2)]
+        for child in children:
+            child.communicate(timeout=5)
+>       assert sorted(p.returncode for p in children) == [0, 1]
+E       assert [1, 1] == [0, 1]
+E         
+E         At index 0 diff: 1 != 0
+E         Use -v to get more diff
+
+tests/plugins/test_a2a_outbound_recovery.py:205: AssertionError
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_only_one_process_can_claim_a_prepared_send
+========================= 1 failed, 34 passed in 7.56s =========================
+
+=== 1 file with test failures (1 test failed) ===
+  tests/plugins/test_a2a_outbound_recovery.py  (1 test failed)

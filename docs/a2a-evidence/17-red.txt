@@ -1,0 +1,98 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~18 tests) under ['tests/plugins/test_a2a_outbound_recovery.py']; running with -j 24
+[100.0% |    18/~18 | ✓42 | ✗ 1] ✗ tests/plugins/test_a2a_outbound_recovery.py (42✓ 1✗, 16.7s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_outbound_recovery.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║ tests/plugins/test_a2a_outbound_recovery.py ............................ [ 65%]
+  ║ .......F.......                                                          [100%]
+  ║ 
+  ║ =================================== FAILURES ===================================
+  ║ ___________ test_stream_deadline_not_extended_by_heartbeats[headers] ___________
+  ║ 
+  ║ tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-yk480u5f/pytest-of-hermeswebui/pytest-0/test_stream_deadline_not_exten1')
+  ║ monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fb2b2e32e40>
+  ║ mode = 'headers'
+  ║ 
+  ║     @pytest.mark.parametrize('mode', ['drip', 'headers'])
+  ║     def test_stream_deadline_not_extended_by_heartbeats(tmp_path, monkeypatch, mode):
+  ║         monkeypatch.setenv('A2A_TEST_TOKEN', 'fixture-secret')
+  ║         with subprocess_peer(tmp_path, mode) as port:
+  ║             cfg = config(f'http://127.0.0.1:{port}/rpc')
+  ║             cfg['timeout'] = 1
+  ║             client = module().Client(cfg, module().Store(tmp_path / 'requests'))
+  ║             local_id = client.prepare('hello')
+  ║             start = time.monotonic()
+  ║             with pytest.raises(TimeoutError):
+  ║                 client.send(local_id)
+  ║ >           assert time.monotonic() - start < 4
+  ║ E           assert (6916973.854552187 - 6916968.748755161) < 4
+  ║ E            +  where 6916973.854552187 = <built-in function monotonic>()
+  ║ E            +    where <built-in function monotonic> = time.monotonic
+  ║ 
+  ║ tests/plugins/test_a2a_outbound_recovery.py:299: AssertionError
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_stream_deadline_not_extended_by_heartbeats[headers]
+  ║ ======================== 1 failed, 42 passed in 16.32s =========================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_outbound_recovery.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 42 tests passed, 1 failed (100% complete) in 16.7s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 16.7s  (runner wall: 16.7s, parallelism: 24x)
+  P50: 16.74s  P90: 16.74s  P95: 16.74s  P99: 16.74s  Max: 16.74s
+  <1s: 0 files (0%)  <2s: 0 files (0%)
+  Top 10 slowest:
+     16.74s  tests/plugins/test_a2a_outbound_recovery.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_outbound_recovery.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/lfc/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 43 items
+
+tests/plugins/test_a2a_outbound_recovery.py ............................ [ 65%]
+.......F.......                                                          [100%]
+
+=================================== FAILURES ===================================
+___________ test_stream_deadline_not_extended_by_heartbeats[headers] ___________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-yk480u5f/pytest-of-hermeswebui/pytest-0/test_stream_deadline_not_exten1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fb2b2e32e40>
+mode = 'headers'
+
+    @pytest.mark.parametrize('mode', ['drip', 'headers'])
+    def test_stream_deadline_not_extended_by_heartbeats(tmp_path, monkeypatch, mode):
+        monkeypatch.setenv('A2A_TEST_TOKEN', 'fixture-secret')
+        with subprocess_peer(tmp_path, mode) as port:
+            cfg = config(f'http://127.0.0.1:{port}/rpc')
+            cfg['timeout'] = 1
+            client = module().Client(cfg, module().Store(tmp_path / 'requests'))
+            local_id = client.prepare('hello')
+            start = time.monotonic()
+            with pytest.raises(TimeoutError):
+                client.send(local_id)
+>           assert time.monotonic() - start < 4
+E           assert (6916973.854552187 - 6916968.748755161) < 4
+E            +  where 6916973.854552187 = <built-in function monotonic>()
+E            +    where <built-in function monotonic> = time.monotonic
+
+tests/plugins/test_a2a_outbound_recovery.py:299: AssertionError
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_stream_deadline_not_extended_by_heartbeats[headers]
+======================== 1 failed, 42 passed in 16.32s =========================
+
+=== 1 file with test failures (1 test failed) ===
+  tests/plugins/test_a2a_outbound_recovery.py  (1 test failed)

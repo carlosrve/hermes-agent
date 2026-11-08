@@ -1,0 +1,113 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~9 tests) under ['tests/plugins/test_a2a_native_dispatch.py']; running with -j 24
+[100.0% |     9/~9 | ✓36 | ✗ 1] ✗ tests/plugins/test_a2a_native_dispatch.py (36✓ 1✗, 2.9s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_native_dispatch.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║ E         Left contains 1 more item:
+  ║ E         {'error': "[TOOL_ERROR] Tool execution failed: UnicodeEncodeError: 'utf-8' "
+  ║ E                   "codec can't encode character '\\ud800' in position 0: surrogates "
+  ║ E                   'not allowed'}
+  ║ E         Right contains 2 more items:
+  ║ E         {'reason': 'invalid_arguments', 'status': 'blocked'}
+  ║ E         Use -v to get more diff
+  ║ 
+  ║ tests/plugins/test_a2a_native_dispatch.py:166: AssertionError
+  ║ ------------------------------ Captured log call -------------------------------
+  ║ ERROR    tools.registry:registry.py:826 Tool a2a_outbound dispatch error: 'utf-8' codec can't encode character '\ud800' in position 0: surrogates not allowed
+  ║ Traceback (most recent call last):
+  ║   File "/workspace/a2a-integration/tools/registry.py", line 822, in dispatch
+  ║     result = entry.handler(args, **kwargs)
+  ║              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ║   File "/workspace/a2a-integration/plugins/platforms/a2a/native_tools.py", line 99, in <lambda>
+  ║     handler=lambda args, **kw: json.dumps(_handle(ctx, args, kw.get('a2a_scope')), allow_nan=False),
+  ║                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ║   File "/workspace/a2a-integration/plugins/platforms/a2a/native_tools.py", line 67, in _handle
+  ║     or not args['message'].strip() or len(args['message'].encode()) > 65536))
+  ║                                           ^^^^^^^^^^^^^^^^^^^^^^^^
+  ║ UnicodeEncodeError: 'utf-8' codec can't encode character '\ud800' in position 0: surrogates not allowed
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_invalid_unicode_and_corrupt_snapshot_fail_without_echo
+  ║ ========================= 1 failed, 36 passed in 2.42s =========================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_native_dispatch.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 36 tests passed, 1 failed (100% complete) in 2.9s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 2.9s  (runner wall: 2.9s, parallelism: 24x)
+  P50: 2.88s  P90: 2.88s  P95: 2.88s  P99: 2.88s  Max: 2.88s
+  <1s: 0 files (0%)  <2s: 0 files (0%)
+  Top 10 slowest:
+      2.88s  tests/plugins/test_a2a_native_dispatch.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_native_dispatch.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 37 items
+
+tests/plugins/test_a2a_native_dispatch.py .............................. [ 81%]
+......F                                                                  [100%]
+
+=================================== FAILURES ===================================
+_________ test_invalid_unicode_and_corrupt_snapshot_fail_without_echo __________
+
+native = (<function native.<locals>.call at 0x7f49acf4dd00>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...df70>, PosixPath('/tmp/hermes-pytest-tmproot-occmcykb/pytest-of-hermeswebui/pytest-0/test_invalid_unicode_and_corru0'))
+
+    def test_invalid_unicode_and_corrupt_snapshot_fail_without_echo(native):
+        from plugins.platforms.a2a.outbound import Store
+        call, _, _, home = native
+>       assert call({'action': 'prepare', 'message': '\ud800'}) == {
+            'status': 'blocked', 'reason': 'invalid_arguments'}
+E       assert {'error': '[T... not allowed'} == {'status': 'b...id_arguments'}
+E         
+E         Left contains 1 more item:
+E         {'error': "[TOOL_ERROR] Tool execution failed: UnicodeEncodeError: 'utf-8' "
+E                   "codec can't encode character '\\ud800' in position 0: surrogates "
+E                   'not allowed'}
+E         Right contains 2 more items:
+E         {'reason': 'invalid_arguments', 'status': 'blocked'}
+E         Use -v to get more diff
+
+tests/plugins/test_a2a_native_dispatch.py:166: AssertionError
+------------------------------ Captured log call -------------------------------
+ERROR    tools.registry:registry.py:826 Tool a2a_outbound dispatch error: 'utf-8' codec can't encode character '\ud800' in position 0: surrogates not allowed
+Traceback (most recent call last):
+  File "/workspace/a2a-integration/tools/registry.py", line 822, in dispatch
+    result = entry.handler(args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/a2a-integration/plugins/platforms/a2a/native_tools.py", line 99, in <lambda>
+    handler=lambda args, **kw: json.dumps(_handle(ctx, args, kw.get('a2a_scope')), allow_nan=False),
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/a2a-integration/plugins/platforms/a2a/native_tools.py", line 67, in _handle
+    or not args['message'].strip() or len(args['message'].encode()) > 65536))
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'utf-8' codec can't encode character '\ud800' in position 0: surrogates not allowed
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_invalid_unicode_and_corrupt_snapshot_fail_without_echo
+========================= 1 failed, 36 passed in 2.42s =========================
+
+=== 1 file with test failures (1 test failed) ===
+  tests/plugins/test_a2a_native_dispatch.py  (1 test failed)

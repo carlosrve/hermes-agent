@@ -1,0 +1,128 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 15 test files (~403 tests) under ['tests/plugins/test_a2a_outbound_recovery.py', 'tests/plugins/test_a2a_outbound_validation.py', 'tests/plugins/test_a2a_plugin.py', 'tests/plugins/test_a2a_phase23.py', 'tests/plugins/test_a2a_schema_registration.py', 'tests/plugins/test_a2a_tools_gate.py', 'tests/tools/test_a2a_reason_roundtrip.py', 'tests/tools/test_approval.py', 'tests/tools/test_approval_interrupt.py', 'tests/tools/test_approval_config_readonly.py', 'tests/gateway/test_approvals_command.py', 'tests/plugins/test_a2a_native_tools.py', 'tests/plugins/test_a2a_native_dispatch.py', 'tests/test_model_tools.py', 'tests/test_model_tools_async_bridge.py']; running with -j 24
+[  1.5% |     6/~403 | ✓6 | ✗0] ✓ tests/plugins/test_a2a_tools_gate.py (6✓, 1.6s)
+[  2.2% |     9/~403 | ✓9 | ✗0] ✓ tests/tools/test_approval_config_readonly.py (3✓, 1.9s)
+[  3.5% |    14/~403 | ✓14 | ✗ 0] ✓ tests/tools/test_a2a_reason_roundtrip.py (5✓, 2.2s)
+[ 16.4% |    66/~403 | ✓59 | ✗ 0] ✓ tests/plugins/test_a2a_phase23.py (45✓, 2.2s)
+[ 16.6% |    67/~403 | ✓60 | ✗ 0] ✓ tests/gateway/test_approvals_command.py (1✓, 2.3s)
+[ 17.1% |    69/~403 | ✓62 | ✗ 0] ✓ tests/plugins/test_a2a_schema_registration.py (2✓, 2.5s)
+[ 17.6% |    71/~403 | ✓64 | ✗ 0] ✓ tests/tools/test_approval_interrupt.py (2✓, 2.7s)
+[ 18.4% |    74/~403 | ✓66 | ✗ 1] ✗ tests/plugins/test_a2a_native_tools.py (2✓ 1✗, 2.8s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_native_tools.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║ 
+  ║     def test_prepare_uses_runtime_scope_and_immutable_store(tmp_path, monkeypatch):
+  ║         import model_tools
+  ║         from plugins.platforms.a2a.outbound import Client
+  ║     
+  ║         monkeypatch.setenv('HERMES_HOME', str(tmp_path))
+  ║         monkeypatch.setenv('NATIVE_TEST_BEARER', 'fixture-native-credential')
+  ║         config = dict(enabled=True, peer='zuri', runtime='codex', host='zurqui',
+  ║                       url='https://zurqui/rpc', token_env='NATIVE_TEST_BEARER')
+  ║         registry = registered(config)
+  ║         monkeypatch.setattr(model_tools, 'registry', registry)
+  ║         monkeypatch.setattr(Client, '_open', lambda *a: (_ for _ in ()).throw(AssertionError('network forbidden')))
+  ║         entry = registry.get_entry('a2a_outbound')
+  ║         assert entry.check_fn() is True
+  ║         kwargs = dict(session_id='owner-session', enabled_tools=['a2a_outbound'],
+  ║                       enabled_toolsets=['a2a_outbound'], disabled_toolsets=[],
+  ║                       skip_pre_tool_call_hook=True, skip_tool_request_middleware=True,
+  ║                       skip_tool_execution_middleware=True)
+  ║         result = json.loads(model_tools.handle_function_call('a2a_outbound',
+  ║                             {'action': 'prepare', 'message': 'immutable hello'}, **kwargs))
+  ║ >       assert result['status'] == 'ok'
+  ║ E       AssertionError: assert 'blocked' == 'ok'
+  ║ E         
+  ║ E         - ok
+  ║ E         + blocked
+  ║ 
+  ║ tests/plugins/test_a2a_native_tools.py:52: AssertionError
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_native_tools.py::test_prepare_uses_runtime_scope_and_immutable_store
+  ║ ========================= 1 failed, 2 passed in 1.08s ==========================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_native_tools.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+[ 21.6% |    87/~403 | ✓285 | ✗  1] ✓ tests/plugins/test_a2a_outbound_validation.py (219✓, 3.7s)
+[ 28.5% |   115/~403 | ✓313 | ✗  1] ✓ tests/test_model_tools.py (28✓, 3.8s)
+[ 57.3% |   231/~403 | ✓418 | ✗  1] ✓ tests/plugins/test_a2a_plugin.py (105✓, 4.4s)
+[ 60.3% |   243/~403 | ✓430 | ✗  1] ✓ tests/test_model_tools_async_bridge.py (12✓, 4.6s)
+[ 89.8% |   362/~403 | ✓564 | ✗  1] ✓ tests/tools/test_approval.py (134✓, 5.1s)
+[ 93.5% |   377/~403 | ✓631 | ✗  1] ✓ tests/plugins/test_a2a_native_dispatch.py (67✓, 5.8s)
+[100.0% |   403/~403 | ✓689 | ✗  1] ✓ tests/plugins/test_a2a_outbound_recovery.py (58✓, 19.8s)
+
+=== Summary: 15 files, 689 tests passed, 1 failed (100% complete) in 19.8s (24 workers) ===
+  Durations cached to test_durations.json (15 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   15
+  Total subprocess CPU-wall: 65.5s  (runner wall: 19.8s, parallelism: 24x)
+  P50: 2.82s  P90: 5.82s  P95: 19.82s  P99: 19.82s  Max: 19.82s
+  <1s: 0 files (0%)  <2s: 2 files (13%)
+  Top 10 slowest:
+     19.82s  tests/plugins/test_a2a_outbound_recovery.py
+      5.82s  tests/plugins/test_a2a_native_dispatch.py
+      5.09s  tests/tools/test_approval.py
+      4.64s  tests/test_model_tools_async_bridge.py
+      4.41s  tests/plugins/test_a2a_plugin.py
+      3.83s  tests/test_model_tools.py
+      3.69s  tests/plugins/test_a2a_outbound_validation.py
+      2.82s  tests/plugins/test_a2a_native_tools.py
+      2.67s  tests/tools/test_approval_interrupt.py
+      2.51s  tests/plugins/test_a2a_schema_registration.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_native_tools.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 3 items
+
+tests/plugins/test_a2a_native_tools.py .F.                               [100%]
+
+=================================== FAILURES ===================================
+_____________ test_prepare_uses_runtime_scope_and_immutable_store ______________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-zo1rgpkj/pytest-of-hermeswebui/pytest-0/test_prepare_uses_runtime_scop0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f5d894c9fa0>
+
+    def test_prepare_uses_runtime_scope_and_immutable_store(tmp_path, monkeypatch):
+        import model_tools
+        from plugins.platforms.a2a.outbound import Client
+    
+        monkeypatch.setenv('HERMES_HOME', str(tmp_path))
+        monkeypatch.setenv('NATIVE_TEST_BEARER', 'fixture-native-credential')
+        config = dict(enabled=True, peer='zuri', runtime='codex', host='zurqui',
+                      url='https://zurqui/rpc', token_env='NATIVE_TEST_BEARER')
+        registry = registered(config)
+        monkeypatch.setattr(model_tools, 'registry', registry)
+        monkeypatch.setattr(Client, '_open', lambda *a: (_ for _ in ()).throw(AssertionError('network forbidden')))
+        entry = registry.get_entry('a2a_outbound')
+        assert entry.check_fn() is True
+        kwargs = dict(session_id='owner-session', enabled_tools=['a2a_outbound'],
+                      enabled_toolsets=['a2a_outbound'], disabled_toolsets=[],
+                      skip_pre_tool_call_hook=True, skip_tool_request_middleware=True,
+                      skip_tool_execution_middleware=True)
+        result = json.loads(model_tools.handle_function_call('a2a_outbound',
+                            {'action': 'prepare', 'message': 'immutable hello'}, **kwargs))
+>       assert result['status'] == 'ok'
+E       AssertionError: assert 'blocked' == 'ok'
+E         
+E         - ok
+E         + blocked
+
+tests/plugins/test_a2a_native_tools.py:52: AssertionError
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_native_tools.py::test_prepare_uses_runtime_scope_and_immutable_store
+========================= 1 failed, 2 passed in 1.08s ==========================
+
+=== 1 file with test failures (1 test failed) ===
+  tests/plugins/test_a2a_native_tools.py  (1 test failed)

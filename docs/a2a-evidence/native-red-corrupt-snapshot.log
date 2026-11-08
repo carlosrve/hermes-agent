@@ -1,0 +1,109 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~9 tests) under ['tests/plugins/test_a2a_native_dispatch.py']; running with -j 24
+[100.0% |     9/~9 | ✓36 | ✗ 1] ✗ tests/plugins/test_a2a_native_dispatch.py (36✓ 1✗, 2.8s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_native_dispatch.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║         assert call({'action': 'prepare', 'message': '\ud800'}) == {
+  ║             'status': 'blocked', 'reason': 'invalid_arguments'}
+  ║         draft = call({'action': 'prepare', 'message': 'hello'})
+  ║         store = Store(next(home.glob('a2a-native-*')))
+  ║         record = store.load(draft['local_id'])
+  ║         record['local_state'] = 'fixture-native-credential' * 10000
+  ║         store.save(record)
+  ║ >       assert call({'action': 'show', 'local_id': draft['local_id']}) == {
+  ║             'status': 'blocked', 'reason': 'request_unavailable'}
+  ║ E       AssertionError: assert {'status': 'o...e': None, ...} == {'status': 'b..._unavailable'}
+  ║ E         
+  ║ E         Differing items:
+  ║ E         {'status': 'ok'} != {'status': 'blocked'}
+  ║ E         Left contains 4 more items:
+  ║ E         {'authorization': 'blocked_bridge_missing',
+  ║ E          'local_id': 'caca37281a2f4499ac92128acab4ca2c',
+  ║ E          'local_state': 'fixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-n...
+  ║ E         
+  ║ E         ...Full output truncated (5 lines hidden), use '-vv' to show
+  ║ 
+  ║ tests/plugins/test_a2a_native_dispatch.py:173: AssertionError
+  ║ ------------------------------ Captured log call -------------------------------
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+  ║ WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_native_dispatch.py::test_invalid_unicode_and_corrupt_snapshot_fail_without_echo
+  ║ ========================= 1 failed, 36 passed in 2.36s =========================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_native_dispatch.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 36 tests passed, 1 failed (100% complete) in 2.8s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 2.8s  (runner wall: 2.8s, parallelism: 24x)
+  P50: 2.82s  P90: 2.82s  P95: 2.82s  P99: 2.82s  Max: 2.82s
+  <1s: 0 files (0%)  <2s: 0 files (0%)
+  Top 10 slowest:
+      2.82s  tests/plugins/test_a2a_native_dispatch.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_native_dispatch.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 37 items
+
+tests/plugins/test_a2a_native_dispatch.py .............................. [ 81%]
+......F                                                                  [100%]
+
+=================================== FAILURES ===================================
+_________ test_invalid_unicode_and_corrupt_snapshot_fail_without_echo __________
+
+native = (<function native.<locals>.call at 0x7f39cc0d6700>, {'enabled': True, 'peer': 'zuri', 'runtime': 'codex', 'host': 'zur...a960>, PosixPath('/tmp/hermes-pytest-tmproot-_2lqahh7/pytest-of-hermeswebui/pytest-0/test_invalid_unicode_and_corru0'))
+
+    def test_invalid_unicode_and_corrupt_snapshot_fail_without_echo(native):
+        from plugins.platforms.a2a.outbound import Store
+        call, _, _, home = native
+        assert call({'action': 'prepare', 'message': '\ud800'}) == {
+            'status': 'blocked', 'reason': 'invalid_arguments'}
+        draft = call({'action': 'prepare', 'message': 'hello'})
+        store = Store(next(home.glob('a2a-native-*')))
+        record = store.load(draft['local_id'])
+        record['local_state'] = 'fixture-native-credential' * 10000
+        store.save(record)
+>       assert call({'action': 'show', 'local_id': draft['local_id']}) == {
+            'status': 'blocked', 'reason': 'request_unavailable'}
+E       AssertionError: assert {'status': 'o...e': None, ...} == {'status': 'b..._unavailable'}
+E         
+E         Differing items:
+E         {'status': 'ok'} != {'status': 'blocked'}
+E         Left contains 4 more items:
+E         {'authorization': 'blocked_bridge_missing',
+E          'local_id': 'caca37281a2f4499ac92128acab4ca2c',
+E          'local_state': 'fixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-native-credentialfixture-n...
+E         
+E         ...Full output truncated (5 lines hidden), use '-vv' to show
+
+tests/plugins/test_a2a_native_dispatch.py:173: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browser-use': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-browserbase': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'browser-firecrawl': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'krea': No module named 'requests'
+WARNING  hermes_cli.plugins:plugins_loader.py:329 Failed to load plugin 'xai': No module named 'requests'
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_native_dispatch.py::test_invalid_unicode_and_corrupt_snapshot_fail_without_echo
+========================= 1 failed, 36 passed in 2.36s =========================
+
+=== 1 file with test failures (1 test failed) ===
+  tests/plugins/test_a2a_native_dispatch.py  (1 test failed)

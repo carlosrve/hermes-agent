@@ -1,0 +1,92 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 5 test files (~180 tests) under ['tests/plugins/test_a2a_plugin.py', 'tests/plugins/test_a2a_phase23.py', 'tests/plugins/test_a2a_schema_registration.py', 'tests/plugins/test_a2a_tools_gate.py', 'tests/tools/test_a2a_reason_roundtrip.py']; running with -j 24
+[  0.6% |     1/~180 | ✓0 | ✗0] ✗ tests/plugins/test_a2a_schema_registration.py (1e, 0.7s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_schema_registration.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║ ============================= test session starts ==============================
+  ║ platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+  ║ rootdir: /workspace/lfc/a2a-integration
+  ║ configfile: pyproject.toml
+  ║ plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+  ║ asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+  ║ collected 0 items / 1 error
+  ║ 
+  ║ ==================================== ERRORS ====================================
+  ║ ________ ERROR collecting tests/plugins/test_a2a_schema_registration.py ________
+  ║ ImportError while importing test module '/workspace/lfc/a2a-integration/tests/plugins/test_a2a_schema_registration.py'.
+  ║ Hint: make sure your test modules/packages have valid Python names.
+  ║ Traceback:
+  ║ /usr/local/lib/python3.12/importlib/__init__.py:90: in import_module
+  ║     return _bootstrap._gcd_import(name[level:], package, level)
+  ║            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ║ tests/plugins/test_a2a_schema_registration.py:8: in <module>
+  ║     from tools import tool_search
+  ║ tools/tool_search.py:20: in <module>
+  ║     from tools.tool_search_catalog import (
+  ║ tools/tool_search_catalog.py:14: in <module>
+  ║     import snowballstemmer
+  ║ E   ModuleNotFoundError: No module named 'snowballstemmer'
+  ║ =========================== short test summary info ============================
+  ║ ERROR tests/plugins/test_a2a_schema_registration.py
+  ║ !!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+  ║ =============================== 1 error in 0.23s ===============================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_schema_registration.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+[  3.9% |     7/~180 | ✓6 | ✗0] ✓ tests/plugins/test_a2a_tools_gate.py (6✓, 0.7s)
+[  6.7% |    12/~180 | ✓11 | ✗ 0] ✓ tests/tools/test_a2a_reason_roundtrip.py (5✓, 0.8s)
+[ 35.6% |    64/~180 | ✓56 | ✗ 0] ✓ tests/plugins/test_a2a_phase23.py (45✓, 0.8s)
+[100.0% |   180/~180 | ✓161 | ✗  0] ✓ tests/plugins/test_a2a_plugin.py (105✓, 2.7s)
+
+=== Summary: 5 files, 161 tests passed, 0 failed (100% complete) in 2.7s (24 workers) ===
+  Durations cached to test_durations.json (5 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   5
+  Total subprocess CPU-wall: 5.7s  (runner wall: 2.7s, parallelism: 24x)
+  P50: 0.81s  P90: 2.74s  P95: 2.74s  P99: 2.74s  Max: 2.74s
+  <1s: 4 files (80%)  <2s: 4 files (80%)
+  Top 10 slowest:
+      2.74s  tests/plugins/test_a2a_plugin.py
+      0.82s  tests/plugins/test_a2a_phase23.py
+      0.81s  tests/tools/test_a2a_reason_roundtrip.py
+      0.67s  tests/plugins/test_a2a_tools_gate.py
+      0.67s  tests/plugins/test_a2a_schema_registration.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_schema_registration.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/lfc/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+________ ERROR collecting tests/plugins/test_a2a_schema_registration.py ________
+ImportError while importing test module '/workspace/lfc/a2a-integration/tests/plugins/test_a2a_schema_registration.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/plugins/test_a2a_schema_registration.py:8: in <module>
+    from tools import tool_search
+tools/tool_search.py:20: in <module>
+    from tools.tool_search_catalog import (
+tools/tool_search_catalog.py:14: in <module>
+    import snowballstemmer
+E   ModuleNotFoundError: No module named 'snowballstemmer'
+=========================== short test summary info ============================
+ERROR tests/plugins/test_a2a_schema_registration.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.23s ===============================
+
+=== 1 file where no tests ran (collection/import error, timeout before collection, etc.) ===
+  tests/plugins/test_a2a_schema_registration.py

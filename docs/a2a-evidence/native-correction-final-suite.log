@@ -1,0 +1,40 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 15 test files (~403 tests) under ['tests/plugins/test_a2a_outbound_recovery.py', 'tests/plugins/test_a2a_outbound_validation.py', 'tests/plugins/test_a2a_plugin.py', 'tests/plugins/test_a2a_phase23.py', 'tests/plugins/test_a2a_schema_registration.py', 'tests/plugins/test_a2a_tools_gate.py', 'tests/tools/test_a2a_reason_roundtrip.py', 'tests/tools/test_approval.py', 'tests/tools/test_approval_interrupt.py', 'tests/tools/test_approval_config_readonly.py', 'tests/gateway/test_approvals_command.py', 'tests/plugins/test_a2a_native_tools.py', 'tests/plugins/test_a2a_native_dispatch.py', 'tests/test_model_tools.py', 'tests/test_model_tools_async_bridge.py']; running with -j 24
+[  1.5% |     6/~403 | ✓6 | ✗0] ✓ tests/plugins/test_a2a_tools_gate.py (6✓, 1.1s)
+[ 14.4% |    58/~403 | ✓51 | ✗ 0] ✓ tests/plugins/test_a2a_phase23.py (45✓, 1.4s)
+[ 14.6% |    59/~403 | ✓52 | ✗ 0] ✓ tests/gateway/test_approvals_command.py (1✓, 1.5s)
+[ 15.9% |    64/~403 | ✓57 | ✗ 0] ✓ tests/tools/test_a2a_reason_roundtrip.py (5✓, 1.6s)
+[ 16.6% |    67/~403 | ✓60 | ✗ 0] ✓ tests/tools/test_approval_config_readonly.py (3✓, 1.8s)
+[ 17.1% |    69/~403 | ✓62 | ✗ 0] ✓ tests/plugins/test_a2a_schema_registration.py (2✓, 2.0s)
+[ 17.9% |    72/~403 | ✓65 | ✗ 0] ✓ tests/plugins/test_a2a_native_tools.py (3✓, 2.2s)
+[ 18.4% |    74/~403 | ✓67 | ✗ 0] ✓ tests/tools/test_approval_interrupt.py (2✓, 2.6s)
+[ 21.6% |    87/~403 | ✓286 | ✗  0] ✓ tests/plugins/test_a2a_outbound_validation.py (219✓, 2.9s)
+[ 28.5% |   115/~403 | ✓314 | ✗  0] ✓ tests/test_model_tools.py (28✓, 3.2s)
+[ 57.3% |   231/~403 | ✓419 | ✗  0] ✓ tests/plugins/test_a2a_plugin.py (105✓, 3.5s)
+[ 60.3% |   243/~403 | ✓431 | ✗  0] ✓ tests/test_model_tools_async_bridge.py (12✓, 4.1s)
+[ 89.8% |   362/~403 | ✓565 | ✗  0] ✓ tests/tools/test_approval.py (134✓, 4.5s)
+[ 93.5% |   377/~403 | ✓632 | ✗  0] ✓ tests/plugins/test_a2a_native_dispatch.py (67✓, 4.9s)
+[100.0% |   403/~403 | ✓690 | ✗  0] ✓ tests/plugins/test_a2a_outbound_recovery.py (58✓, 19.5s)
+
+=== Summary: 15 files, 690 tests passed, 0 failed (100% complete) in 19.5s (24 workers) ===
+  Durations cached to test_durations.json (15 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   15
+  Total subprocess CPU-wall: 57.0s  (runner wall: 19.5s, parallelism: 24x)
+  P50: 2.64s  P90: 4.92s  P95: 19.52s  P99: 19.52s  Max: 19.52s
+  <1s: 0 files (0%)  <2s: 6 files (40%)
+  Top 10 slowest:
+     19.52s  tests/plugins/test_a2a_outbound_recovery.py
+      4.92s  tests/plugins/test_a2a_native_dispatch.py
+      4.52s  tests/tools/test_approval.py
+      4.05s  tests/test_model_tools_async_bridge.py
+      3.53s  tests/plugins/test_a2a_plugin.py
+      3.22s  tests/test_model_tools.py
+      2.92s  tests/plugins/test_a2a_outbound_validation.py
+      2.64s  tests/tools/test_approval_interrupt.py
+      2.23s  tests/plugins/test_a2a_native_tools.py
+      1.99s  tests/plugins/test_a2a_schema_registration.py

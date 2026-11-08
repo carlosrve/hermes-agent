@@ -1,0 +1,23 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 4 test files (~125 tests) under ['tests/tools/test_approval.py', 'tests/tools/test_approval_interrupt.py', 'tests/tools/test_approval_config_readonly.py', 'tests/gateway/test_approvals_command.py']; running with -j 24
+[  2.4% |     3/~125 | ✓3 | ✗0] ✓ tests/tools/test_approval_config_readonly.py (3✓, 0.7s)
+[  3.2% |     4/~125 | ✓4 | ✗0] ✓ tests/gateway/test_approvals_command.py (1✓, 0.8s)
+[  4.8% |     6/~125 | ✓6 | ✗0] ✓ tests/tools/test_approval_interrupt.py (2✓, 1.9s)
+[100.0% |   125/~125 | ✓140 | ✗  0] ✓ tests/tools/test_approval.py (134✓, 3.6s)
+
+=== Summary: 4 files, 140 tests passed, 0 failed (100% complete) in 3.6s (24 workers) ===
+  Durations cached to test_durations.json (4 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   4
+  Total subprocess CPU-wall: 7.0s  (runner wall: 3.6s, parallelism: 24x)
+  P50: 1.86s  P90: 3.56s  P95: 3.56s  P99: 3.56s  Max: 3.56s
+  <1s: 2 files (50%)  <2s: 3 files (75%)
+  Top 10 slowest:
+      3.56s  tests/tools/test_approval.py
+      1.86s  tests/tools/test_approval_interrupt.py
+      0.81s  tests/gateway/test_approvals_command.py
+      0.74s  tests/tools/test_approval_config_readonly.py

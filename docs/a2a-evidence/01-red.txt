@@ -1,0 +1,103 @@
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~1 tests) under ['tests/plugins/test_a2a_outbound_recovery.py']; running with -j 24
+[100.0% |     1/~1 | ✓0 | ✗1] ✗ tests/plugins/test_a2a_outbound_recovery.py (1✗, 0.6s)
+
+  ╔╍ Failed: tests/plugins/test_a2a_outbound_recovery.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║ tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-msbtoy5n/pytest-of-hermeswebui/pytest-0/test_prepare_is_durable_before0')
+  ║ 
+  ║     def test_prepare_is_durable_before_any_network(tmp_path):
+  ║ >       m = module()
+  ║             ^^^^^^^^
+  ║ 
+  ║ tests/plugins/test_a2a_outbound_recovery.py:12: 
+  ║ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+  ║ tests/plugins/test_a2a_outbound_recovery.py:8: in module
+  ║     return importlib.import_module('plugins.platforms.a2a.outbound')
+  ║            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ║ /usr/local/lib/python3.12/importlib/__init__.py:90: in import_module
+  ║     return _bootstrap._gcd_import(name[level:], package, level)
+  ║            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ║ <frozen importlib._bootstrap>:1387: in _gcd_import
+  ║     ???
+  ║ <frozen importlib._bootstrap>:1360: in _find_and_load
+  ║     ???
+  ║ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+  ║ 
+  ║ name = 'plugins.platforms.a2a.outbound'
+  ║ import_ = <function _gcd_import at 0x7f3cb73c00e0>
+  ║ 
+  ║ >   ???
+  ║ E   ModuleNotFoundError: No module named 'plugins.platforms.a2a.outbound'
+  ║ 
+  ║ <frozen importlib._bootstrap>:1324: ModuleNotFoundError
+  ║ =========================== short test summary info ============================
+  ║ FAILED tests/plugins/test_a2a_outbound_recovery.py::test_prepare_is_durable_before_any_network
+  ║ ============================== 1 failed in 0.15s ===============================
+  ║
+  ║  Repro: python -m pytest tests/plugins/test_a2a_outbound_recovery.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 0 tests passed, 1 failed (100% complete) in 0.6s (24 workers) ===
+  Durations cached to test_durations.json (1 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 0.6s  (runner wall: 0.6s, parallelism: 24x)
+  P50: 0.64s  P90: 0.64s  P95: 0.64s  P99: 0.64s  Max: 0.64s
+  <1s: 1 files (100%)  <2s: 1 files (100%)
+  Top 10 slowest:
+      0.64s  tests/plugins/test_a2a_outbound_recovery.py
+
+=== Failure output ===
+
+--- tests/plugins/test_a2a_outbound_recovery.py ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /workspace/lfc/a2a-integration
+configfile: pyproject.toml
+plugins: anyio-4.15.1, timeout-2.4.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 1 item
+
+tests/plugins/test_a2a_outbound_recovery.py F                            [100%]
+
+=================================== FAILURES ===================================
+__________________ test_prepare_is_durable_before_any_network __________________
+
+tmp_path = PosixPath('/tmp/hermes-pytest-tmproot-msbtoy5n/pytest-of-hermeswebui/pytest-0/test_prepare_is_durable_before0')
+
+    def test_prepare_is_durable_before_any_network(tmp_path):
+>       m = module()
+            ^^^^^^^^
+
+tests/plugins/test_a2a_outbound_recovery.py:12: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/plugins/test_a2a_outbound_recovery.py:8: in module
+    return importlib.import_module('plugins.platforms.a2a.outbound')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'plugins.platforms.a2a.outbound'
+import_ = <function _gcd_import at 0x7f3cb73c00e0>
+
+>   ???
+E   ModuleNotFoundError: No module named 'plugins.platforms.a2a.outbound'
+
+<frozen importlib._bootstrap>:1324: ModuleNotFoundError
+=========================== short test summary info ============================
+FAILED tests/plugins/test_a2a_outbound_recovery.py::test_prepare_is_durable_before_any_network
+============================== 1 failed in 0.15s ===============================
+
+=== 1 file with test failures (1 test failed) ===
+  tests/plugins/test_a2a_outbound_recovery.py  (1 test failed)
